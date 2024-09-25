@@ -15,25 +15,25 @@ import {
 } from "@heroicons/react/16/solid";
 import React, { useEffect, useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
-// import { useLogout } from "../hooks/useLogout";
+import { useLogout } from "../hooks/useLogout";
 
 export default function Asidebar() {
   const location = useLocation();
 
-  // const { logout } = useLogout();
+  const { logout } = useLogout();
 
-  // const submitLogout = () => {
-  //   logout();
-  // };
+  const submitLogout = () => {
+    logout();
+  };
 
   return (
     <aside>
       <ul className="topAsideBar flex-col space-y-[8px]">
         <li>
-          <NavLink to="/Dashboard" className="flex items-center">
+          <NavLink to="/" className="flex items-center">
             <div
               className={`flex items-center itemAsideBar ${
-                location.pathname === "/Dashboard" ? "asideItemActive" : ""
+                location.pathname === "/" ? "asideItemActive" : ""
               }`}
             >
               <Squares2X2Icon className="iconAsideBar" />
@@ -104,13 +104,13 @@ export default function Asidebar() {
         </li>
         <li>
           <NavLink
-            to="/SignUp"
+            to="/SignIn"
             className=" flex items-center"
-            // onClick={submitLogout}
+            onClick={submitLogout}
           >
             <div
               className={`flex items-center itemAsideBar ${
-                location.pathname === "/SignUp" ? "asideItemActive" : ""
+                location.pathname === "/SignIn" ? "asideItemActive" : ""
               }`}
             >
               <ArrowLeftStartOnRectangleIcon className="iconAsideBar" />

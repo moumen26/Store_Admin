@@ -64,7 +64,7 @@ Row.propTypes = {
   }).isRequired,
 };
 
-export default function CustomersTable({ searchQuery, setFilteredData }) {
+export default function CustomersTable({ searchQuery, setFilteredData,  }) {
   const rows = [
     {
       customerFirstName: "Khaldi",
@@ -229,6 +229,7 @@ export default function CustomersTable({ searchQuery, setFilteredData }) {
     setFilteredData(filteredRows);
   }, [filteredRows, setFilteredData]);
 
+  
   return (
     <TableContainer
       component={Paper}

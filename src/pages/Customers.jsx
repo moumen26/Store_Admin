@@ -26,6 +26,8 @@ export default function Customers() {
     setOpenAddCustomerModal(false);
   };
 
+  
+
   return (
     <div className="pagesContainer">
       <Header />
