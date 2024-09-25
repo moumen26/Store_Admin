@@ -4,14 +4,55 @@ import Search from "../components/Search";
 import ButtonAdd from "../components/ButtonAdd";
 import AuthenticationTable from "../components/AuthenticationTable";
 import ButtonExportExcel from "../components/ButtonExportExcel";
+import { useAuthContext } from "../hooks/useAuthContext";
+import { useLocation } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 
 export default function Authentication() {
+  const { user } = useAuthContext();
+  const location = useLocation();
+
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredData, setFilteredData] = useState([]);
 
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
   };
+
+  // fetching pending Stores data
+  const fetchStoresData = async () => {
+    const response = await fetch(
+      import.meta.env.VITE_APP_URL_BASE + `/Store/all/pending`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user?.token}`,
+        },
+      }
+    );
+
+    // Handle the error state
+    if (!response.ok) {
+      const errorData = await response.json();
+      if (errorData.error.statusCode == 404) return [];
+      else throw new Error("Error receiving Stores data");
+    }
+    // Return the data
+    return await response.json();
+  };
+  // useQuery hook to fetch data
+  const {
+    data: StoresData,
+    error: StoresError,
+    isLoading: StoresLoading,
+    refetch: StoresRefetch,
+  } = useQuery({
+    queryKey: ["StoresData", user?.token, location.key],
+    queryFn: fetchStoresData,
+    enabled: !!user?.token, // Ensure the query runs only if the user is authenticated
+    refetchOnWindowFocus: true, // Optional: prevent refetching on window focus
+  });
 
   return (
     <div className="pagesContainer">
@@ -35,6 +76,9 @@ export default function Authentication() {
           <AuthenticationTable
             searchQuery={searchQuery}
             setFilteredData={setFilteredData}
+            data={StoresData}
+            isLoading={StoresLoading}
+            handleRefetchDataChange={StoresRefetch}
           />
         </div>
       </div>

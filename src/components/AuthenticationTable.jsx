@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -9,34 +9,97 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { EyeIcon } from "@heroicons/react/24/outline";
 import { useNavigate } from "react-router-dom";
+import AddSubscriptionDialog from "./AddSubscriptionDialog";
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
+import { CircularProgress } from "@mui/material";
+import { useAuthContext } from "../hooks/useAuthContext";
+import { Add } from "@mui/icons-material";
+import axios from "axios";
 
 function Row(props) {
-  const { row } = props;
+  const { row, handleConfirmAlert, handleRefetchDataChange } = props;
   const navigate = useNavigate();
+  const { user } = useAuthContext();
 
   const handleViewClick = () => {
-    navigate(`/user/${row.userId}`);
+    navigate(`/CustomerProfile/${row._id}`);
+  };
+
+  const [open, setOpen] = useState(false);
+  const handleInactiveClick = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const [submitionLoading, setSubmitionLoading] = useState(false);
+  const handleConfirm = async (subscriptionID, expiryMonths) => {
+    try {
+      setSubmitionLoading(true);
+      const response = await axios.post(
+        import.meta.env.VITE_APP_URL_BASE + `/SubscriptionStore/create`,
+        {
+          Store: row._id,
+          Subscription: subscriptionID,
+          expiryMonths: expiryMonths,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${user?.token}`,
+          },
+        }
+      );
+      if (response.status === 200) {
+        handleConfirmAlert(`${response.data.message}`, true);
+        handleRefetchDataChange();
+        setSubmitionLoading(false);
+      } else {
+        handleConfirmAlert(`${response.data.message}`, false);
+        setSubmitionLoading(false);
+      }
+    } catch (error) {
+      if (error.response) {
+        handleConfirmAlert(`${error.response.data.message}`, false);
+        setSubmitionLoading(false);
+      } else if (error.request) {
+        // Request was made but no response was received
+        console.error("Error creating subscription: No response received");
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        console.error("Error creating subscription", error);
+      }
+    }
   };
 
   return (
     <TableRow sx={{ "& > *": { borderBottom: "unset" } }} className="tableRow">
       <TableCell className="tableCell">
-        <span className="trTableSpan">{row.userName}</span>
+        <span className="trTableSpan">
+          <span className="mr-1 trTableSpan">{row.firstName}</span>
+          <span className="trTableSpan">{row.lastName}</span>
+        </span>
       </TableCell>
       <TableCell className="tableCell">
-        <span className="trTableSpan">{row.userPhone}</span>
+        <span className="trTableSpan">{row.email}</span>
       </TableCell>
       <TableCell className="tableCell">
-        <span className="trTableSpan">{row.userWilaya}</span>
+        <span className="trTableSpan">{row.wilaya}</span>
+      </TableCell>
+      <TableCell align="right" className="tableCell">
+        <span className="trTableSpan">{row.commune}</span>
+      </TableCell>
+      <TableCell align="right" className="tableCell">
+        <span className="trTableSpan">{row.storeAddress}</span>
+      </TableCell>
+      <TableCell align="right" className="tableCell">
+        <span className="trTableSpan">{row.storeName}</span>
       </TableCell>
       <TableCell className="tableCell">
-        <span className="trTableSpan">{row.userCommune}</span>
-      </TableCell>
-      <TableCell className="tableCell">
-        <span className="trTableSpan">{row.userAddress}</span>
-      </TableCell>
-      <TableCell className="tableCell">
-        <div className="activeClass">
+        <div className="activeClass" onClick={handleInactiveClick}>
           <div className="cercleActive"></div>
           <span className="inactiveSpan trTableSpan">Pending</span>
         </div>
@@ -50,143 +113,52 @@ function Row(props) {
           />
         </div>
       </TableCell>
+
+      <AddSubscriptionDialog
+        open={open}
+        onClose={handleClose}
+        onConfirm={handleConfirm}
+        dialogTitle="Add new subscription"
+        dialogContentText="Are you sure you want to add a new subscription?"
+        isloading={submitionLoading}
+      />
     </TableRow>
   );
 }
 
 Row.propTypes = {
-  row: PropTypes.shape({
-    userId: PropTypes.string.isRequired,
-    userWilaya: PropTypes.string.isRequired,
-    userPhone: PropTypes.string.isRequired,
-    userName: PropTypes.string.isRequired,
-    userCommune: PropTypes.string.isRequired,
-    userAddress: PropTypes.string.isRequired,
-  }).isRequired,
+  row: PropTypes.object.isRequired,
 };
+export default function CustomerTable({ searchQuery, setFilteredData, data, isLoading = false, handleRefetchDataChange }) {
+  const [filteredRows, setFilteredRows] = useState([]);
 
-export default function CustomerTable({ searchQuery, setFilteredData }) {
-  const rows = [
-    {
-      userName: "Khaldi Abdelmoumen",
-      userId: "0920496",
-      userPhone: "0550189087",
-      userWilaya: "Blida",
-      userCommune: "Ouled Aich",
-      userAddress: "Rue Yousfi Abdelkader",
-    },
-    {
-      userName: "Khaldi Abdelmoumen",
-      userId: "0920496",
-      userPhone: "0550189087",
-      userWilaya: "Blida",
-      userCommune: "Ouled Aich",
-      userAddress: "Rue Yousfi Abdelkader",
-    },
-    {
-      userName: "Khaldi Abdelmoumen",
-      userId: "0920496",
-      userPhone: "0550189087",
-      userWilaya: "Blida",
-      userCommune: "Ouled Aich",
-      userAddress: "Rue Yousfi Abdelkader",
-    },
-    {
-      userName: "Khaldi Abdelmoumen",
-      userId: "0920496",
-      userPhone: "0550189087",
-      userWilaya: "Blida",
-      userCommune: "Ouled Aich",
-      userAddress: "Rue Yousfi Abdelkader",
-    },
-    {
-      userName: "Khaldi Abdelmoumen",
-      userId: "0920496",
-      userPhone: "0550189087",
-      userWilaya: "Blida",
-      userCommune: "Ouled Aich",
-      userAddress: "Rue Yousfi Abdelkader",
-    },
-
-    {
-      userName: "Khaldi Abdelmoumen",
-      userId: "0920496",
-      userPhone: "0550189087",
-      userWilaya: "Blida",
-      userCommune: "Ouled Aich",
-      userAddress: "Rue Yousfi Abdelkader",
-    },
-    {
-      userName: "Khaldi Abdelmoumen",
-      userId: "0920496",
-      userPhone: "0550189087",
-      userWilaya: "Blida",
-      userCommune: "Ouled Aich",
-      userAddress: "Rue Yousfi Abdelkader",
-    },
-    {
-      userName: "Khaldi Abdelmoumen",
-      userId: "0920496",
-      userPhone: "0550189087",
-      userWilaya: "Blida",
-      userCommune: "Ouled Aich",
-      userAddress: "Rue Yousfi Abdelkader",
-    },
-
-    {
-      userName: "Khaldi Abdelmoumen",
-      userId: "0920496",
-      userPhone: "0550189087",
-      userWilaya: "Blida",
-      userCommune: "Ouled Aich",
-      userAddress: "Rue Yousfi Abdelkader",
-    },
-    {
-      userName: "Khaldi Abdelmoumen",
-      userId: "0920496",
-      userPhone: "0550189087",
-      userWilaya: "Blida",
-      userCommune: "Ouled Aich",
-      userAddress: "Rue Yousfi Abdelkader",
-    },
-    {
-      userName: "Khaldi Abdelmoumen",
-      userId: "0920496",
-      userPhone: "0550189087",
-      userWilaya: "Blida",
-      userCommune: "Ouled Aich",
-      userAddress: "Rue Yousfi Abdelkader",
-    },
-    {
-      userName: "Khaldi Adel",
-      userId: "0920496",
-      userPhone: "0550189087",
-      userWilaya: "Blida",
-      userCommune: "Ouled Aich",
-      userAddress: "Rue Yousfi Abdelkader",
-    },
-    {
-      userName: "Khaldi Abdelmoumen",
-      userId: "0920496",
-      userPhone: "0550189087",
-      userWilaya: "Blida",
-      userCommune: "Ouled Aich",
-      userAddress: "Rue Yousfi Abdelkader",
-    },
-  ];
-
-  const filteredRows = rows.filter(
-    (row) =>
-      row.userName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      row.userId.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      row.userPhone.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      row.userWilaya.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      row.userCommune.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
-  React.useEffect(() => {
+  useEffect(() => {
+    setFilteredRows(
+      data?.filter(
+        (row) =>
+          row?.firstName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          row?.lastName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          row?.customerId?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          row?.phoneNumber?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          row?.wilaya?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          row?.commune?.toLowerCase().includes(searchQuery.toLowerCase()) || 
+          row?.storeName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          row?.storeAddress?.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    );
     setFilteredData(filteredRows);
-  }, [filteredRows, setFilteredData]);
+  }, [filteredRows, setFilteredData, data, isLoading]);
+
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [alertType, setAlertType] = useState(true);
+
+  const handleConfirmAlert = (message, type) => {
+    setAlertType(type);
+    setSnackbarMessage(message);
+    setSnackbarOpen(true);
+  };
+
 
   return (
     <TableContainer
@@ -213,6 +185,9 @@ export default function CustomerTable({ searchQuery, setFilteredData }) {
               <span className="thTableSpan">Address</span>
             </TableCell>
             <TableCell className="tableCell">
+              <span className="thTableSpan">Store name</span>
+            </TableCell>
+            <TableCell className="tableCell">
               <span className="thTableSpan">Status</span>
             </TableCell>
             <TableCell align="right" className="tableCell">
@@ -221,17 +196,43 @@ export default function CustomerTable({ searchQuery, setFilteredData }) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {filteredRows.length > 0 ? (
-            filteredRows.map((row) => <Row key={row.userId} row={row} />)
-          ) : (
+        {isLoading ? 
             <TableRow>
               <TableCell colSpan={6} align="center">
-                <span className="thTableSpan">No customers found</span>
+                <CircularProgress />
               </TableCell>
             </TableRow>
-          )}
+            :
+              filteredRows?.length > 0 ? (
+                filteredRows.map((row) => <Row 
+                  key={row._id} 
+                  row={row} 
+                  handleConfirmAlert={handleConfirmAlert}
+                  handleRefetchDataChange={handleRefetchDataChange}
+                />)
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={6} align="center">
+                    <span className="thTableSpan">No store found</span>
+                  </TableCell>
+                </TableRow>
+              )
+          }
         </TableBody>
       </Table>
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={4000}
+        onClose={() => setSnackbarOpen(false)}
+      >
+        <Alert
+          onClose={() => setSnackbarOpen(false)}
+          severity={!alertType ? "error" : "success"}
+          sx={{ width: "100%" }}
+        >
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </TableContainer>
     
   );

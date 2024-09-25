@@ -11,7 +11,6 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { Alert, Snackbar } from "@mui/material";
 import { useLocation } from "react-router-dom";
-import { TokenDecoder } from "../util/DecodeToken";
 
 // Set the app element for accessibility
 Modal.setAppElement("#root");
@@ -19,7 +18,6 @@ Modal.setAppElement("#root");
 export default function Products() {
   const { user } = useAuthContext();
   const location = useLocation();
-  const decodedToken = TokenDecoder();
   const [searchQuery, setSearchQuery] = useState("");
   const [isAddProductModalOpen, setIsAddProductModalOpen] = useState(false);
   const [submitionLoading, setSubmitionLoading] = useState(false);
