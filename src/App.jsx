@@ -12,9 +12,9 @@ import Dashboard from "./pages/Dashboard";
 import Authentication from "./pages/Authentication";
 import VerifyCode from "./pages/VerifyCode";
 import SignIn from "./pages/SignIn";
+import CustomerProfile from "./pages/CustomerProfile";
 
 function App() {
-
   const { user } = useAuthContext();
   return (
     <BrowserRouter>
@@ -25,10 +25,20 @@ function App() {
           {/* private routes */}
           <Route path="/" element={user ? <Dashboard /> : <SignIn />} />
           <Route path="/Products" element={user ? <Products /> : <SignIn />} />
+          <Route
+            path="/CustomerProfile"
+            element={user ? <CustomerProfile /> : <SignIn />}
+          />
           <Route path="/Settings" element={user ? <Settings /> : <SignIn />} />
           <Route path="/Losses" element={user ? <Losses /> : <SignIn />} />
-          <Route path="/Customers" element={user ? <Customers /> : <SignIn />} />
-          <Route path="/Authentication" element={user ? <Authentication /> : <SignIn />} />
+          <Route
+            path="/Customers"
+            element={user ? <Customers /> : <SignIn />}
+          />
+          <Route
+            path="/Authentication"
+            element={user ? <Authentication /> : <SignIn />}
+          />
 
           {/* public routes */}
           <Route

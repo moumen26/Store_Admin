@@ -198,7 +198,7 @@ export default function CustomerTable({ searchQuery, setFilteredData, data, isLo
         <TableBody>
         {isLoading ? 
             <TableRow>
-              <TableCell colSpan={6} align="center">
+              <TableCell colSpan={8} align="center">
                 <CircularProgress />
               </TableCell>
             </TableRow>
@@ -212,7 +212,7 @@ export default function CustomerTable({ searchQuery, setFilteredData, data, isLo
                 />)
               ) : (
                 <TableRow>
-                  <TableCell colSpan={6} align="center">
+                  <TableCell colSpan={8} align="center">
                     <span className="thTableSpan">No store found</span>
                   </TableCell>
                 </TableRow>
