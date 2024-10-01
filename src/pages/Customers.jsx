@@ -117,7 +117,7 @@ export default function Customers() {
       >
         {/* {!submitionLoading ? ( */}
         <div className="customerClass pb-0">
-          <h2 className="dialogTitle">Add New Customer</h2>
+          <h2 className="dialogTitle">Add New Store</h2>
           <div className="flex-col items-center w-full space-y-8 mt-[16px] p-0">
             <div className="dialogAddCustomerItem items-center">
               <span>First Name</span>

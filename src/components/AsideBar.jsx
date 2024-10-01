@@ -2,6 +2,7 @@ import {
   ArchiveBoxIcon,
   ArrowLeftStartOnRectangleIcon,
   ArrowTrendingDownIcon,
+  BuildingStorefrontIcon,
   ChevronDownIcon,
   ClipboardDocumentCheckIcon,
   Cog6ToothIcon,
@@ -60,8 +61,20 @@ export default function Asidebar() {
                 location.pathname === "/Customers" ? "asideItemActive" : ""
               }`}
             >
-              <UserGroupIcon className="iconAsideBar" />
+              <BuildingStorefrontIcon className="iconAsideBar" />
               <span className="ml-3">Stores</span>
+            </div>
+          </NavLink>
+        </li>
+        <li>
+          <NavLink to="/InactiveStore" className=" flex items-center">
+            <div
+              className={`flex items-center itemAsideBar AuthenticationItemAsideBar  ${
+                location.pathname === "/InactiveStore" ? "asideItemActive" : ""
+              }`}
+            >
+              <UserGroupIcon className="iconAsideBar" />
+              <span className="ml-3">Inactive Stores</span>
             </div>
           </NavLink>
         </li>

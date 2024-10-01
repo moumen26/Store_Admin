@@ -55,7 +55,12 @@ Row.propTypes = {
   row: PropTypes.object.isRequired,
 };
 
-export default function CustomersTable({ searchQuery, setFilteredData, data, isLoading = false }) {
+export default function CustomersTable({
+  searchQuery,
+  setFilteredData,
+  data,
+  isLoading = false,
+}) {
   const [filteredRows, setFilteredRows] = useState([]);
 
   useEffect(() => {
@@ -73,7 +78,6 @@ export default function CustomersTable({ searchQuery, setFilteredData, data, isL
     setFilteredData(filteredRows);
   }, [filteredRows, setFilteredData, data, isLoading]);
 
-  
   return (
     <TableContainer
       component={Paper}
@@ -84,7 +88,7 @@ export default function CustomersTable({ searchQuery, setFilteredData, data, isL
         <TableHead className="tableHead">
           <TableRow>
             <TableCell className="tableCell">
-              <span className="thTableSpan">Customer_ID</span>
+              <span className="thTableSpan">Store_ID</span>
             </TableCell>
             <TableCell className="tableCell">
               <span className="thTableSpan">Name</span>
@@ -104,23 +108,21 @@ export default function CustomersTable({ searchQuery, setFilteredData, data, isL
           </TableRow>
         </TableHead>
         <TableBody>
-          {isLoading ? 
+          {isLoading ? (
             <TableRow>
               <TableCell colSpan={6} align="center">
                 <CircularProgress />
               </TableCell>
             </TableRow>
-            :
-              filteredRows?.length > 0 ? (
-                filteredRows.map((row) => <Row key={row._id} row={row} />)
-              ) : (
-                <TableRow>
-                  <TableCell colSpan={6} align="center">
-                    <span className="thTableSpan">No store found</span>
-                  </TableCell>
-                </TableRow>
-              )
-          }
+          ) : filteredRows?.length > 0 ? (
+            filteredRows.map((row) => <Row key={row._id} row={row} />)
+          ) : (
+            <TableRow>
+              <TableCell colSpan={6} align="center">
+                <span className="thTableSpan">No store found</span>
+              </TableCell>
+            </TableRow>
+          )}
         </TableBody>
       </Table>
     </TableContainer>

@@ -13,6 +13,7 @@ import Authentication from "./pages/Authentication";
 import VerifyCode from "./pages/VerifyCode";
 import SignIn from "./pages/SignIn";
 import CustomerProfile from "./pages/CustomerProfile";
+import InactiveStore from "./pages/InactiveStore";
 
 function App() {
   const { user } = useAuthContext();
@@ -25,6 +26,10 @@ function App() {
           {/* private routes */}
           <Route path="/" element={user ? <Dashboard /> : <SignIn />} />
           <Route path="/Products" element={user ? <Products /> : <SignIn />} />
+          <Route
+            path="/InactiveStore"
+            element={user ? <InactiveStore /> : <SignIn />}
+          />
           <Route
             path="/CustomerProfile"
             element={user ? <CustomerProfile /> : <SignIn />}
