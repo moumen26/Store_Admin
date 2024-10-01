@@ -20,6 +20,8 @@ export default function Products() {
   const location = useLocation();
   const [searchQuery, setSearchQuery] = useState("");
   const [isAddProductModalOpen, setIsAddProductModalOpen] = useState(false);
+  const [isAddCategoryModalOpen, setIsAddCategoryModalOpen] = useState(false);
+  const [isAddBrandModalOpen, setIsAddBrandModalOpen] = useState(false);
   const [submitionLoading, setSubmitionLoading] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [alertType, setAlertType] = useState(true);
@@ -65,6 +67,22 @@ export default function Products() {
 
   const handleCloseAddProductModal = () => {
     setIsAddProductModalOpen(false);
+  };
+
+  const handleOpenAddCategoryModal = () => {
+    setIsAddCategoryModalOpen(true);
+  };
+
+  const handleCloseAddCategoryModal = () => {
+    setIsAddCategoryModalOpen(false);
+  };
+
+  const handleOpenAddBrandModal = () => {
+    setIsAddBrandModalOpen(true);
+  };
+
+  const handleCloseAddBrandModal = () => {
+    setIsAddBrandModalOpen(false);
   };
 
   const [image, setImage] = useState(null);
@@ -197,7 +215,7 @@ export default function Products() {
     setProductBrand("");
     setProductCategory("");
     setImage(null);
-  }
+  };
   //save product API
   const handleSavePRODUCT = async () => {
     try {
@@ -256,10 +274,20 @@ export default function Products() {
       <Header />
       <div className="w-full flex items-center justify-between">
         <h2 className="pagesTitle">Products Grid</h2>
-        <ButtonAdd
-          buttonSpan="Add New Product"
-          onClick={handleOpenAddProductModal}
-        />
+        <div className="flex space-x-4">
+          <ButtonAdd
+            buttonSpan="Add New Category"
+            onClick={handleOpenAddCategoryModal}
+          />
+          <ButtonAdd
+            buttonSpan="Add New Brand"
+            onClick={handleOpenAddBrandModal}
+          />
+          <ButtonAdd
+            buttonSpan="Add New Product"
+            onClick={handleOpenAddProductModal}
+          />
+        </div>
       </div>
       <div className="pageTable">
         <div className="addProductModalHeader">
@@ -307,14 +335,14 @@ export default function Products() {
             padding: "20px",
             maxWidth: "40%",
             margin: "auto",
-            height: "70%",
+            height: "fit-content",
             zIndex: 1001,
             overflowY: "auto",
           },
         }}
       >
         {!submitionLoading || BrandLoading || CategoryLoading ? (
-          <div className="customerClass">
+          <div className="customerClass pb-0">
             <h2 className="dialogTitle">Add New Product to Stock</h2>
             <div className="mt-[16px]">
               <form>
@@ -416,7 +444,7 @@ export default function Products() {
                     </div>
                   </div>
                 </div>
-                <div className="flex justify-end space-x-8 bottom-5 right-8 absolute">
+                <div className="flex justify-end space-x-8 mt-[20px]">
                   <button
                     className="text-gray-500 cursor-pointer hover:text-gray-700"
                     onClick={handleCloseAddProductModal}
@@ -428,6 +456,143 @@ export default function Products() {
                     value={"Save"}
                     className="text-blue-500 cursor-pointer hover:text-blue-700"
                     onClick={handleSavePRODUCT}
+                  />
+                </div>
+              </form>
+            </div>
+          </div>
+        ) : (
+          <div className="w-full h-full flex items-center justify-center">
+            <CircularProgress color="inherit" />
+          </div>
+        )}
+      </Modal>
+
+      {/* New Modal for Adding Brand */}
+      <Modal
+        isOpen={isAddBrandModalOpen}
+        onRequestClose={handleCloseAddBrandModal}
+        contentLabel="Add New Brand"
+        style={{
+          overlay: {
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+            zIndex: 1000,
+          },
+          content: {
+            border: "none",
+            borderRadius: "8px",
+            padding: "20px",
+            maxWidth: "40%",
+            margin: "auto",
+            height: "fit-content",
+            zIndex: 1001,
+            overflowY: "auto",
+          },
+        }}
+      >
+        {!submitionLoading || BrandLoading || CategoryLoading ? (
+          <div className="customerClass pb-0">
+            <h2 className="dialogTitle">Add New Brand to Stock</h2>
+            <div className="mt-[16px]">
+              <form>
+                <div className="flex-col space-y-8">
+                  <div className="dialogAddCustomerItem items-center">
+                    <span>Brand Category :</span>
+                    <div className="selectStoreWilayaCommune w-[500px]">
+                      <select
+                        name="BrandCategory"
+                        // onChange={}
+                      >
+                        <option value="">-- Select Category Brand --</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div className="dialogAddCustomerItem items-center">
+                    <span>Brand :</span>
+                    <div className="inputForm">
+                      <input
+                        type="text"
+                        name="BrandName"
+                        // onChange={}
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div className="flex justify-end space-x-8 mt-[20px]">
+                  <button
+                    className="text-gray-500 cursor-pointer hover:text-gray-700"
+                    onClick={handleCloseAddBrandModal}
+                  >
+                    Cancel
+                  </button>
+                  <input
+                    type="button"
+                    value={"Save"}
+                    className="text-blue-500 cursor-pointer hover:text-blue-700"
+                    // onClick={}
+                  />
+                </div>
+              </form>
+            </div>
+          </div>
+        ) : (
+          <div className="w-full h-full flex items-center justify-center">
+            <CircularProgress color="inherit" />
+          </div>
+        )}
+      </Modal>
+
+      {/* New Modal for Adding Category */}
+      <Modal
+        isOpen={isAddCategoryModalOpen}
+        onRequestClose={handleCloseAddCategoryModal}
+        contentLabel="Add New Category"
+        style={{
+          overlay: {
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+            zIndex: 1000,
+          },
+          content: {
+            border: "none",
+            borderRadius: "8px",
+            padding: "20px",
+            maxWidth: "40%",
+            margin: "auto",
+            height: "fit-content",
+            zIndex: 1001,
+            overflowY: "auto",
+          },
+        }}
+      >
+        {!submitionLoading || BrandLoading || CategoryLoading ? (
+          <div className="customerClass pb-0">
+            <h2 className="dialogTitle">Add New Category to Stock</h2>
+            <div className="mt-[16px]">
+              <form>
+                <div className="flex-col space-y-8">
+                  <div className="dialogAddCustomerItem items-center">
+                    <span>Category :</span>
+                    <div className="inputForm">
+                      <input
+                        type="text"
+                        name="CategoryName"
+                        // onChange={}
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div className="flex justify-end space-x-8 mt-[20px]">
+                  <button
+                    className="text-gray-500 cursor-pointer hover:text-gray-700"
+                    onClick={handleCloseAddCategoryModal}
+                  >
+                    Cancel
+                  </button>
+                  <input
+                    type="button"
+                    value={"Save"}
+                    className="text-blue-500 cursor-pointer hover:text-blue-700"
+                    // onClick={}
                   />
                 </div>
               </form>

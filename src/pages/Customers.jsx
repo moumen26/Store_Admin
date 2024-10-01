@@ -32,7 +32,6 @@ export default function Customers() {
     setOpenAddCustomerModal(false);
   };
 
-  
   // fetching active Stores data
   const fetchStoresData = async () => {
     const response = await fetch(
@@ -67,7 +66,6 @@ export default function Customers() {
     enabled: !!user?.token, // Ensure the query runs only if the user is authenticated
     refetchOnWindowFocus: true, // Optional: prevent refetching on window focus
   });
-
 
   return (
     <div className="pagesContainer">

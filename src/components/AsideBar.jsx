@@ -61,7 +61,7 @@ export default function Asidebar() {
               }`}
             >
               <UserGroupIcon className="iconAsideBar" />
-              <span className="ml-3">Customers</span>
+              <span className="ml-3">Stores</span>
             </div>
           </NavLink>
         </li>
