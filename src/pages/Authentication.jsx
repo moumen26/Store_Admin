@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Header from "../components/Header";
 import Search from "../components/Search";
 import ButtonAdd from "../components/ButtonAdd";
@@ -53,6 +53,10 @@ export default function Authentication() {
     enabled: !!user?.token, // Ensure the query runs only if the user is authenticated
     refetchOnWindowFocus: true, // Optional: prevent refetching on window focus
   });
+
+  useEffect(() => {
+    StoresRefetch();
+  },[location.key]);
 
   return (
     <div className="pagesContainer">
