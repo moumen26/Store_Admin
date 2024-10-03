@@ -11,6 +11,7 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { Alert, Snackbar } from "@mui/material";
 import { useLocation } from "react-router-dom";
+import ConfirmDialog from "../components/ConfirmDialog";
 
 // Set the app element for accessibility
 Modal.setAppElement("#root");
@@ -29,6 +30,10 @@ export default function Products() {
   const [Category, setCategory] = useState("");
   const handelCategoryChange = (e) => {
     setCategory(e.target.value);
+  };
+  const [Brand, setBrand] = useState("");
+  const handelBrandChange = (e) => {
+    setBrand(e.target.value);
   };
   //product form
   const [productName, setProductName] = useState("");
@@ -85,6 +90,19 @@ export default function Products() {
     setIsAddBrandModalOpen(false);
   };
 
+  const [AddNewCategoryConfirmationDialog, setAddNewCategoryConfirmationDialog] = useState(false);
+  const handleOpenAddNewCategoryConfirmationDialog = () => {
+    setAddNewCategoryConfirmationDialog(true);
+  }
+  const [AddNewBrandConfirmationDialog, setAddNewBrandConfirmationDialog] = useState(false);
+  const handleOpenAddNewBrandConfirmationDialog = () => {
+    setAddNewBrandConfirmationDialog(true);
+  }
+
+  const handleCloseConfirmationDialog = () =>{
+    setAddNewCategoryConfirmationDialog(false);
+    setAddNewBrandConfirmationDialog(false);
+  }
   const [image, setImage] = useState(null);
   const fileInputRef = useRef(null);
 
@@ -269,6 +287,100 @@ export default function Products() {
     }
   };
 
+  const [CategoryName, setCategoryName] = useState('');
+  const handleConfirmAddNewCategory = async () => {
+    try {
+      setSubmitionLoading(true);
+      const response = await axios.post(
+        import.meta.env.VITE_APP_URL_BASE + `/Category/create`,
+        {
+          Name: CategoryName,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${user?.token}`,
+          },
+        }
+      );
+      if (response.status === 200) {
+        setAlertType(false);
+        setSnackbarMessage(response.data.message);
+        setSnackbarOpen(true);
+        CategoryRefetch();
+        setSubmitionLoading(false);
+        handleCloseConfirmationDialog();
+        setCategoryName('');
+      } else {
+        setAlertType(true);
+        setSnackbarMessage(response.data.message);
+        setSnackbarOpen(true);
+        setSubmitionLoading(false);
+      }
+    } catch (error) {
+      if (error.response) {
+        setAlertType(true);
+        setSnackbarMessage(error.response.data.message);
+        setSnackbarOpen(true);
+        setSubmitionLoading(false);
+      } else if (error.request) {
+        // Request was made but no response was received
+        console.error("Error creating category: No response received");
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        console.error("Error creating category", error);
+      }
+    }
+  };
+  const [BrandName, setBrandName] = useState('');
+  const [BrandCode, setBrandCode] = useState('');
+  const handleConfirmAddNewBrand = async () => {
+    try {
+      setSubmitionLoading(true);
+      const response = await axios.post(
+        import.meta.env.VITE_APP_URL_BASE + `/Brand/create`,
+        {
+          Name: BrandName,
+          Image: 'asdasdsa.jpeg',
+          Code: BrandCode,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${user?.token}`,
+          },
+        }
+      );
+      if (response.status === 200) {
+        setAlertType(false);
+        setSnackbarMessage(response.data.message);
+        setSnackbarOpen(true);
+        BrandRefetch();
+        setSubmitionLoading(false);
+        handleCloseConfirmationDialog();
+        setBrandName('');
+      } else {
+        setAlertType(true);
+        setSnackbarMessage(response.data.message);
+        setSnackbarOpen(true);
+        setSubmitionLoading(false);
+      }
+    } catch (error) {
+      if (error.response) {
+        setAlertType(true);
+        setSnackbarMessage(error.response.data.message);
+        setSnackbarOpen(true);
+        setSubmitionLoading(false);
+      } else if (error.request) {
+        // Request was made but no response was received
+        console.error("Error creating brand: No response received");
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        console.error("Error creating brand");
+      }
+    }
+  };
+
   return (
     <div className="pagesContainer">
       <Header />
@@ -297,6 +409,19 @@ export default function Products() {
             onChange={handleSearchChange}
           />
           <div className="flex space-x-5 items-center">
+            <span>Brand :</span>
+            <div className="selectStoreWilayaCommune w-[300px]">
+              <select name="productCategory" onChange={handelBrandChange}>
+                <option value="">-- Select Product Brand --</option>
+                {BrandData?.map((brand) => (
+                  <option key={brand._id} value={brand._id}>
+                    {brand.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+          <div className="flex space-x-5 items-center">
             <span>Category :</span>
             <div className="selectStoreWilayaCommune w-[300px]">
               <select name="productCategory" onChange={handelCategoryChange}>
@@ -316,6 +441,7 @@ export default function Products() {
             onProductClick={handleSelectProduct}
             data={ProductData}
             selectedCategory={Category}
+            selectedBrand={Brand}
           />
         </div>
       </div>
@@ -497,14 +623,13 @@ export default function Products() {
               <form>
                 <div className="flex-col space-y-8">
                   <div className="dialogAddCustomerItem items-center">
-                    <span>Brand Category :</span>
-                    <div className="selectStoreWilayaCommune w-[500px]">
-                      <select
-                        name="BrandCategory"
-                        // onChange={}
-                      >
-                        <option value="">-- Select Category Brand --</option>
-                      </select>
+                    <span>Code :</span>
+                    <div className="inputForm">
+                      <input
+                        type="text"
+                        name="BrandCode"
+                        onChange={(e)=>setBrandCode(e.target.value)}
+                      />
                     </div>
                   </div>
                   <div className="dialogAddCustomerItem items-center">
@@ -513,7 +638,7 @@ export default function Products() {
                       <input
                         type="text"
                         name="BrandName"
-                        // onChange={}
+                        onChange={(e)=>setBrandName(e.target.value)}
                       />
                     </div>
                   </div>
@@ -529,7 +654,7 @@ export default function Products() {
                     type="button"
                     value={"Save"}
                     className="text-blue-500 cursor-pointer hover:text-blue-700"
-                    // onClick={}
+                    onClick={handleOpenAddNewBrandConfirmationDialog}
                   />
                 </div>
               </form>
@@ -576,7 +701,7 @@ export default function Products() {
                       <input
                         type="text"
                         name="CategoryName"
-                        // onChange={}
+                        onChange={(e)=>setCategoryName(e.target.value)}
                       />
                     </div>
                   </div>
@@ -592,7 +717,7 @@ export default function Products() {
                     type="button"
                     value={"Save"}
                     className="text-blue-500 cursor-pointer hover:text-blue-700"
-                    // onClick={}
+                    onClick={handleOpenAddNewCategoryConfirmationDialog}
                   />
                 </div>
               </form>
@@ -604,6 +729,25 @@ export default function Products() {
           </div>
         )}
       </Modal>
+
+      <ConfirmDialog
+        open={AddNewCategoryConfirmationDialog}
+        onClose={handleCloseConfirmationDialog}
+        onConfirm={handleConfirmAddNewCategory}
+        dialogTitle={"Confirm category creation"}
+        dialogContentText={`Are you sure you want to create new category ?`}
+        isloading={submitionLoading}
+      />
+
+      <ConfirmDialog
+        open={AddNewBrandConfirmationDialog}
+        onClose={handleCloseConfirmationDialog}
+        onConfirm={handleConfirmAddNewBrand}
+        dialogTitle={"Confirm brand creation"}
+        dialogContentText={`Are you sure you want to create new brand ?`}
+        isloading={submitionLoading}
+      />
+
       {/* Snackbar */}
       <Snackbar
         open={snackbarOpen}

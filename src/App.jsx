@@ -2,7 +2,6 @@ import React from "react";
 import "./App.css";
 import { useAuthContext } from "./hooks/useAuthContext";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
-
 import Customers from "./pages/Customers";
 import Products from "./pages/Products";
 import Asidebar from "./components/AsideBar";
@@ -31,7 +30,7 @@ function App() {
             element={user ? <InactiveStore /> : <SignIn />}
           />
           <Route
-            path="/CustomerProfile"
+            path="/CustomerProfile/:id"
             element={user ? <CustomerProfile /> : <SignIn />}
           />
           <Route path="/Settings" element={user ? <Settings /> : <SignIn />} />

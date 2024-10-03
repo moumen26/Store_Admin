@@ -10,14 +10,9 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import { useLocation, useNavigate } from "react-router-dom";
-import { EyeIcon } from "@heroicons/react/24/outline";
-// import { useAuthContext } from "../hooks/useAuthContext";
-// import { TokenDecoder } from "../util/DecodeToken";
-// import CircularProgress from "@mui/material/CircularProgress";
-// import { useQuery } from "@tanstack/react-query";
-// import { formatDate } from "../util/useFullFunctions";
+import moment from "moment";
 import Modal from "react-modal";
+import { formatDate, getCurrentDate } from "../util/useFullFunctions";
 
 // Set the app element for accessibility
 Modal.setAppElement("#root");
@@ -25,17 +20,87 @@ Modal.setAppElement("#root");
 function Row(props) {
   const { row } = props;
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [remainingTime, setRemainingTime] = useState("");
+  
+  const calculateRemainingTime = () => {
+    const currentDate = getCurrentDate();
+    const startDate = moment(row.startDate);
+    const expiryDate = moment(row.expiryDate);
+  
+    const duration = moment.duration(expiryDate.diff(currentDate));
+  
+    // Check if the subscription is expired
+    if (duration.asMilliseconds() <= 0) {
+      const durationE = moment.duration(expiryDate.diff(startDate));
+      const totalMonthsE = Math.floor(durationE.asMonths());
+      const monthsDurationE = moment.duration(totalMonthsE, 'months'); 
+      const remainingDurationE = moment.duration(durationE.asMilliseconds() - monthsDurationE.asMilliseconds()); 
 
-  const handleViewClick = (stockId) => {
-    setSelectedStockId(stockId);
-    setIsModalOpen(true);
+      const remainingDaysE = Math.floor(remainingDurationE.asDays()); 
+  
+      let resultE = "";
+      if (totalMonthsE > 0) {
+        resultE += `${totalMonthsE} month${totalMonthsE > 1 ? 's' : ''}`;
+      }
+  
+      if (remainingDaysE > 0) {
+        resultE += ` ${remainingDaysE} day${remainingDaysE > 1 ? 's' : ''}`;
+      }
+  
+      return resultE.trim();
+    }
+  
+    const totalMonths = Math.floor(duration.asMonths());
+    const monthsDuration = moment.duration(totalMonths, 'months'); 
+    const remainingDuration = moment.duration(duration.asMilliseconds() - monthsDuration.asMilliseconds()); 
+
+    const remainingDays = Math.floor(remainingDuration.asDays()); 
+    const hours = String(duration.hours()).padStart(2, '0');
+    const minutes = String(duration.minutes()).padStart(2, '0');
+    const seconds = String(duration.seconds()).padStart(2, '0');
+
+    let result = "";
+
+    if (totalMonths > 0) {
+      result += `${totalMonths} month${totalMonths > 1 ? 's' : ''}`;
+    }
+
+    if (remainingDays > 0) {
+      result += ` ${remainingDays} day${remainingDays > 1 ? 's' : ''}`;
+    }
+
+    result += ` ${hours}:${minutes}:${seconds}`;
+
+    return result.trim();
   };
 
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-    setSelectedStockId(null);
-  };
+  useEffect(() => {
+    const currentDate = getCurrentDate();
+    const expiryDate = moment(row.expiryDate);
+
+    setRemainingTime(calculateRemainingTime());
+
+    const interval = setInterval(() => {
+      const newDuration = moment.duration(expiryDate.diff(currentDate));
+      if (newDuration.asMilliseconds() <= 0) {
+        setRemainingTime(calculateRemainingTime());
+        clearInterval(interval); 
+      } else {
+        setRemainingTime(calculateRemainingTime()); 
+      }
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [row.startDate, row.expiryDate]);
+
+  const calcTotalAmount = () => {
+    const startDate = moment(row.startDate);
+    const expiryDate = moment(row.expiryDate);
+
+    const months = expiryDate.diff(startDate, 'months', true);
+
+    return row.amount * months;
+  }
 
   return (
     <React.Fragment>
@@ -44,22 +109,35 @@ function Row(props) {
         className="tableRow"
       >
         <TableCell component="th" scope="row" className="tableCell">
-          <span className="trTableSpan"></span>
+          <span className="trTableSpan">
+            {row?.subscription.name}
+          </span>
         </TableCell>
+
         <TableCell className="tableCell">
-          <span className="trTableSpan"></span>
+          <span className="trTableSpan">
+          {formatDate(row?.startDate)}
+          </span>
         </TableCell>
+
         <TableCell className="tableCell">
-          <span className="trTableSpan"></span>
+          <span className="trTableSpan">
+          {formatDate(row?.expiryDate)}
+          </span>
         </TableCell>
-        <TableCell align="right" className="tableCell">
-          <div className="flex justify-end pr-3">
-            <EyeIcon
-              className="h-6 w-6 text-gray-500 cursor-pointer hover:text-gray-700"
-              onClick={handleViewClick}
-            />
-          </div>
+
+        <TableCell className="tableCell">
+          <span className="trTableSpan">
+            {calcTotalAmount()} DA
+          </span>
         </TableCell>
+        
+        <TableCell className="tableCell">
+          <span className="trTableSpan">
+            {remainingTime}
+          </span>
+        </TableCell>
+
       </TableRow>
     </React.Fragment>
   );
@@ -68,6 +146,8 @@ function Row(props) {
 export default function CustomerProfileAbonnementTable({
   searchQuery,
   setFilteredData,
+  data,
+  loading
 }) {
   return (
     <>
@@ -80,36 +160,39 @@ export default function CustomerProfileAbonnementTable({
           <TableHead className="tableHead">
             <TableRow>
               <TableCell className="tableCell">
-                <span className="thTableSpan">Date</span>
-              </TableCell>
-              <TableCell className="tableCell">
-                <span className="thTableSpan">Time</span>
-              </TableCell>
-              <TableCell align="right" className="tableCell">
                 <span className="thTableSpan">Type Abonnement</span>
               </TableCell>
-              <TableCell align="right" className="tableCell">
+              <TableCell className="tableCell">
+                <span className="thTableSpan">Start date</span>
+              </TableCell>
+              <TableCell className="tableCell">
+                <span className="thTableSpan">Expiry date</span>
+              </TableCell>
+              <TableCell className="tableCell">
+                <span className="thTableSpan">Amount</span>
+              </TableCell>
+              <TableCell className="tableCell">
                 <span className="thTableSpan">Durée</span>
               </TableCell>
             </TableRow>
           </TableHead>
-          {/* <TableBody>
-            {PurchasesLoading ? (
+          <TableBody>
+            {loading ? (
               <TableRow>
-                <TableCell colSpan={7} align="center">
+                <TableCell colSpan={4} align="center">
                   <CircularProgress color="inherit" />
                 </TableCell>
               </TableRow>
-            ) : PurchasesData.length > 0 ? (
-              PurchasesData.map((row) => <Row key={row._id} row={row} />)
+            ) : data.length > 0 ? (
+              data.map((row) => <Row key={row._id} row={row} />)
             ) : (
               <TableRow>
-                <TableCell colSpan={7} align="center">
+                <TableCell colSpan={4} align="center">
                   <span className="thTableSpan">No abonnement found</span>
                 </TableCell>
               </TableRow>
             )}
-          </TableBody> */}
+          </TableBody>
         </Table>
       </TableContainer>
     </>

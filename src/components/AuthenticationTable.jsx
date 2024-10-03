@@ -17,6 +17,7 @@ import { useAuthContext } from "../hooks/useAuthContext";
 import { Add } from "@mui/icons-material";
 import axios from "axios";
 import Modal from "react-modal";
+import { useQuery } from "@tanstack/react-query";
 
 // Set the app element for accessibility
 Modal.setAppElement("#root");
@@ -25,10 +26,6 @@ function Row(props) {
   const { row, handleConfirmAlert, handleRefetchDataChange } = props;
   const navigate = useNavigate();
   const { user } = useAuthContext();
-
-  const handleViewClick = () => {
-    navigate(`/CustomerProfile/${row._id}`);
-  };
 
   const [open, setOpen] = useState(false);
   const handleInactiveClick = () => {
@@ -48,6 +45,45 @@ function Row(props) {
     setOpenShowPersonalInfo(false);
   };
 
+
+    //---------------------------------API calls---------------------------------\\
+
+  // Define a function that fetches the store data
+  const fetchStoreData = async () => {
+    const response = await fetch(
+      `${import.meta.env.VITE_APP_URL_BASE}/Store/${row._id}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user?.token}`,
+        },
+      }
+    );
+
+    if (!response.ok) {
+      // Handle the error state
+      const errorData = await response.json();
+      if (errorData.error.statusCode == 404) return {};
+      else throw new Error("Error receiving store data");
+    }
+    // Return the data
+    return await response.json();
+  };
+
+  //Use the useQuery hook to fetch the Store data
+  const {
+    data: StoreData,
+    error: StoreDataError,
+    isLoading: StoreDataLoading,
+    refetch: refetchStoreData,
+  } = useQuery({
+    queryKey: ["StoreData", user?.token, location.key, row._id],
+    queryFn: fetchStoreData,
+    enabled: !!user?.token, // Ensure the query runs only if the user is authenticated
+    refetchOnWindowFocus: true, // Optional: refetching on window focus
+  });
+  
   const [submitionLoading, setSubmitionLoading] = useState(false);
   const handleConfirm = async (subscriptionID, expiryMonths) => {
     try {
@@ -87,6 +123,7 @@ function Row(props) {
       }
     }
   };
+
 
   return (
     <TableRow sx={{ "& > *": { borderBottom: "unset" } }} className="tableRow">
@@ -159,68 +196,88 @@ function Row(props) {
       >
         <div className="customerClass pb-0">
           <h2 className="customerClassTitle">Personal Information</h2>
-          <div className="personalInformation mt-[16px]">
-            <div className="flex-col">
-              <span className="personalInformationSpan">First Name</span>
-              <h3 className="personalInformationDetails">
-                {/* {customer.customerFirstName} */}
-              </h3>
+          {!StoreDataLoading ?
+            <div className="personalInformation">
+              {StoreData?.firstName && (
+                <div className="flex-col">
+                  <span className="personalInformationSpan">First Name</span>
+                  <h3 className="personalInformationDetails">{StoreData.firstName}</h3>
+                </div>
+              )}
+              
+              {StoreData?.lastName && (
+                <div className="flex-col">
+                  <span className="personalInformationSpan">Last Name</span>
+                  <h3 className="personalInformationDetails">{StoreData.lastName}</h3>
+                </div>
+              )}
+              
+              {StoreData?.phoneNumber && (
+                <div className="flex-col">
+                  <span className="personalInformationSpan">Number Phone</span>
+                  <h3 className="personalInformationDetails">{StoreData.phoneNumber}</h3>
+                </div>
+              )}
+              
+              {StoreData?.email && (
+                <div className="flex-col">
+                  <span className="personalInformationSpan">Email Address</span>
+                  <h3 className="personalInformationDetails">{StoreData.email}</h3>
+                </div>
+              )}
+              
+              {StoreData?.r_commerce && (
+                <div className="flex-col">
+                  <span className="personalInformationSpan">Commercial register number</span>
+                  <h3 className="personalInformationDetails">{StoreData.r_commerce}</h3>
+                </div>
+              )}
+              
+              {StoreData?.wilaya && (
+                <div className="flex-col">
+                  <span className="personalInformationSpan">Wilaya</span>
+                  <h3 className="personalInformationDetails">{StoreData.wilaya}</h3>
+                </div>
+              )}
+              
+              {StoreData?.commune && (
+                <div className="flex-col">
+                  <span className="personalInformationSpan">Commune</span>
+                  <h3 className="personalInformationDetails">{StoreData.commune}</h3>
+                </div>
+              )}
+              
+              {StoreData?.storeAddress && (
+                <div 
+                  className="flex-col" 
+                  style={{ cursor: 'pointer' }} 
+                  onClick={() => Redirect(StoreData.storeLocation)}
+                >
+                  <span className="personalInformationSpan">Address</span>
+                  <h3 className="personalInformationDetails">{StoreData.storeAddress}</h3>
+                </div>
+              )}
+              
+              {StoreData?.storeName && (
+                <div className="flex-col">
+                  <span className="personalInformationSpan">Store name</span>
+                  <h3 className="personalInformationDetails">{StoreData.storeName}</h3>
+                </div>
+              )}
+              
+              {StoreData?.status && (
+                <div className="flex-col">
+                  <span className="personalInformationSpan">Status</span>
+                  <h3 className="personalInformationDetails">{StoreData.status}</h3>
+                </div>
+              )}
+              
             </div>
-            <div className="flex-col">
-              <span className="personalInformationSpan">Last Name</span>
-              <h3 className="personalInformationDetails">
-                {/* {customer.customerLastName} */}
-              </h3>
+            :
+            <div className="w-full h-full flex items-center justify-center">
+              <CircularProgress color="inherit" />
             </div>
-            <div className="flex-col">
-              <span className="personalInformationSpan">Number Phone</span>
-              <h3 className="personalInformationDetails">
-                {/* {customer.customerPhone} */}
-              </h3>
-            </div>
-            <div className="flex-col">
-              <span className="personalInformationSpan">Email Address</span>
-              <h3 className="personalInformationDetails">
-                {/* {customer.customerEmail} */}
-              </h3>
-            </div>
-            <div className="flex-col">
-              <span className="personalInformationSpan">Wilaya</span>
-              <h3 className="personalInformationDetails">
-                {/* {customer.customerWilaya} */}
-              </h3>
-            </div>
-            <div className="flex-col">
-              <span className="personalInformationSpan">Commune</span>
-              <h3 className="personalInformationDetails">
-                {/* {customer.customerCommune} */}
-              </h3>
-            </div>
-            <div className="flex-col">
-              <span className="personalInformationSpan">Postcode</span>
-              <h3 className="personalInformationDetails">
-                {/* {customer.customerPostcode} */}
-              </h3>
-            </div>
-            <div className="flex-col">
-              <span className="personalInformationSpan">Address</span>
-              <h3 className="personalInformationDetails">
-                {/* {customer.customerAddress} */}
-              </h3>
-            </div>
-            <div className="flex-col">
-              <span className="personalInformationSpan">ID</span>
-              <h3 className="personalInformationDetails">
-                {/* {customer.customerId} */}
-              </h3>
-            </div>
-            <div className="flex-col">
-              <span className="personalInformationSpan">
-                Commercial register number
-              </span>
-              <h3 className="personalInformationDetails"></h3>
-            </div>
-          </div>
+          }
           <div className="flex justify-end space-x-8 mt-[20px]">
             <button
               className="text-gray-500 cursor-pointer hover:text-gray-700"

@@ -10,6 +10,7 @@ export default function ProductsContainer({
   onSelectProduct,
   data,
   selectedCategory,
+  selectedBrand
 }) {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -43,7 +44,9 @@ export default function ProductsContainer({
                   ?.toLowerCase()
                   .includes(searchQuery.toLowerCase())) &&
               (selectedCategory == "" ||
-                product.category?._id == selectedCategory)
+                product.category?._id == selectedCategory) &&
+                (selectedBrand == "" ||
+                  product.brand?._id == selectedBrand)
           )
           .map((product) => (
             <ProductCard

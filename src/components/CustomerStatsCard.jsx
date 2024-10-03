@@ -26,7 +26,7 @@ export default function CustomerStatsCard({
       spanComponent = "";
       break;
     case "Total Amount":
-      spanComponent = "DA ";
+      spanComponent = " DA";
       break;
     default:
       spanComponent = <BanknotesIcon className="iconPages" />;
@@ -43,8 +43,8 @@ export default function CustomerStatsCard({
         </div>
       </div>
       <span className="dashboardCardAmount">
-        {spanComponent}
         {customerStatsCardDetails}
+        {spanComponent}
       </span>
     </div>
   );
