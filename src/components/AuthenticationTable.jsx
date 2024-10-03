@@ -16,6 +16,10 @@ import { CircularProgress } from "@mui/material";
 import { useAuthContext } from "../hooks/useAuthContext";
 import { Add } from "@mui/icons-material";
 import axios from "axios";
+import Modal from "react-modal";
+
+// Set the app element for accessibility
+Modal.setAppElement("#root");
 
 function Row(props) {
   const { row, handleConfirmAlert, handleRefetchDataChange } = props;
@@ -33,6 +37,15 @@ function Row(props) {
 
   const handleClose = () => {
     setOpen(false);
+  };
+
+  const [openShowPersonalInfo, setOpenShowPersonalInfo] = useState(false);
+  const handleOpenPersonalInfoModal = () => {
+    setOpenShowPersonalInfo(true);
+  };
+
+  const handleClosePersonalInfoModal = () => {
+    setOpenShowPersonalInfo(false);
   };
 
   const [submitionLoading, setSubmitionLoading] = useState(false);
@@ -89,13 +102,13 @@ function Row(props) {
       <TableCell className="tableCell">
         <span className="trTableSpan">{row.wilaya}</span>
       </TableCell>
-      <TableCell align="right" className="tableCell">
+      <TableCell className="tableCell">
         <span className="trTableSpan">{row.commune}</span>
       </TableCell>
-      <TableCell align="right" className="tableCell">
+      <TableCell className="tableCell">
         <span className="trTableSpan">{row.storeAddress}</span>
       </TableCell>
-      <TableCell align="right" className="tableCell">
+      <TableCell className="tableCell">
         <span className="trTableSpan">{row.storeName}</span>
       </TableCell>
       <TableCell className="tableCell">
@@ -109,7 +122,7 @@ function Row(props) {
         <div className="flex justify-end pr-3">
           <EyeIcon
             className="h-6 w-6 text-gray-500 cursor-pointer hover:text-gray-700"
-            onClick={handleViewClick}
+            onClick={handleOpenPersonalInfoModal}
           />
         </div>
       </TableCell>
@@ -122,6 +135,102 @@ function Row(props) {
         dialogContentText="Are you sure you want to add a new subscription?"
         isloading={submitionLoading}
       />
+
+      <Modal
+        isOpen={openShowPersonalInfo}
+        onRequestClose={handleClosePersonalInfoModal}
+        contentLabel="Show Personal Information"
+        style={{
+          overlay: {
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+            zIndex: 1000,
+          },
+          content: {
+            border: "none",
+            borderRadius: "8px",
+            padding: "20px",
+            maxWidth: "80%",
+            margin: "auto",
+            height: "fit-content",
+            zIndex: 1001,
+            overflowY: "auto",
+          },
+        }}
+      >
+        <div className="customerClass pb-0">
+          <h2 className="customerClassTitle">Personal Information</h2>
+          <div className="personalInformation mt-[16px]">
+            <div className="flex-col">
+              <span className="personalInformationSpan">First Name</span>
+              <h3 className="personalInformationDetails">
+                {/* {customer.customerFirstName} */}
+              </h3>
+            </div>
+            <div className="flex-col">
+              <span className="personalInformationSpan">Last Name</span>
+              <h3 className="personalInformationDetails">
+                {/* {customer.customerLastName} */}
+              </h3>
+            </div>
+            <div className="flex-col">
+              <span className="personalInformationSpan">Number Phone</span>
+              <h3 className="personalInformationDetails">
+                {/* {customer.customerPhone} */}
+              </h3>
+            </div>
+            <div className="flex-col">
+              <span className="personalInformationSpan">Email Address</span>
+              <h3 className="personalInformationDetails">
+                {/* {customer.customerEmail} */}
+              </h3>
+            </div>
+            <div className="flex-col">
+              <span className="personalInformationSpan">Wilaya</span>
+              <h3 className="personalInformationDetails">
+                {/* {customer.customerWilaya} */}
+              </h3>
+            </div>
+            <div className="flex-col">
+              <span className="personalInformationSpan">Commune</span>
+              <h3 className="personalInformationDetails">
+                {/* {customer.customerCommune} */}
+              </h3>
+            </div>
+            <div className="flex-col">
+              <span className="personalInformationSpan">Postcode</span>
+              <h3 className="personalInformationDetails">
+                {/* {customer.customerPostcode} */}
+              </h3>
+            </div>
+            <div className="flex-col">
+              <span className="personalInformationSpan">Address</span>
+              <h3 className="personalInformationDetails">
+                {/* {customer.customerAddress} */}
+              </h3>
+            </div>
+            <div className="flex-col">
+              <span className="personalInformationSpan">ID</span>
+              <h3 className="personalInformationDetails">
+                {/* {customer.customerId} */}
+              </h3>
+            </div>
+            <div className="flex-col">
+              <span className="personalInformationSpan">
+                Commercial register number
+              </span>
+              <h3 className="personalInformationDetails"></h3>
+            </div>
+          </div>
+          <div className="flex justify-end space-x-8 mt-[20px]">
+            <button
+              className="text-gray-500 cursor-pointer hover:text-gray-700"
+              onClick={handleClosePersonalInfoModal}
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      </Modal>
     </TableRow>
   );
 }
@@ -129,7 +238,13 @@ function Row(props) {
 Row.propTypes = {
   row: PropTypes.object.isRequired,
 };
-export default function CustomerTable({ searchQuery, setFilteredData, data, isLoading = false, handleRefetchDataChange }) {
+export default function CustomerTable({
+  searchQuery,
+  setFilteredData,
+  data,
+  isLoading = false,
+  handleRefetchDataChange,
+}) {
   const [filteredRows, setFilteredRows] = useState([]);
 
   useEffect(() => {
@@ -141,7 +256,7 @@ export default function CustomerTable({ searchQuery, setFilteredData, data, isLo
           row?.customerId?.toLowerCase().includes(searchQuery.toLowerCase()) ||
           row?.phoneNumber?.toLowerCase().includes(searchQuery.toLowerCase()) ||
           row?.wilaya?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          row?.commune?.toLowerCase().includes(searchQuery.toLowerCase()) || 
+          row?.commune?.toLowerCase().includes(searchQuery.toLowerCase()) ||
           row?.storeName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
           row?.storeAddress?.toLowerCase().includes(searchQuery.toLowerCase())
       )
@@ -158,7 +273,6 @@ export default function CustomerTable({ searchQuery, setFilteredData, data, isLo
     setSnackbarMessage(message);
     setSnackbarOpen(true);
   };
-
 
   return (
     <TableContainer
@@ -196,28 +310,28 @@ export default function CustomerTable({ searchQuery, setFilteredData, data, isLo
           </TableRow>
         </TableHead>
         <TableBody>
-        {isLoading ? 
+          {isLoading ? (
             <TableRow>
               <TableCell colSpan={8} align="center">
                 <CircularProgress />
               </TableCell>
             </TableRow>
-            :
-              filteredRows?.length > 0 ? (
-                filteredRows.map((row) => <Row 
-                  key={row._id} 
-                  row={row} 
-                  handleConfirmAlert={handleConfirmAlert}
-                  handleRefetchDataChange={handleRefetchDataChange}
-                />)
-              ) : (
-                <TableRow>
-                  <TableCell colSpan={8} align="center">
-                    <span className="thTableSpan">No store found</span>
-                  </TableCell>
-                </TableRow>
-              )
-          }
+          ) : filteredRows?.length > 0 ? (
+            filteredRows.map((row) => (
+              <Row
+                key={row._id}
+                row={row}
+                handleConfirmAlert={handleConfirmAlert}
+                handleRefetchDataChange={handleRefetchDataChange}
+              />
+            ))
+          ) : (
+            <TableRow>
+              <TableCell colSpan={8} align="center">
+                <span className="thTableSpan">No store found</span>
+              </TableCell>
+            </TableRow>
+          )}
         </TableBody>
       </Table>
       <Snackbar
@@ -234,6 +348,5 @@ export default function CustomerTable({ searchQuery, setFilteredData, data, isLo
         </Alert>
       </Snackbar>
     </TableContainer>
-    
   );
 }

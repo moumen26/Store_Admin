@@ -1,15 +1,13 @@
 import * as React from "react";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
-import Button from "@mui/material/Button";
 import PropTypes from "prop-types";
 import { CircularProgress } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import { useLocation } from "react-router-dom";
 import { useAuthContext } from "../hooks/useAuthContext";
+import Modal from "react-modal";
+
+// Set the app element for accessibility
+Modal.setAppElement("#root");
 
 function AddSubscriptionDialog({
   open,
@@ -67,22 +65,35 @@ function AddSubscriptionDialog({
   });
 
   return (
-    <Dialog
-      open={open}
-      onClose={onClose}
-      aria-labelledby="alert-dialog-title"
-      aria-describedby="alert-dialog-description"
+    <Modal
+      isOpen={open}
+      onRequestClose={onClose}
+      contentLabel="Add New Subscriptions"
+      style={{
+        overlay: {
+          backgroundColor: "rgba(0, 0, 0, 0.5)",
+          zIndex: 1000,
+        },
+        content: {
+          border: "none",
+          borderRadius: "8px",
+          padding: "20px",
+          maxWidth: "40%",
+          margin: "auto",
+          height: "fit-content",
+          zIndex: 1001,
+          overflowY: "auto",
+        },
+      }}
     >
       {!isloading ? (
-        <>
-          <DialogTitle id="alert-dialog-title">
-            <h2 className="customerClassTitle">{dialogTitle}</h2>
-          </DialogTitle>
-          <DialogContent>
+        <div className="customerClass pb-0">
+          <h2 className="dialogTitle">{dialogTitle}</h2>
+          <div className="mt-[16px]">
             <div className="flex-col space-y-8">
-              <div className="flex space-x-5 items-center">
+              <div className="dialogAddCustomerItem items-center">
                 <span>Subscription:</span>
-                <div className="selectStoreWilayaCommune w-[300px]">
+                <div className="selectStoreWilayaCommune w-[500px]">
                   <select
                     name="productCategory"
                     onChange={handelSubscriptionChange}
@@ -109,11 +120,11 @@ function AddSubscriptionDialog({
                 </div>
               </div>
             </div>
-            <DialogContentText id="alert-dialog-description">
+            <div className="mt-[20px]">
               <span className="trTableSpan">{dialogContentText}</span>
-            </DialogContentText>
-          </DialogContent>
-          <div className="flex justify-end space-x-8 pr-8 items-start h-[40px] mt-2">
+            </div>
+          </div>
+          <div className="flex justify-end space-x-8 mt-[20px]">
             <button
               onClick={onClose}
               className="text-gray-500 cursor-pointer hover:text-gray-700"
@@ -122,28 +133,22 @@ function AddSubscriptionDialog({
             </button>
             <button
               onClick={() => onConfirm(subscriptionId, expiryMonths)}
-              className="text-red-500 cursor-pointer hover:text-red-700"
+              className="text-blue-500 cursor-pointer hover:text-bluz-700"
             >
               Confirm
             </button>
           </div>
-        </>
+        </div>
       ) : (
         <>
-          <DialogTitle id="alert-dialog-title">
-            <h2 className="customerClassTitle">{dialogTitle}</h2>
-          </DialogTitle>
-          <DialogContent>
-            <DialogContentText id="alert-dialog-description">
-              <span className="trTableSpan">{dialogContentText}</span>
-            </DialogContentText>
-          </DialogContent>
+          <h2 className="customerClassTitle">{dialogTitle}</h2>
+          <span className="trTableSpan">{dialogContentText}</span>
           <div className="flex justify-end space-x-8 pr-8 items-start h-[60px] mt-2">
             <CircularProgress />
           </div>
         </>
       )}
-    </Dialog>
+    </Modal>
   );
 }
 
