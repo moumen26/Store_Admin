@@ -129,6 +129,28 @@
   padding: 0 16px;
 }
 
+.ProductModal .inputForm {
+  padding: 0;
+  width: 300px;
+  height: 30px;
+}
+
+.ProductModal .thTableSpan {
+  width: 140px;
+}
+
+.ProductModal .inputForm select {
+  width: 100%;
+  height: 100%;
+  outline: none;
+  padding: 0 16px;
+}
+
+.ProductModal .inputForm select,
+.ProductModal .inputForm input {
+  font-size: 14px;
+}
+
 .selectOptionWilaya {
   width: 400px;
   height: 50px;
@@ -840,7 +862,7 @@ aside ul {
   width: 100%;
   height: fit-content;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap: 16px;
 }
 
