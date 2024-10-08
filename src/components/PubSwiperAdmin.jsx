@@ -12,6 +12,8 @@ import Pub2 from "../assets/Photos/Pub2.png";
 
 // import required modules
 import { FreeMode, Pagination } from "swiper/modules";
+import { XMarkIcon } from "@heroicons/react/24/outline";
+import ConfirmDialog from "./ConfirmDialog";
 
 const DataPub = [
   {
@@ -34,30 +36,40 @@ const DataPub = [
     name: "Pub 2",
     image: Pub2,
   },
-  {
-    id: 2,
-    name: "Pub 2",
-    image: Pub2,
-  },
 ];
 
 export default function PubSwiperAdmin() {
+  const [DeletePub, setDeletePub] = useState(false);
+  const handleOpenDeletePub = () => {
+    setDeletePub(true);
+  };
+  const handleCloseDeletePub = () => {
+    setDeletePub(false);
+  };
   return (
     <>
       <Swiper
-        slidesPerView={4}
+        slidesPerView={3}
         spaceBetween={20}
-       
         modules={[FreeMode, Pagination]}
         className="pubSwiper"
       >
         {DataPub.map((pub) => (
-          <SwiperSlide key={pub.id} className="swiperSlide relative">
-            
+          <SwiperSlide key={pub.id} className="swiperSlide">
+            <XMarkIcon
+              className="h-6 w-6 trashIcon text-red-500 cursor-pointer hover:text-red-700"
+              onClick={handleOpenDeletePub}
+            />
             <img src={pub.image} alt={pub.name} />
           </SwiperSlide>
         ))}
       </Swiper>
+      <ConfirmDialog
+        open={DeletePub}
+        onClose={handleCloseDeletePub}
+        dialogTitle={"Confirm Publicité Deletion"}
+        dialogContentText={`Are you sure you want to delete this publicité?`}
+      />
     </>
   );
 }

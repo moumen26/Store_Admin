@@ -1245,12 +1245,17 @@ aside ul {
 }
 
 .swiperSlide img {
+  position: absolute;
+  top: 0;
+  right: 0;
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  object-fit: fill;
+  z-index: 0;
 }
 
 .trashIcon {
+  z-index: 1;
   position: absolute;
   top: 16px;
   right: 16px;

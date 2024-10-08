@@ -26,7 +26,16 @@ const DataPub = [
     name: "Pub 2",
     image: Pub2,
   },
-
+  {
+    id: 2,
+    name: "Pub 2",
+    image: Pub2,
+  },
+  {
+    id: 2,
+    name: "Pub 2",
+    image: Pub2,
+  },
 ];
 
 export default function PubSwiperStoreProfile() {
