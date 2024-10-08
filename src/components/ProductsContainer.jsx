@@ -4,6 +4,7 @@ import Modal from "react-modal";
 import {
   CheckIcon,
   PencilIcon,
+  PhotoIcon,
   TrashIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
@@ -194,10 +195,14 @@ export default function ProductsContainer({
             {isEditing ? (
               isImageRemoved || !selectedProduct.image ? (
                 <div
-                  className="w-full h-[300px] flex justify-center items-center border-dashed border-2 border-gray-400 cursor-pointer"
+                  className="w-full h-[300px] flex justify-center items-center border-dashed border-[2px] border-gray-400 cursor-pointer"
                   onClick={openFileInput}
                 >
-                  <span className="text-gray-500">Import Image</span>
+                  <p className="uploadSpan">
+                    <span className="text-blue-600">Click to upload </span>
+                    or drag and drop SVG, PNG, JPG
+                  </p>
+
                   <input
                     id="imageUploadInput"
                     type="file"

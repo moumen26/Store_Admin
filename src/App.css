@@ -144,6 +144,7 @@
   height: 100%;
   outline: none;
   padding: 0 16px;
+  border-radius: 5px;
 }
 
 .ProductModal .inputForm select,
@@ -347,6 +348,10 @@ aside ul {
   display: flex;
   flex-direction: column;
   gap: 32px;
+}
+
+.pubContainer{
+  gap: 20px;
 }
 
 .settingsContainer {
@@ -1232,4 +1237,15 @@ aside ul {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.pubSwiper {
+  width: 100%;
+  height: 220px;
+}
+
+.swiperSlide img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }

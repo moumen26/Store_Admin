@@ -13,6 +13,7 @@ import VerifyCode from "./pages/VerifyCode";
 import SignIn from "./pages/SignIn";
 import CustomerProfile from "./pages/CustomerProfile";
 import InactiveStore from "./pages/InactiveStore";
+import Publicité from "./pages/Publicité";
 
 function App() {
   const { user } = useAuthContext();
@@ -35,6 +36,10 @@ function App() {
           />
           <Route path="/Settings" element={user ? <Settings /> : <SignIn />} />
           <Route path="/Losses" element={user ? <Losses /> : <SignIn />} />
+          <Route
+            path="/Publicite"
+            element={user ? <Publicité /> : <SignIn />}
+          />
           <Route
             path="/Customers"
             element={user ? <Customers /> : <SignIn />}

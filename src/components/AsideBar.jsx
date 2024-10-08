@@ -12,7 +12,7 @@ import {
   UserGroupIcon,
   UserIcon,
   UserPlusIcon,
-  UsersIcon,
+  DevicePhoneMobileIcon,
 } from "@heroicons/react/16/solid";
 import React, { useEffect, useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
@@ -102,7 +102,18 @@ export default function Asidebar() {
             </div>
           </NavLink>
         </li>
-
+        <li>
+          <NavLink to="/Publicite" className=" flex items-center">
+            <div
+              className={`flex items-center itemAsideBar AuthenticationItemAsideBar  ${
+                location.pathname === "/Publicite" ? "asideItemActive" : ""
+              }`}
+            >
+              <DevicePhoneMobileIcon className="iconAsideBar" />
+              <span className="ml-3">Publicité</span>
+            </div>
+          </NavLink>
+        </li>
         <li>
           <NavLink to="/Settings" className=" flex items-center">
             <div

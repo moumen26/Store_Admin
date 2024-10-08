@@ -7,11 +7,13 @@ import OrderCard from "../components/OrderCard";
 import LossesTable from "../components/LossesTable";
 import ButtonAdd from "../components/ButtonAdd";
 import Modal from "react-modal";
+import PublicitéTable from "../components/PublicitéTable";
+import PubSwiper from "../components/PubSwiper";
 
 // Ensure you set the root element for accessibility
 Modal.setAppElement("#root");
 
-export default function Losses() {
+export default function Publicité() {
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredData, setFilteredData] = useState([]);
 
@@ -37,47 +39,55 @@ export default function Losses() {
     // Fetch or filter data based on date range and update dashboard content
   };
 
-  const [openModelAddLoss, setOpenModelAddLoss] = useState(false);
+  const [openModelAddPub, setOpenModelAddPub] = useState(false);
 
-  const handleOpenModalAddLoss = () => {
-    setOpenModelAddLoss(true);
+  const handleOpenModalAddPub = () => {
+    setOpenModelAddPub(true);
   };
 
   const handleCloseModalAddLoss = () => {
-    setOpenModelAddLoss(false);
+    setOpenModelAddPub(false);
+  };
+
+  const [uploadedImage, setUploadedImage] = useState(null);
+
+  const handleImageUpload = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      setUploadedImage(URL.createObjectURL(file)); // Store the preview URL of the image
+    }
+  };
+
+  const openFileInput = () => {
+    document.getElementById("imageUploadInput").click(); // Trigger the file input dialog
   };
 
   return (
-    <div className="pagesContainer">
+    <div className="pagesContainer pubContainer">
       <Header />
       <div className="w-full flex items-center justify-between">
-        <h2 className="pagesTitle">Losses</h2>
-        <DashboardCalendar
-          onDateChange={(start, end) =>
-            setDateRange({ startDate: start, endDate: end })
-          }
+        <h2 className="pagesTitle">Publicité</h2>
+        <ButtonAdd
+          buttonSpan="Add a Publicité"
+          onClick={handleOpenModalAddPub}
         />
       </div>
-      <div className="flex items-center space-x-6">
-        <OrderCard orderCardTitle="Total Losses" orderCardDetails={0} />
-      </div>
+
+      <PubSwiper />
+
       <div className="pageTable ordersTable">
         <div className="w-full flex items-center justify-between">
           <Search
-            placeholder="Search by Loss..."
+            placeholder="Search by Publicité..."
             value={searchQuery}
             onChange={handleSearchChange}
           />
           <div className="flex space-x-2">
-            <ButtonExportExcel data={filteredData} filename="Losses" />
-            <ButtonAdd
-              buttonSpan="Add a Loss"
-              onClick={handleOpenModalAddLoss}
-            />
+            <ButtonExportExcel data={filteredData} filename="Publicité" />
             <Modal
-              isOpen={openModelAddLoss}
+              isOpen={openModelAddPub}
               onRequestClose={handleCloseModalAddLoss}
-              contentLabel="Add new Loss"
+              contentLabel="Add new Publicité"
               style={{
                 overlay: {
                   backgroundColor: "rgba(0, 0, 0, 0.5)",
@@ -94,41 +104,38 @@ export default function Losses() {
                 },
               }}
             >
-              <div className="customerClass pb-0">
-                <h2 className="customerClassTitle">Add New Loss</h2>
-                <div className="flex-col space-y-4">
-                  <div className="flex justify-end items-center space-x-4">
-                    <span>Loss :</span>
-                    <div className="inputForm pl-0">
-                      <input
-                        type="text"
-                        name="newLoss"
-                        // onChange={}
+              <div className="customerClasss">
+                <h2 className="customerClassTitle">Add New Publicité</h2>
+
+                {/* Image Upload Section */}
+                <div className="mt-[20px]">
+                  <div
+                    className="w-full h-[300px] flex justify-center items-center border-dashed border-[2px] border-gray-400 cursor-pointer"
+                    onClick={openFileInput}
+                  >
+                    {uploadedImage ? (
+                      <img
+                        src={uploadedImage}
+                        alt="Uploaded"
+                        className="w-full h-full object-contain"
                       />
-                    </div>
-                  </div>
-                  <div className="flex justify-end items-center space-x-4">
-                    <span>Amount :</span>
-                    <div className="inputForm pl-0">
-                      <input
-                        type="text"
-                        name="lossAmount"
-                        // onChange={}
-                      />
-                    </div>
-                  </div>
-                  <div className="flex justify-end items-center space-x-4">
-                    <span>Cause :</span>
-                    <div className="inputForm pl-0">
-                      <input
-                        type="text"
-                        name="lossCause"
-                        // onChange={}
-                      />
-                    </div>
+                    ) : (
+                      <p className="uploadSpan">
+                        <span className="text-blue-600">Click to upload </span>
+                        or drag and drop SVG, PNG, JPG
+                      </p>
+                    )}
+
+                    <input
+                      id="imageUploadInput"
+                      type="file"
+                      style={{ display: "none" }}
+                      onChange={handleImageUpload}
+                    />
                   </div>
                 </div>
 
+                {/* Save and Cancel Buttons */}
                 <div className="flex justify-end space-x-8 items-start mt-[20px]">
                   <button
                     className="text-gray-500 cursor-pointer hover:text-gray-700"
@@ -138,7 +145,7 @@ export default function Losses() {
                   </button>
                   <button
                     className="text-blue-500 cursor-pointer hover:text-blue-700"
-                    // onClick={handleAddItem}
+                    // Add your logic to handle saving the image or data here
                   >
                     Save
                   </button>
@@ -148,7 +155,7 @@ export default function Losses() {
           </div>
         </div>
         <div className="pageTableContainer">
-          <LossesTable
+          <PublicitéTable
             searchQuery={searchQuery}
             setFilteredData={setFilteredData}
           />
