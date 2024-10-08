@@ -350,7 +350,7 @@ aside ul {
   gap: 32px;
 }
 
-.pubContainer{
+.pubContainer {
   gap: 20px;
 }
 
@@ -1248,4 +1248,17 @@ aside ul {
   width: 100%;
   height: 100%;
   object-fit: contain;
+}
+
+.trashIcon {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  cursor: pointer;
+  opacity: 0;
+}
+
+.swiperSlide:hover .trashIcon {
+  opacity: 1;
+  transition: all 0.5s ease-in-out;
 }

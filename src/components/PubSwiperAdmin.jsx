@@ -41,7 +41,7 @@ const DataPub = [
   },
 ];
 
-export default function PubSwiper() {
+export default function PubSwiperAdmin() {
   return (
     <>
       <Swiper
@@ -52,7 +52,8 @@ export default function PubSwiper() {
         className="pubSwiper"
       >
         {DataPub.map((pub) => (
-          <SwiperSlide key={pub.id} className="swiperSlide">
+          <SwiperSlide key={pub.id} className="swiperSlide relative">
+            
             <img src={pub.image} alt={pub.name} />
           </SwiperSlide>
         ))}

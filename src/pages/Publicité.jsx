@@ -8,7 +8,7 @@ import LossesTable from "../components/LossesTable";
 import ButtonAdd from "../components/ButtonAdd";
 import Modal from "react-modal";
 import PublicitéTable from "../components/PublicitéTable";
-import PubSwiper from "../components/PubSwiper";
+import PubSwiperAdmin from "../components/PubSwiperAdmin";
 
 // Ensure you set the root element for accessibility
 Modal.setAppElement("#root");
@@ -42,6 +42,7 @@ export default function Publicité() {
   const [openModelAddPub, setOpenModelAddPub] = useState(false);
 
   const handleOpenModalAddPub = () => {
+
     setOpenModelAddPub(true);
   };
 
@@ -73,7 +74,7 @@ export default function Publicité() {
         />
       </div>
 
-      <PubSwiper />
+      <PubSwiperAdmin />
 
       <div className="pageTable ordersTable">
         <div className="w-full flex items-center justify-between">
