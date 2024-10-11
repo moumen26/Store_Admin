@@ -9,6 +9,9 @@ import {
   XMarkIcon,
 } from "@heroicons/react/24/outline";
 import ConfirmDialog from "./ConfirmDialog";
+import axios from "axios";
+import { useAuthContext } from "../hooks/useAuthContext";
+import { Alert, Snackbar } from "@mui/material";
 
 // Set the app element for accessibility
 Modal.setAppElement("#root"); // or the ID of your root element
@@ -17,34 +20,44 @@ export default function ProductsContainer({
   searchQuery,
   onSelectProduct,
   data,
+  CategoryData,
   selectedCategory,
+  BrandData,
   selectedBrand,
+  ProductRefetch,
 }) {
+  const { user } = useAuthContext();
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [DeleteProduct, setDeleteProduct] = useState(false);
   const [ConfirmModalProduct, setConfirmModalProduct] = useState(false);
-  const [isImageRemoved, setIsImageRemoved] = useState(false); // State for image removal
-  const [uploadedImage, setUploadedImage] = useState(null); // State for the uploaded image
-  const [editFields, setEditFields] = useState({
-    name: "",
-    brand: "",
-    boxItems: "",
-    size: "",
-    category: "",
-  });
+  const [isImageRemoved, setIsImageRemoved] = useState(false);
+  const [uploadedImage, setUploadedImage] = useState(null); 
+  const [Name, setName] = useState("");
+  const [Size, setSize] = useState("");
+  const [Category, setCategory] = useState("");
+  const [Brand, setBrand] = useState("");
+  const [BoxItems, setBoxItems] = useState("");
+
+  const handleNameInputChange = (e) => {
+    setName(e.target.value);
+  };
+  const handleSizeInputChange = (e) => {
+    setSize(e.target.value);
+  };
+  const handleBoxItemsInputChange = (e) => {
+    setBoxItems(e.target.value);
+  };
+  const handleCategoryInputChange = (e) => {
+    setCategory(e.target.value);
+  };
+  const handleBrandInputChange = (e) => {
+    setBrand(e.target.value);
+  };
 
   const handleSelectProduct = (product) => {
     setSelectedProduct(product);
-    setEditFields({
-      name: product.name,
-      code: product.code,
-      brand: product.brand?.name,
-      boxItems: product.boxItems,
-      size: product.size,
-      category: product.category?.name,
-    });
     setIsModalOpen(true);
     setIsImageRemoved(false); 
     setUploadedImage(null); 
@@ -79,29 +92,129 @@ export default function ProductsContainer({
     setIsEditing(!isEditing);
   };
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setEditFields({
-      ...editFields,
-      [name]: value,
-    });
-  };
-
   const handleImageRemove = () => {
-    setIsImageRemoved(true); // Remove image when clicking X
-    setUploadedImage(null); // Clear uploaded image if any
+    setIsImageRemoved(true); 
+    setUploadedImage(null); 
   };
 
   const handleImageUpload = (event) => {
     const file = event.target.files[0];
-    if (file) {
-      setUploadedImage(URL.createObjectURL(file)); // Preview the uploaded image
-      setIsImageRemoved(false); // Reset image removal when a new image is uploaded
+    if (file && file.type.startsWith("image/")) {
+      setUploadedImage(file);
+      setIsImageRemoved(false);
     }
   };
 
   const openFileInput = () => {
-    document.getElementById("imageUploadInput").click(); // Trigger the file input dialog
+    document.getElementById("imageUploadInput").click();
+  };
+
+  const clearUpdatedForm = () => {
+    setName("");
+    setSize("");
+    setCategory("");
+    setBrand("");
+    setBoxItems("");
+    setUploadedImage(null);
+  };
+
+  const [submitionLoading, setSubmitionLoading] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [alertType, setAlertType] = useState(true);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+
+  const handleDeleteProduct = async () => {
+    try {
+      setSubmitionLoading(true);
+      const response = await axios.delete(
+        import.meta.env.VITE_APP_URL_BASE + `/Product/${selectedProduct._id}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${user?.token}`,
+          },
+        }
+      );
+      if (response.status === 200) {
+        setAlertType(false);
+        setSnackbarMessage(response.data.message);
+        setSnackbarOpen(true);
+        ProductRefetch();
+        setSubmitionLoading(false);
+        handleCloseDeleteProduct();
+        handleCloseModal();
+      } else {
+        setAlertType(true);
+        setSnackbarMessage(response.data.message);
+        setSnackbarOpen(true);
+        setSubmitionLoading(false);
+      }
+    } catch (error) {
+      if (error.response) {
+        setAlertType(true);
+        setSnackbarMessage(error.response.data.message);
+        setSnackbarOpen(true);
+        setSubmitionLoading(false);
+      } else if (error.request) {
+        // Request was made but no response was received
+        console.error("Error deleting Product: No response received");
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        console.error("Error deleting Product");
+      }
+    }
+  };
+
+  const handleUpdateProduct = async () => {
+    try {
+      setSubmitionLoading(true);
+      const formData = new FormData();
+      formData.append("file", uploadedImage);
+      formData.append("Name", Name);
+      formData.append("Category", Category);
+      formData.append("Size", Size);
+      formData.append("Brand", Brand);
+      formData.append("BoxItems", BoxItems);
+      
+      const response = await axios.patch(
+        `${import.meta.env.VITE_APP_URL_BASE}/Product/${selectedProduct._id}`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${user?.token}`,
+          },
+        }
+      );
+      if (response.status === 200) {
+        setAlertType(false);
+        setSnackbarMessage(response.data.message);
+        setSnackbarOpen(true);
+        ProductRefetch();
+        setSubmitionLoading(false);
+        handleCloseConfirmModalProduct();
+        handleCloseModal();
+        clearUpdatedForm();
+      } else {
+        setAlertType(true);
+        setSnackbarMessage(response.data.message);
+        setSnackbarOpen(true);
+        setSubmitionLoading(false);
+      }
+    } catch (error) {
+      if (error.response) {
+        setAlertType(true);
+        setSnackbarMessage(error.response.data.message);
+        setSnackbarOpen(true);
+        setSubmitionLoading(false);
+      } else if (error.request) {
+        // Request was made but no response was received
+        console.error("Error updating Product: No response received");
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        console.error("Error updating Product");
+      }
+    }
   };
 
   return (
@@ -213,7 +326,7 @@ export default function ProductsContainer({
               ) : uploadedImage ? (
                 <div className="w-full flex justify-center h-[300px] relative">
                   <img
-                    src={uploadedImage}
+                    src={URL.createObjectURL(uploadedImage)}
                     alt="Uploaded Product"
                     style={{ width: "auto", height: "100%" }}
                   />
@@ -264,8 +377,8 @@ export default function ProductsContainer({
                     <input
                       type="text"
                       name="name"
-                      value={editFields.name}
-                      onChange={handleInputChange}
+                      value={Name}
+                      onChange={handleNameInputChange}
                       className="inputField"
                     />
                   </div>
@@ -282,8 +395,8 @@ export default function ProductsContainer({
                     <input
                       type="text"
                       name="size"
-                      value={editFields.size}
-                      onChange={handleInputChange}
+                      value={Size}
+                      onChange={handleSizeInputChange}
                       className="inputField"
                     />
                   </div>
@@ -291,32 +404,44 @@ export default function ProductsContainer({
               ) : (
                 <></>
               )}
-              {isEditing ? (
                 <div className="flex space-x-3 items-center">
                   <span className="thTableSpan">Category</span>
-                  <div className="inputForm flex items-center">
-                    <select
-                      name="category"
-                      onChange={handleInputChange}
-                      className="inputField"
-                    >
-                      <option value="">-- Select Product Category --</option>
-                    </select>
-                  </div>
+                  {isEditing ? (
+                    <div className="inputForm flex items-center">
+                      <select
+                        name="category"
+                        onChange={handleCategoryInputChange}
+                        className="inputField"
+                      >
+                        <option value="">-- Select Product Category --</option>
+                        {CategoryData?.map((category) => (
+                          <option key={category._id} value={category._id}>
+                            {category.name}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  ) : (
+                    <span className="trTableSpan">
+                        {selectedProduct.category.name}
+                    </span>
+                  )}
                 </div>
-              ) : (
-                <></>
-              )}
               <div className="flex space-x-3 items-center">
                 <span className="thTableSpan">Brand</span>
                 {isEditing ? (
                   <div className="inputForm flex items-center">
                     <select
                       name="brand"
-                      onChange={handleInputChange}
+                      onChange={handleBrandInputChange}
                       className="inputField"
                     >
                       <option value="">-- Select Product Brand --</option>
+                      {BrandData?.map((category) => (
+                        <option key={category._id} value={category._id}>
+                          {category.name}
+                        </option>
+                      ))}
                     </select>
                   </div>
                 ) : (
@@ -332,8 +457,8 @@ export default function ProductsContainer({
                     <input
                       type="text"
                       name="boxItems"
-                      value={editFields.boxItems}
-                      onChange={handleInputChange}
+                      value={BoxItems}
+                      onChange={handleBoxItemsInputChange}
                       className="inputField"
                     />
                   </div>
@@ -360,17 +485,35 @@ export default function ProductsContainer({
           )}
         </Modal>
       )}
+      {/* Snackbar */}
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={() => setSnackbarOpen(false)}
+      >
+        <Alert
+          onClose={() => setSnackbarOpen(false)}
+          severity={alertType ? "error" : "success"}
+          sx={{ width: "100%" }}
+        >
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
       <ConfirmDialog
         open={DeleteProduct}
         onClose={handleCloseDeleteProduct}
+        onConfirm={handleDeleteProduct}
         dialogTitle={"Confirm Product Deletion"}
         dialogContentText={`Are you sure you want to delete this product?`}
+        isloading={submitionLoading}
       />
       <ConfirmDialog
         open={ConfirmModalProduct}
         onClose={handleCloseConfirmModalProduct}
+        onConfirm={handleUpdateProduct}
         dialogTitle={"Confirm Product Modification"}
         dialogContentText={`Are you sure you want to save the changes made to this product? `}
+        isloading={submitionLoading}
       />
     </div>
   );

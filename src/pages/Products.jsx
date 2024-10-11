@@ -238,7 +238,6 @@ export default function Products() {
   const handleSavePRODUCT = async () => {
     try {
       setSubmitionLoading(true);
-      // Create a new FormData instance
       const formData = new FormData();
       formData.append("file", image);
       formData.append("Name", productName);
@@ -440,8 +439,11 @@ export default function Products() {
             searchQuery={searchQuery}
             onProductClick={handleSelectProduct}
             data={ProductData}
+            ProductRefetch={ProductRefetch}
             selectedCategory={Category}
+            CategoryData={CategoryData}
             selectedBrand={Brand}
+            BrandData={BrandData}
           />
         </div>
       </div>
@@ -544,7 +546,7 @@ export default function Products() {
                       >
                         {image ? (
                           <img
-                            src={image}
+                            src={URL.createObjectURL(image)}
                             alt="Preview"
                             className="w-full h-full object-cover rounded-full"
                           />
