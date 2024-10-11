@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Header from "../components/Header";
 import Search from "../components/Search";
 import ButtonExportExcel from "../components/ButtonExportExcel";
@@ -9,34 +9,26 @@ import ButtonAdd from "../components/ButtonAdd";
 import Modal from "react-modal";
 import PublicitéTable from "../components/PublicitéTable";
 import PubSwiperAdmin from "../components/PubSwiperAdmin";
+import { useQuery } from "@tanstack/react-query";
+import { useLocation } from "react-router-dom";
+import { useAuthContext } from "../hooks/useAuthContext";
+import { Alert, CircularProgress, Snackbar } from "@mui/material";
+import axios from "axios";
 
 // Ensure you set the root element for accessibility
 Modal.setAppElement("#root");
 
 export default function Publicité() {
+  const { user } = useAuthContext();
+  const location = useLocation();
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredData, setFilteredData] = useState([]);
-
+  const [submitionLoading, setSubmitionLoading] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [alertType, setAlertType] = useState(true);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
-  };
-
-  const [dateRange, setDateRange] = useState({
-    startDate: null,
-    endDate: null,
-  });
-
-  useEffect(() => {
-    if (dateRange.startDate && dateRange.endDate) {
-      // Update dashboard content based on the selected date range
-      updateDashboardContent(dateRange.startDate, dateRange.endDate);
-    }
-  }, [dateRange]);
-
-  const updateDashboardContent = (startDate, endDate) => {
-    // Logic to update dashboard content based on selected date range
-    console.log("Selected range:", startDate, endDate);
-    // Fetch or filter data based on date range and update dashboard content
   };
 
   const [openModelAddPub, setOpenModelAddPub] = useState(false);
@@ -46,22 +38,164 @@ export default function Publicité() {
     setOpenModelAddPub(true);
   };
 
-  const handleCloseModalAddLoss = () => {
+  const handleCloseModalAddPub = () => {
     setOpenModelAddPub(false);
   };
 
   const [uploadedImage, setUploadedImage] = useState(null);
-
   const handleImageUpload = (event) => {
     const file = event.target.files[0];
-    if (file) {
-      setUploadedImage(URL.createObjectURL(file)); // Store the preview URL of the image
+    if (file && file.type.startsWith("image/")) {
+      setUploadedImage(file);
     }
   };
 
   const openFileInput = () => {
-    document.getElementById("imageUploadInput").click(); // Trigger the file input dialog
+    document.getElementById("imageUploadInput").click();
   };
+
+  const clearForm = () => {
+    setUploadedImage(null);
+  };
+
+  // fetching PublicAdminPublicity data
+  const fetchPublicAdminPublicityData = async () => {
+    const response = await fetch(
+      import.meta.env.VITE_APP_URL_BASE + `/Publicity/fetchAllAdminPublicPublicities`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user?.token}`,
+        },
+      }
+    );
+
+    // Handle the error state
+    if (!response.ok) {
+      const errorData = await response.json();
+      if (errorData.error.statusCode == 404) return [];
+      else throw new Error("Error receiving PublicAdminPublicity data");
+    }
+    // Return the data
+    return await response.json();
+  };
+  // useQuery hook to fetch data
+  const {
+    data: PublicAdminPublicityData,
+    error: PublicAdminPublicityError,
+    isLoading: PublicAdminPublicityLoading,
+    refetch: PublicAdminPublicityRefetch,
+  } = useQuery({
+    queryKey: ["PublicAdminPublicityData", user?.token, location.key],
+    queryFn: fetchPublicAdminPublicityData,
+    enabled: !!user?.token, 
+    refetchOnWindowFocus: true, 
+  });
+
+  // fetching PublicStorePublicity data
+  const fetchPublicStorePublicityData = async () => {
+    const response = await fetch(
+      import.meta.env.VITE_APP_URL_BASE + `/Publicity/fetchAllStorePublicPublicities`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user?.token}`,
+        },
+      }
+    );
+
+    // Handle the error state
+    if (!response.ok) {
+      const errorData = await response.json();
+      if (errorData.error.statusCode == 404) return [];
+      else throw new Error("Error receiving PublicStorePublicity data");
+    }
+    // Return the data
+    return await response.json();
+  };
+  // useQuery hook to fetch data
+  const {
+    data: PublicStorePublicityData,
+    error: PublicStorePublicityError,
+    isLoading: PublicStorePublicityLoading,
+    refetch: PublicStorePublicityRefetch,
+  } = useQuery({
+    queryKey: ["PublicStorePublicityData", user?.token, location.key],
+    queryFn: fetchPublicStorePublicityData,
+    enabled: !!user?.token, 
+    refetchOnWindowFocus: true,
+  });
+    
+  //save Publicity API
+  const handleSavePublicity = async () => {
+    try {
+      setSubmitionLoading(true);
+      const formData = new FormData();
+      formData.append("file", uploadedImage);
+
+      const response = await axios.post(
+        import.meta.env.VITE_APP_URL_BASE + `/Publicity/createFromAdmin`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${user?.token}`,
+          },
+        }
+      );
+      if (response.status === 200) {
+        setAlertType(false);
+        setSnackbarMessage(response.data.message);
+        setSnackbarOpen(true);
+        PublicAdminPublicityRefetch();
+        setSubmitionLoading(false);
+        clearForm();
+        handleCloseModalAddPub();
+      } else {
+        setAlertType(true);
+        setSnackbarMessage(response.data.message);
+        setSnackbarOpen(true);
+        setSubmitionLoading(false);
+      }
+    } catch (error) {
+      if (error.response) {
+        setAlertType(true);
+        setSnackbarMessage(error.response.data.message);
+        setSnackbarOpen(true);
+        setSubmitionLoading(false);
+      } else if (error.request) {
+        // Request was made but no response was received
+        console.error("Error creating Publicity: No response received");
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        console.error("Error creating Publicity");
+      }
+    }
+  };
+
+
+  if (PublicAdminPublicityLoading || PublicStorePublicityLoading) {
+    return (
+      <div className="pagesContainer h-[100vh]">
+        <Header />
+        <div className="w-full h-full flex items-center justify-center">
+          <CircularProgress color="inherit" />
+        </div>
+      </div>
+    );
+  }
+  if (PublicAdminPublicityError || PublicStorePublicityError) {
+    return (
+      <div className="pagesContainer">
+        <Header />
+        <div className="customerClass">
+          <h2 className="customerClassTitle">no data is available</h2>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="pagesContainer pubContainer">
@@ -74,7 +208,12 @@ export default function Publicité() {
         />
       </div>
 
-      <PubSwiperAdmin />
+      <PubSwiperAdmin 
+        data={PublicAdminPublicityData}
+        loading={PublicAdminPublicityLoading}
+        PublicAdminPublicityRefetch={PublicAdminPublicityRefetch}
+        user={user}
+      />
 
       <div className="pageTable ordersTable">
         <div className="w-full flex items-center justify-between">
@@ -87,7 +226,7 @@ export default function Publicité() {
             <ButtonExportExcel data={filteredData} filename="Publicité" />
             <Modal
               isOpen={openModelAddPub}
-              onRequestClose={handleCloseModalAddLoss}
+              onRequestClose={handleCloseModalAddPub}
               contentLabel="Add new Publicité"
               style={{
                 overlay: {
@@ -116,7 +255,7 @@ export default function Publicité() {
                   >
                     {uploadedImage ? (
                       <img
-                        src={uploadedImage}
+                        src={URL.createObjectURL(uploadedImage)}
                         alt="Uploaded"
                         className="w-full h-full object-contain"
                       />
@@ -140,25 +279,40 @@ export default function Publicité() {
                 <div className="flex justify-end space-x-8 items-start mt-[20px]">
                   <button
                     className="text-gray-500 cursor-pointer hover:text-gray-700"
-                    onClick={handleCloseModalAddLoss}
+                    onClick={handleCloseModalAddPub}
                   >
                     Cancel
                   </button>
                   <button
                     className="text-blue-500 cursor-pointer hover:text-blue-700"
-                    // Add your logic to handle saving the image or data here
+                    onClick={handleSavePublicity}
                   >
                     Save
                   </button>
                 </div>
               </div>
             </Modal>
+            {/* Snackbar */}
+            <Snackbar
+              open={snackbarOpen}
+              autoHideDuration={6000}
+              onClose={() => setSnackbarOpen(false)}
+            >
+              <Alert
+                onClose={() => setSnackbarOpen(false)}
+                severity={alertType ? "error" : "success"}
+                sx={{ width: "100%" }}
+              >
+                {snackbarMessage}
+              </Alert>
+            </Snackbar>
           </div>
         </div>
         <div className="pageTableContainer">
           <PublicitéTable
             searchQuery={searchQuery}
             setFilteredData={setFilteredData}
+            data={PublicStorePublicityData}
           />
         </div>
       </div>

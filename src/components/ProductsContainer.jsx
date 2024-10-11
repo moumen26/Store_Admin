@@ -46,8 +46,8 @@ export default function ProductsContainer({
       category: product.category?.name,
     });
     setIsModalOpen(true);
-    setIsImageRemoved(false); // Reset image removal when opening new product
-    setUploadedImage(null); // Reset uploaded image
+    setIsImageRemoved(false); 
+    setUploadedImage(null); 
     onSelectProduct(product);
   };
 

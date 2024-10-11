@@ -10,31 +10,20 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import { useLocation, useNavigate } from "react-router-dom";
 import { EyeIcon } from "@heroicons/react/24/outline";
-// import { useAuthContext } from "../hooks/useAuthContext";
-// import { TokenDecoder } from "../util/DecodeToken";
-// import CircularProgress from "@mui/material/CircularProgress";
-// import { useQuery } from "@tanstack/react-query";
-// import { formatDate } from "../util/useFullFunctions";
+import CircularProgress from "@mui/material/CircularProgress";
 import Modal from "react-modal";
+import { useNavigate } from "react-router-dom";
 
 // Set the app element for accessibility
 Modal.setAppElement("#root");
 
 function Row(props) {
   const { row } = props;
+  const navigate = useNavigate();
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const handleViewClick = (stockId) => {
-    setSelectedStockId(stockId);
-    setIsModalOpen(true);
-  };
-
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-    setSelectedStockId(null);
+  const handleViewClick = () => {
+    navigate(`/CustomerProfile/${row.owner._id}`);
   };
 
   return (
@@ -44,19 +33,13 @@ function Row(props) {
         className="tableRow"
       >
         <TableCell component="th" scope="row" className="tableCell">
-          <span className="trTableSpan"></span>
+          <span className="trTableSpan">{row.owner._id}</span>
         </TableCell>
         <TableCell className="tableCell">
-          <span className="trTableSpan"></span>
+          <span className="trTableSpan">{row.owner.firstName} {row.owner.lastName}</span>
         </TableCell>
         <TableCell className="tableCell">
-          <span className="trTableSpan"></span>
-        </TableCell>
-        <TableCell className="tableCell">
-          <span className="trTableSpan"></span>
-        </TableCell>
-        <TableCell className="tableCell">
-          <span className="trTableSpan"></span>
+          <span className="trTableSpan">{row.owner.phoneNumber}</span>
         </TableCell>
         <TableCell align="right" className="tableCell">
           <div className="flex justify-end pr-3">
@@ -71,7 +54,12 @@ function Row(props) {
   );
 }
 
-export default function PublicitéTable({ searchQuery, setFilteredData }) {
+export default function PublicitéTable({ 
+  searchQuery, 
+  setFilteredData,
+  Loading,
+  data
+}) {
   return (
     <>
       <TableContainer
@@ -91,34 +79,28 @@ export default function PublicitéTable({ searchQuery, setFilteredData }) {
               <TableCell className="tableCell">
                 <span className="thTableSpan">Phone Number</span>
               </TableCell>
-              <TableCell className="tableCell">
-                <span className="thTableSpan">Wilaya</span>
-              </TableCell>
-              <TableCell className="tableCell">
-                <span className="thTableSpan">Address</span>
-              </TableCell>
               <TableCell align="right" className="tableCell">
                 <span className="thTableSpan">Action</span>
               </TableCell>
             </TableRow>
           </TableHead>
-          {/* <TableBody>
-            {PurchasesLoading ? (
+          <TableBody>
+            {Loading ? (
               <TableRow>
-                <TableCell colSpan={7} align="center">
+                <TableCell colSpan={4} align="center">
                   <CircularProgress color="inherit" />
                 </TableCell>
               </TableRow>
-            ) : PurchasesData.length > 0 ? (
-              PurchasesData.map((row) => <Row key={row._id} row={row} />)
+            ) : data.length > 0 ? (
+              data.map((row) => <Row key={row._id} row={row} />)
             ) : (
               <TableRow>
-                <TableCell colSpan={7} align="center">
-                  <span className="thTableSpan">No losses found</span>
+                <TableCell colSpan={4} align="center">
+                  <span className="thTableSpan">No publicity found</span>
                 </TableCell>
               </TableRow>
             )}
-          </TableBody> */}
+          </TableBody>
         </Table>
       </TableContainer>
     </>

@@ -141,7 +141,9 @@ export default function CustomerProfile() {
           <div className="customerClass pb-0">
             <h2 className="customerClassTitle">Voir Publicité</h2>
             <div className="flex-col space-y-4">
-              <PubSwiperStoreProfile />
+              <PubSwiperStoreProfile 
+                user={user}
+              />
             </div>
 
             <div className="flex justify-end space-x-8 items-start mt-[20px]">
