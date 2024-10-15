@@ -11,12 +11,14 @@ import { useLocation, useParams } from "react-router-dom";
 import { Alert, CircularProgress, Snackbar } from "@mui/material";
 import axios from "axios";
 
-export default function PubSwiperStoreProfile({user}) {
+export default function PubSwiperStoreProfile({ user }) {
   const { id } = useParams();
   const location = useLocation();
   const fetchStorePublicityData = async () => {
     const response = await fetch(
-      `${import.meta.env.VITE_APP_URL_BASE}/Publicity/fetchAllStorePublicitiesFromAdmin/${id}`,
+      `${
+        import.meta.env.VITE_APP_URL_BASE
+      }/Publicity/fetchAllStorePublicitiesFromAdmin/${id}`,
       {
         method: "GET",
         headers: {
@@ -59,7 +61,7 @@ export default function PubSwiperStoreProfile({user}) {
     setMakePubicityPublic(true);
     setPublicityID(id);
   };
-  
+
   const [submitionLoading, setSubmitionLoading] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [alertType, setAlertType] = useState(true);
@@ -69,7 +71,8 @@ export default function PubSwiperStoreProfile({user}) {
     try {
       setSubmitionLoading(true);
       const response = await axios.delete(
-        import.meta.env.VITE_APP_URL_BASE + `/Publicity/deleteFromAdmin/${deletedPublicity}`,
+        import.meta.env.VITE_APP_URL_BASE +
+          `/Publicity/deleteFromAdmin/${deletedPublicity}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -112,7 +115,8 @@ export default function PubSwiperStoreProfile({user}) {
     try {
       setSubmitionLoading(true);
       const response = await axios.patch(
-        import.meta.env.VITE_APP_URL_BASE + `/Publicity/makePublic/${PublicityID}`,
+        import.meta.env.VITE_APP_URL_BASE +
+          `/Publicity/makePublic/${PublicityID}`,
         {},
         {
           headers: {
@@ -163,7 +167,8 @@ export default function PubSwiperStoreProfile({user}) {
           <div className="w-full h-full flex items-center justify-center">
             <CircularProgress color="inherit" />
           </div>
-        ) : !Array.isArray(StorePublicityData) || StorePublicityData?.lenght <= 0 ? (
+        ) : !Array.isArray(StorePublicityData) ||
+          StorePublicityData?.lenght <= 0 ? (
           <div className="w-full h-full flex items-center justify-center">
             <span>No publicity found</span>
           </div>
@@ -174,18 +179,22 @@ export default function PubSwiperStoreProfile({user}) {
                 className="h-6 w-6 trashIcon text-red-500 cursor-pointer hover:text-red-700"
                 onClick={() => handleOpenDeletePub(pub._id)}
               />
-              <img 
+              <img
                 src={`${import.meta.env.VITE_APP_URL_BASE.replace(
                   "/api",
                   ""
-                )}/files/${pub.image}`} 
+                )}/files/${pub.image}`}
                 alt={pub.image}
                 style={{
-                  opacity: `${pub.distination == 'public' && pub.displayPublic == false ? '0.5' : '1'}`,
+                  opacity: `${
+                    pub.distination == "public" && pub.displayPublic == false
+                      ? "0.5"
+                      : "1"
+                  }`,
                 }}
               />
               {/* button to make the public pub displayed true */}
-              {pub.distination == 'public' && pub.displayPublic == false && (
+              {pub.distination == "public" && pub.displayPublic == false && (
                 <button
                   style={{
                     position: "absolute",
@@ -202,15 +211,26 @@ export default function PubSwiperStoreProfile({user}) {
                   Display Public
                 </button>
               )}
+              {pub.distination == "public" && pub.displayPublic == true && (
+                <div className="hoverPub">
+                  <p
+                    style={{
+                      color: "black",
+                    }}
+                  >
+                    Publicité public
+                  </p>
+                </div>
+              )}
             </SwiperSlide>
           ))
         )}
       </Swiper>
       <ConfirmDialog
         open={DeletePub}
-        onClose={()=> {
-          setDeletePub(false)
-          setdeletedPublicity(null)
+        onClose={() => {
+          setDeletePub(false);
+          setdeletedPublicity(null);
         }}
         onConfirm={handleDeletePublicity}
         dialogTitle={"Confirm Publicité Deletion"}
@@ -219,9 +239,9 @@ export default function PubSwiperStoreProfile({user}) {
       />
       <ConfirmDialog
         open={MakePubicityPublic}
-        onClose={()=> {
-          setMakePubicityPublic(false)
-          setPublicityID(null)
+        onClose={() => {
+          setMakePubicityPublic(false);
+          setPublicityID(null);
         }}
         onConfirm={handleDisplayPublic}
         dialogTitle={"Confirm Publicité Public Displaying"}
