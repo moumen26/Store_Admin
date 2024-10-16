@@ -135,6 +135,12 @@
   height: 30px;
 }
 
+.PersonalInfoModal .inputForm {
+  padding: 0;
+  width: 250px;
+  height: 30px;
+}
+
 .ProductModal .thTableSpan {
   width: 140px;
 }

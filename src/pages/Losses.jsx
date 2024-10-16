@@ -60,6 +60,7 @@ export default function Losses() {
       </div>
       <div className="flex items-center space-x-6">
         <OrderCard orderCardTitle="Total Losses" orderCardDetails={0} />
+        <OrderCard orderCardTitle="Total Price" orderCardDetails={0} />
       </div>
       <div className="pageTable ordersTable">
         <div className="w-full flex items-center justify-between">

@@ -69,7 +69,7 @@ export default function Customers() {
 
   useEffect(() => {
     StoresRefetch();
-  },[location.key]);
+  }, [location.key]);
 
   return (
     <div className="pagesContainer">

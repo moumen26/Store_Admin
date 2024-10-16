@@ -3,14 +3,10 @@ import {
   ArrowLeftStartOnRectangleIcon,
   ArrowTrendingDownIcon,
   BuildingStorefrontIcon,
-  ChevronDownIcon,
-  ClipboardDocumentCheckIcon,
   Cog6ToothIcon,
-  ShoppingBagIcon,
-  Square2StackIcon,
   Squares2X2Icon,
+  UsersIcon,
   UserGroupIcon,
-  UserIcon,
   UserPlusIcon,
   DevicePhoneMobileIcon,
 } from "@heroicons/react/16/solid";
@@ -87,6 +83,18 @@ export default function Asidebar() {
             >
               <UserPlusIcon className="iconAsideBar" />
               <span className="ml-3">User Authentication</span>
+            </div>
+          </NavLink>
+        </li>
+        <li>
+          <NavLink to="/Shops" className=" flex items-center">
+            <div
+              className={`flex items-center itemAsideBar AuthenticationItemAsideBar  ${
+                location.pathname === "/Shops" ? "asideItemActive" : ""
+              }`}
+            >
+              <UsersIcon className="iconAsideBar" />
+              <span className="ml-3">Shops</span>
             </div>
           </NavLink>
         </li>

@@ -12,6 +12,7 @@ import Authentication from "./pages/Authentication";
 import VerifyCode from "./pages/VerifyCode";
 import SignIn from "./pages/SignIn";
 import CustomerProfile from "./pages/CustomerProfile";
+import Shops from "./pages/Shops";
 import InactiveStore from "./pages/InactiveStore";
 import Publicité from "./pages/Publicité";
 
@@ -44,6 +45,7 @@ function App() {
             path="/Customers"
             element={user ? <Customers /> : <SignIn />}
           />
+          <Route path="/Shops" element={user ? <Shops /> : <SignIn />} />
           <Route
             path="/Authentication"
             element={user ? <Authentication /> : <SignIn />}
