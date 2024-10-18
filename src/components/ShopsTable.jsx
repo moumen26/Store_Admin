@@ -15,7 +15,7 @@ import { CircularProgress } from "@mui/material";
 import { useAuthContext } from "../hooks/useAuthContext";
 import axios from "axios";
 import Modal from "react-modal";
-import { PencilIcon } from "@heroicons/react/16/solid";
+import ButtonDark from "./ButtonDark";
 
 // Set the app element for accessibility
 Modal.setAppElement("#root");
@@ -91,6 +91,10 @@ function Row(props) {
           <div className="customerClass pb-0">
             <div className="w-[100%] flex justify-between items-center">
               <h2 className="customerClassTitle">Personal Information</h2>
+              <div>
+                <ButtonDark buttonSpan="Verifie" />
+                <ButtonDark buttonSpan="Block" />
+              </div>
             </div>
             <div className="personalInformation mt-[16px]">
               <div className="flex-col">
