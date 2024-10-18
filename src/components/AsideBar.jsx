@@ -9,6 +9,9 @@ import {
   UserGroupIcon,
   UserPlusIcon,
   DevicePhoneMobileIcon,
+  Square2StackIcon,
+  ShoppingBagIcon,
+  ChevronDownIcon,
 } from "@heroicons/react/16/solid";
 import React, { useEffect, useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
@@ -22,6 +25,25 @@ export default function Asidebar() {
   const submitLogout = () => {
     logout();
   };
+
+  const [isShopsOpen, setisShopsOpen] = useState(false);
+
+  const handleOrdersClick = () => {
+    setisShopsOpen((prevState) => !prevState);
+  };
+
+  const handleClickOutside = (event) => {
+    if (!event.target.closest(".sidebar")) {
+      setIsProductsOpen(false);
+      setisShopsOpen(false);
+      setIsAchatsOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   return (
     <aside>
@@ -86,18 +108,62 @@ export default function Asidebar() {
             </div>
           </NavLink>
         </li>
-        <li>
-          <NavLink to="/Shops" className=" flex items-center">
-            <div
-              className={`flex items-center itemAsideBar AuthenticationItemAsideBar  ${
-                location.pathname === "/Shops" ? "asideItemActive" : ""
-              }`}
-            >
-              <UsersIcon className="iconAsideBar" />
-              <span className="ml-3">Shops</span>
+        <div className="flex-col space-y-[8px] sidebar">
+          <li className="flex-col space-y-[8px]">
+            <div className="flex items-center cursor-pointer">
+              <div
+                className={`flex items-center justify-between itemAsideBar`}
+                onClick={handleOrdersClick}
+              >
+                <div className="flex">
+                  <UsersIcon className="iconAsideBar" />
+                  <span className="ml-3">Shops</span>
+                </div>
+                <ChevronDownIcon
+                  className={`iconPages ${isShopsOpen ? "rotate-180" : ""}`}
+                />
+              </div>
             </div>
-          </NavLink>
-        </li>
+            {isShopsOpen && (
+              <div className="flex-col space-y-[8px]">
+                <NavLink to="/Shops" className=" flex items-center">
+                  <div
+                    className={`flex items-center itemAsideBar AuthenticationItemAsideBar  ${
+                      location.pathname === "/Shops" ? "asideItemActive" : ""
+                    }`}
+                  >
+                    <Square2StackIcon className="iconAsideBar opacity-0" />
+                    <span className="ml-3">All Shops</span>
+                  </div>
+                </NavLink>
+                <NavLink to="/BlockedShops" className="flex items-center">
+                  <div
+                    className={`flex items-center itemAsideBar ${
+                      location.pathname === "/BlockedShops"
+                        ? "asideItemActive"
+                        : ""
+                    }`}
+                  >
+                    <Square2StackIcon className="iconAsideBar opacity-0" />
+                    <span className="ml-3">Blocked Shops</span>
+                  </div>
+                </NavLink>
+                <NavLink to="/VerifiedShops" className="flex items-center">
+                  <div
+                    className={`flex items-center itemAsideBar ${
+                      location.pathname === "/VerifiedShops"
+                        ? "asideItemActive"
+                        : ""
+                    }`}
+                  >
+                    <Square2StackIcon className="iconAsideBar opacity-0" />
+                    <span className="ml-3">Verified Shops</span>
+                  </div>
+                </NavLink>
+              </div>
+            )}
+          </li>
+        </div>
         <li>
           <NavLink to="/Losses" className=" flex items-center">
             <div

@@ -9,7 +9,7 @@ import { useAuthContext } from "../hooks/useAuthContext";
 import { TokenDecoder } from "../util/DecodeToken";
 import { useLocation } from "react-router-dom";
 
-export default function Shops() {
+export default function BlockedShops() {
   const { user } = useAuthContext();
   const decodedToken = TokenDecoder();
   const location = useLocation();
@@ -65,8 +65,8 @@ export default function Shops() {
     <div className="pagesContainer">
       <Header />
       <div className="w-full flex items-center justify-between">
-        <h2 className="pagesTitle">Shops</h2>
-        <ButtonAdd buttonSpan="Add New Shop" />
+        <h2 className="pagesTitle">Blocked Shops</h2>
+        {/* <ButtonAdd buttonSpan="Add New Shop" /> */}
       </div>
       <div className="pageTable">
         <div className="w-full flex items-center justify-between">
@@ -74,7 +74,7 @@ export default function Shops() {
             placeholder="Search by Shop..."
             onChange={handleSearchChange}
           />
-          <ButtonExportExcel data={filteredData} filename="Shops" />
+          <ButtonExportExcel data={filteredData} filename="Blocked Shops" />
         </div>
         <div className="pageTableContainer">
           <ShopsTable

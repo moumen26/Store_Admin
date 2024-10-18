@@ -13,6 +13,8 @@ import VerifyCode from "./pages/VerifyCode";
 import SignIn from "./pages/SignIn";
 import CustomerProfile from "./pages/CustomerProfile";
 import Shops from "./pages/Shops";
+import BlockedShops from "./pages/BlockedShops";
+import VerifiedShops from "./pages/VerifiedShops";
 import InactiveStore from "./pages/InactiveStore";
 import Publicité from "./pages/Publicité";
 
@@ -46,6 +48,14 @@ function App() {
             element={user ? <Customers /> : <SignIn />}
           />
           <Route path="/Shops" element={user ? <Shops /> : <SignIn />} />
+          <Route
+            path="/VerifiedShops"
+            element={user ? <VerifiedShops /> : <SignIn />}
+          />
+          <Route
+            path="/BlockedShops"
+            element={user ? <BlockedShops /> : <SignIn />}
+          />
           <Route
             path="/Authentication"
             element={user ? <Authentication /> : <SignIn />}
