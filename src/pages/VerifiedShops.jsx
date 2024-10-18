@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Header from "../components/Header";
 import Search from "../components/Search";
 import ButtonAdd from "../components/ButtonAdd";
-import ShopsTable from "../components/ShopsTable";
+import VerifiedShopsTable from "../components/VerifiedShopsTable";
 import ButtonExportExcel from "../components/ButtonExportExcel";
 import { useQuery } from "@tanstack/react-query";
 import { useAuthContext } from "../hooks/useAuthContext";
@@ -77,7 +77,7 @@ export default function VerifiedShops() {
           <ButtonExportExcel data={filteredData} filename="Verified Shops" />
         </div>
         <div className="pageTableContainer">
-          <ShopsTable
+          <VerifiedShopsTable
             searchQuery={searchQuery}
             setFilteredData={setFilteredData}
             data={ClientData}
