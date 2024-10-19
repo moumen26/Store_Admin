@@ -24,7 +24,7 @@ export default function BlockedShops() {
   //fetch data
   const fetchClientData = async () => {
     const response = await fetch(
-      `${import.meta.env.VITE_APP_URL_BASE}/Client/admin/unverified/${
+      `${import.meta.env.VITE_APP_URL_BASE}/Client/admin/blocked/${
         decodedToken.id
       }`,
       {
@@ -81,6 +81,7 @@ export default function BlockedShops() {
             setFilteredData={setFilteredData}
             data={ClientData}
             loading={ClientDataLoading}
+            refetchClientData={refetchClientData}
           />
         </div>
       </div>

@@ -16,6 +16,8 @@ import { useAuthContext } from "../hooks/useAuthContext";
 import axios from "axios";
 import Modal from "react-modal";
 import ButtonDark from "./ButtonDark";
+import { TokenDecoder } from "../util/DecodeToken";
+import ConfirmDialog from "./ConfirmDialog";
 
 // Set the app element for accessibility
 Modal.setAppElement("#root");
@@ -35,7 +37,24 @@ function Row(props) {
   const [selectedRow, setSelectedRow] = useState(null);
   const handleSelectRow = (row) => {
     setSelectedRow(row);
+    props.handleSelectRow(row);
   }
+
+  const [openUnBlockClientConfirmation, setOpenUnBlockClientConfirmation] = useState(false);
+  const handleOpenUnBlockClientConfirmation = () => {
+    setOpenUnBlockClientConfirmation(true);
+  };
+  const handleCloseUnBlockClientConfirmation = () => {
+    setOpenUnBlockClientConfirmation(false);
+  };
+
+  const [openVerifieClientConfirmation, setOpenVerifieClientConfirmation] = useState(false);
+  const handleOpenVerifieClientConfirmation = () => {
+    setOpenVerifieClientConfirmation(true);
+  };
+  const handleCloseVerifieClientConfirmation = () => {
+    setOpenVerifieClientConfirmation(false);
+  };
 
   return (
     <TableRow sx={{ "& > *": { borderBottom: "unset" } }} className="tableRow">
@@ -67,91 +86,113 @@ function Row(props) {
       </TableCell>
 
       {selectedRow &&
-        <Modal
-          isOpen={openShowPersonalInfo}
-          onRequestClose={handleClosePersonalInfoModal}
-          contentLabel="Show Personal Information"
-          style={{
-            overlay: {
-              backgroundColor: "rgba(0, 0, 0, 0.5)",
-              zIndex: 1000,
-            },
-            content: {
-              border: "none",
-              borderRadius: "8px",
-              padding: "20px",
-              maxWidth: "80%",
-              margin: "auto",
-              height: "fit-content",
-              zIndex: 1001,
-              overflowY: "auto",
-            },
-          }}
-        >
-          <div className="customerClass pb-0">
-            <div className="w-[100%] flex justify-between items-center">
-              <h2 className="customerClassTitle">Personal Information</h2>
-              <div>
-                <ButtonDark buttonSpan="Verifie" />
-                <ButtonDark buttonSpan="Block" />
+        <>
+          <Modal
+            isOpen={openShowPersonalInfo}
+            onRequestClose={handleClosePersonalInfoModal}
+            contentLabel="Show Personal Information"
+            style={{
+              overlay: {
+                backgroundColor: "rgba(0, 0, 0, 0.5)",
+                zIndex: 1000,
+              },
+              content: {
+                border: "none",
+                borderRadius: "8px",
+                padding: "20px",
+                maxWidth: "80%",
+                margin: "auto",
+                height: "fit-content",
+                zIndex: 1001,
+                overflowY: "auto",
+              },
+            }}
+          >
+            <div className="customerClass pb-0">
+              <div className="w-[100%] flex justify-between items-center">
+                <h2 className="customerClassTitle">Personal Information</h2>
+                <div>
+                  {!selectedRow?.isRCVerified &&
+                    <ButtonDark buttonSpan="Verifie" setOnClick={handleOpenVerifieClientConfirmation} />
+                  }
+                  <ButtonDark buttonSpan="Unblock" setOnClick={handleOpenUnBlockClientConfirmation} />
+                </div>
+              </div>
+              <div className="personalInformation mt-[16px]">
+                <div className="flex-col">
+                  <span className="personalInformationSpan">First Name</span>
+                  <h3 className="personalInformationDetails">
+                    {selectedRow?.firstName}
+                  </h3>
+                </div>
+                <div className="flex-col">
+                  <span className="personalInformationSpan">Last Name</span>
+                  <h3 className="personalInformationDetails">
+                    {selectedRow?.lastName}
+                  </h3>
+                </div>
+                <div className="flex-col">
+                  <span className="personalInformationSpan">Number Phone</span>
+                  <h3 className="personalInformationDetails">
+                    {selectedRow?.phoneNumber}
+                  </h3>
+                </div>
+                <div className="flex-col">
+                  <span className="personalInformationSpan">Email Address</span>
+                  <h3 className="personalInformationDetails">
+                    {selectedRow?.email}
+                  </h3>
+                </div>
+                <div className="flex-col">
+                  <span className="personalInformationSpan">Wilaya</span>
+                  <h3 className="personalInformationDetails">
+                    {selectedRow?.wilaya}
+                  </h3>
+                </div>
+                <div className="flex-col">
+                  <span className="personalInformationSpan">Commune</span>
+                  <h3 className="personalInformationDetails">
+                    {selectedRow?.commune}
+                  </h3>
+                </div>
+                <div className="flex-col PersonalInfoModal">
+                  <span className="personalInformationSpan">
+                    Commercial register number
+                  </span>
+                  <h3 className="personalInformationDetails">
+                    {selectedRow?.r_commerce}
+                  </h3>
+                </div>
+              </div>
+              <div className="flex justify-end space-x-8 mt-[20px]">
+                <button
+                  className="text-gray-500 cursor-pointer hover:text-gray-700"
+                  onClick={handleClosePersonalInfoModal}
+                >
+                  Cancel
+                </button>
               </div>
             </div>
-            <div className="personalInformation mt-[16px]">
-              <div className="flex-col">
-                <span className="personalInformationSpan">First Name</span>
-                <h3 className="personalInformationDetails">
-                  {selectedRow?.firstName}
-                </h3>
-              </div>
-              <div className="flex-col">
-                <span className="personalInformationSpan">Last Name</span>
-                <h3 className="personalInformationDetails">
-                  {selectedRow?.lastName}
-                </h3>
-              </div>
-              <div className="flex-col">
-                <span className="personalInformationSpan">Number Phone</span>
-                <h3 className="personalInformationDetails">
-                  {selectedRow?.phoneNumber}
-                </h3>
-              </div>
-              <div className="flex-col">
-                <span className="personalInformationSpan">Email Address</span>
-                <h3 className="personalInformationDetails">
-                  {selectedRow?.email}
-                </h3>
-              </div>
-              <div className="flex-col">
-                <span className="personalInformationSpan">Wilaya</span>
-                <h3 className="personalInformationDetails">
-                  {selectedRow?.wilaya}
-                </h3>
-              </div>
-              <div className="flex-col">
-                <span className="personalInformationSpan">Commune</span>
-                <h3 className="personalInformationDetails">
-                  {selectedRow?.commune}
-                </h3>
-              </div>
-              <div className="flex-col PersonalInfoModal">
-                <span className="personalInformationSpan">
-                  Commercial register number
-                </span>
-                <h3 className="personalInformationDetails">
-                  {selectedRow?.r_commerce}
-                </h3>
-              </div>
-            </div>
-            <div className="flex justify-end space-x-8 mt-[20px]">
-              <button
-                className="text-gray-500 cursor-pointer hover:text-gray-700"
-                onClick={handleClosePersonalInfoModal}
-              >
-                Cancel
-              </button>
-            </div>
-          </div>
-        </Modal>
+          </Modal>
+
+          <ConfirmDialog
+            open={openUnBlockClientConfirmation}
+            onClose={handleCloseUnBlockClientConfirmation}
+            onConfirm={props.handleConfirmUnBlockClient}
+            dialogTitle={"Confirm unblock client"}
+            dialogContentText={`Are you sure you want to unblock ${selectedRow?.firstName} ${selectedRow?.lastName} ?`}
+            isloading={props.submitionLoading}
+          />
+
+          <ConfirmDialog
+            open={openVerifieClientConfirmation}
+            onClose={handleCloseVerifieClientConfirmation}
+            onConfirm={props.handleConfirmVerifieClient}
+            dialogTitle={"Confirm verifie client"}
+            dialogContentText={`Are you sure you want to verifie ${selectedRow?.firstName} ${selectedRow?.lastName} ?`}
+            isloading={props.submitionLoading}
+          />
+        </>
       }
     </TableRow>
   );
@@ -165,8 +206,16 @@ export default function BlockedShopsTable({
   setFilteredData,
   data,
   loading = false,
+  refetchClientData,
 }) {
+  const { user } = useAuthContext();
+  const decodedToken = TokenDecoder();
   const [filteredRows, setFilteredRows] = useState([]);
+
+  const [selectedRow, setSelectedRow] = useState(null);
+  const handleSelectRow = (row) => {
+    setSelectedRow(row);
+  }
 
   useEffect(() => {
     setFilteredRows(
@@ -181,6 +230,103 @@ export default function BlockedShopsTable({
     );
     setFilteredData(filteredRows);
   }, [filteredRows, setFilteredData, data, loading]);
+
+  const [submitionLoading, setSubmitionLoading] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [alertType, setAlertType] = useState(true);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+
+  const handleConfirmUnBlockClient = async () => {
+    try {
+      setSubmitionLoading(true);
+      const response = await axios.patch(
+        import.meta.env.VITE_APP_URL_BASE + `/Client/admin/unblock/${decodedToken.id}`,
+        {
+          client: selectedRow._id,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${user?.token}`,
+          },
+        }
+      );
+      if (response.status === 200) {
+        setSelectedRow(null);
+        setAlertType(false);
+        setSnackbarMessage(response.data.message);
+        setSnackbarOpen(true);
+        refetchClientData();
+        setSubmitionLoading(false);
+        handleClosePersonalInfoModal();
+        handleCloseUnBlockClientConfirmation();
+      } else {
+        setAlertType(true);
+        setSnackbarMessage(response.data.message);
+        setSnackbarOpen(true);
+        setSubmitionLoading(false);
+      }
+    } catch (error) {
+      if (error.response) {
+        setAlertType(true);
+        setSnackbarMessage(error.response.data.message);
+        setSnackbarOpen(true);
+        setSubmitionLoading(false);
+      } else if (error.request) {
+        // Request was made but no response was received
+        console.error("Error unblock client: No response received");
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        console.error("Error unblock client", error);
+      }
+    }
+  };
+
+  const handleConfirmVerifieClient = async () => {
+    try {
+      setSubmitionLoading(true);
+      const response = await axios.patch(
+        import.meta.env.VITE_APP_URL_BASE + `/Client/admin/verify/${decodedToken.id}`,
+        {
+          client: selectedRow._id,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${user?.token}`,
+          },
+        }
+      );
+      if (response.status === 200) {
+        setSelectedRow(null);
+        setAlertType(false);
+        setSnackbarMessage(response.data.message);
+        setSnackbarOpen(true);
+        refetchClientData();
+        setSubmitionLoading(false);
+        handleClosePersonalInfoModal();
+        handleCloseVerifieClientConfirmation();
+      } else {
+        setAlertType(true);
+        setSnackbarMessage(response.data.message);
+        setSnackbarOpen(true);
+        setSubmitionLoading(false);
+      }
+    } catch (error) {
+      if (error.response) {
+        setAlertType(true);
+        setSnackbarMessage(error.response.data.message);
+        setSnackbarOpen(true);
+        setSubmitionLoading(false);
+      } else if (error.request) {
+        // Request was made but no response was received
+        console.error("Error verify client: No response received");
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        console.error("Error verify client");
+      }
+    }
+  };
 
   return (
     <TableContainer
@@ -216,7 +362,16 @@ export default function BlockedShopsTable({
               </TableCell>
             </TableRow>
           ) : filteredRows?.length > 0 ? (
-            filteredRows.map((row) => <Row key={row._id} row={row} />)
+            filteredRows.map((row) => 
+              <Row 
+                  key={row._id} 
+                  row={row}
+                  handleSelectRow={handleSelectRow}
+                  submitionLoading={submitionLoading}
+                  handleConfirmUnBlockClient={handleConfirmUnBlockClient}
+                  handleConfirmVerifieClient={handleConfirmVerifieClient}
+              />
+            )
           ) : (
             <TableRow>
               <TableCell colSpan={8} align="center">
@@ -226,6 +381,20 @@ export default function BlockedShopsTable({
           )}
         </TableBody>
       </Table>
+      {/* Snackbar */}
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={4000}
+        onClose={() => setSnackbarOpen(false)}
+      >
+        <Alert
+          onClose={() => setSnackbarOpen(false)}
+          severity= {alertType ? "error" : "success"}
+          sx={{ width: "100%" }}
+        >
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </TableContainer>
   );
 }

@@ -25,7 +25,7 @@ export default function VerifiedShops() {
   //fetch data
   const fetchClientData = async () => {
     const response = await fetch(
-      `${import.meta.env.VITE_APP_URL_BASE}/Client/admin/unverified/${
+      `${import.meta.env.VITE_APP_URL_BASE}/Client/admin/verified/${
         decodedToken.id
       }`,
       {
@@ -82,6 +82,7 @@ export default function VerifiedShops() {
             setFilteredData={setFilteredData}
             data={ClientData}
             loading={ClientDataLoading}
+            refetchClientData={refetchClientData}
           />
         </div>
       </div>

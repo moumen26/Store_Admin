@@ -82,6 +82,7 @@ export default function Shops() {
             setFilteredData={setFilteredData}
             data={ClientData}
             loading={ClientDataLoading}
+            refetchClientData={refetchClientData}
           />
         </div>
       </div>
