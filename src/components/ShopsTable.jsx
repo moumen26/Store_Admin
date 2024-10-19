@@ -19,6 +19,8 @@ import ButtonDark from "./ButtonDark";
 import { TokenDecoder } from "../util/DecodeToken";
 import ConfirmDialog from "./ConfirmDialog";
 
+import { CheckIcon, PencilIcon, XMarkIcon } from "@heroicons/react/24/outline";
+
 // Set the app element for accessibility
 Modal.setAppElement("#root");
 
@@ -34,7 +36,8 @@ function Row(props) {
     setSelectedRow(null);
   };
 
-  const [openBlockClientConfirmation, setOpenBlockClientConfirmation] = useState(false);
+  const [openBlockClientConfirmation, setOpenBlockClientConfirmation] =
+    useState(false);
   const handleOpenBlockClientConfirmation = () => {
     setOpenBlockClientConfirmation(true);
   };
@@ -42,7 +45,8 @@ function Row(props) {
     setOpenBlockClientConfirmation(false);
   };
 
-  const [openVerifieClientConfirmation, setOpenVerifieClientConfirmation] = useState(false);
+  const [openVerifieClientConfirmation, setOpenVerifieClientConfirmation] =
+    useState(false);
   const handleOpenVerifieClientConfirmation = () => {
     setOpenVerifieClientConfirmation(true);
   };
@@ -54,7 +58,12 @@ function Row(props) {
   const handleSelectRow = (row) => {
     setSelectedRow(row);
     props.handleSelectRow(row);
-  }
+  };
+
+  const [isEditing, setIsEditing] = useState(false);
+  const handleEditToggle = () => {
+    setIsEditing(!isEditing);
+  };
 
   return (
     <TableRow sx={{ "& > *": { borderBottom: "unset" } }} className="tableRow">
@@ -77,7 +86,7 @@ function Row(props) {
         <div className="flex justify-end pr-3">
           <EyeIcon
             className="h-6 w-6 text-gray-500 cursor-pointer hover:text-gray-700"
-            onClick={()=>{
+            onClick={() => {
               handleSelectRow(row);
               handleOpenPersonalInfoModal();
             }}
@@ -85,7 +94,7 @@ function Row(props) {
         </div>
       </TableCell>
 
-      {selectedRow &&
+      {selectedRow && (
         <>
           <Modal
             isOpen={openShowPersonalInfo}
@@ -110,10 +119,37 @@ function Row(props) {
           >
             <div className="customerClass pb-0">
               <div className="w-[100%] flex justify-between items-center">
-                <h2 className="customerClassTitle">Personal Information</h2>
+                <div className="flex justify-between items-center">
+                  <h2 className="customerClassTitle">Personal Information</h2>
+                  {isEditing ? (
+                    <div className="flex space-x-4 items-center">
+                      <XMarkIcon
+                        className="h-6 w-6 text-gray-500 cursor-pointer hover:text-gray-700"
+                        onClick={handleEditToggle}
+                      />
+                      <CheckIcon
+                        className="h-6 w-6 text-green-500 cursor-pointer hover:text-green-700"
+                        // onClick={handleConfirmModalProduct}
+                      />
+                    </div>
+                  ) : (
+                    <div className="flex space-x-4 items-center">
+                      <PencilIcon
+                        className="h-6 w-6 text-gray-500 cursor-pointer hover:text-gray-700"
+                        onClick={handleEditToggle}
+                      />
+                    </div>
+                  )}
+                </div>
                 <div>
-                  <ButtonDark buttonSpan="Verifie" setOnClick={handleOpenVerifieClientConfirmation} />
-                  <ButtonDark buttonSpan="Block" setOnClick={handleOpenBlockClientConfirmation} />
+                  <ButtonDark
+                    buttonSpan="Verifie"
+                    setOnClick={handleOpenVerifieClientConfirmation}
+                  />
+                  <ButtonDark
+                    buttonSpan="Block"
+                    setOnClick={handleOpenBlockClientConfirmation}
+                  />
                 </div>
               </div>
               <div className="personalInformation mt-[16px]">
@@ -157,9 +193,21 @@ function Row(props) {
                   <span className="personalInformationSpan">
                     Commercial register number
                   </span>
-                  <h3 className="personalInformationDetails">
-                    {selectedRow?.r_commerce}
-                  </h3>
+                  {isEditing ? (
+                    <div className="inputForm flex items-center">
+                      <input
+                        type="text"
+                        name="registerNumber"
+                        // value={}
+                        // onChange={}
+                        className="inputField"
+                      />
+                    </div>
+                  ) : (
+                    <h3 className="personalInformationDetails">
+                      {selectedRow?.r_commerce}
+                    </h3>
+                  )}
                 </div>
               </div>
               <div className="flex justify-end space-x-8 mt-[20px]">
@@ -191,8 +239,7 @@ function Row(props) {
             isloading={props.submitionLoading}
           />
         </>
-      }
-      
+      )}
     </TableRow>
   );
 }
@@ -214,7 +261,7 @@ export default function ShopsTable({
   const [selectedRow, setSelectedRow] = useState(null);
   const handleSelectRow = (row) => {
     setSelectedRow(row);
-  }
+  };
 
   useEffect(() => {
     setFilteredRows(
@@ -239,7 +286,8 @@ export default function ShopsTable({
     try {
       setSubmitionLoading(true);
       const response = await axios.patch(
-        import.meta.env.VITE_APP_URL_BASE + `/Client/admin/block/${decodedToken.id}`,
+        import.meta.env.VITE_APP_URL_BASE +
+          `/Client/admin/block/${decodedToken.id}`,
         {
           client: selectedRow._id,
         },
@@ -285,7 +333,8 @@ export default function ShopsTable({
     try {
       setSubmitionLoading(true);
       const response = await axios.patch(
-        import.meta.env.VITE_APP_URL_BASE + `/Client/admin/verify/${decodedToken.id}`,
+        import.meta.env.VITE_APP_URL_BASE +
+          `/Client/admin/verify/${decodedToken.id}`,
         {
           client: selectedRow._id,
         },
@@ -388,7 +437,7 @@ export default function ShopsTable({
       >
         <Alert
           onClose={() => setSnackbarOpen(false)}
-          severity= {alertType ? "error" : "success"}
+          severity={alertType ? "error" : "success"}
           sx={{ width: "100%" }}
         >
           {snackbarMessage}
