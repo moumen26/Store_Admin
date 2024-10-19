@@ -27,34 +27,12 @@ Modal.setAppElement("#root");
 function Row(props) {
   const { row } = props;
 
-  const [openShowPersonalInfo, setOpenShowPersonalInfo] = useState(false);
-  const handleOpenPersonalInfoModal = () => {
-    setOpenShowPersonalInfo(true);
-  };
-  const handleClosePersonalInfoModal = () => {
-    setOpenShowPersonalInfo(false);
-    setSelectedRow(null);
-  };
-
   const [selectedRow, setSelectedRow] = useState(null);
   const handleSelectRow = (row) => {
     setSelectedRow(row);
     props.handleSelectRow(row);
   };
 
-  const [openBlockClientConfirmation, setOpenBlockClientConfirmation] =
-    useState(false);
-  const handleOpenBlockClientConfirmation = () => {
-    setOpenBlockClientConfirmation(true);
-  };
-  const handleCloseBlockClientConfirmation = () => {
-    setOpenBlockClientConfirmation(false);
-  };
-
-  const [isEditing, setIsEditing] = useState(false);
-  const handleEditToggle = () => {
-    setIsEditing(!isEditing);
-  };
 
   return (
     <TableRow sx={{ "& > *": { borderBottom: "unset" } }} className="tableRow">
@@ -79,7 +57,7 @@ function Row(props) {
             className="h-6 w-6 text-gray-500 cursor-pointer hover:text-gray-700"
             onClick={() => {
               handleSelectRow(row);
-              handleOpenPersonalInfoModal();
+              props.handleOpenPersonalInfoModal();
             }}
           />
         </div>
@@ -88,8 +66,8 @@ function Row(props) {
       {selectedRow && (
         <>
           <Modal
-            isOpen={openShowPersonalInfo}
-            onRequestClose={handleClosePersonalInfoModal}
+            isOpen={props.openShowPersonalInfo}
+            onRequestClose={props.handleClosePersonalInfoModal}
             contentLabel="Show Personal Information"
             style={{
               overlay: {
@@ -112,30 +90,11 @@ function Row(props) {
               <div className="w-[100%] flex justify-between items-center">
                 <div className="flex justify-between items-center">
                   <h2 className="customerClassTitle">Personal Information</h2>
-                  {isEditing ? (
-                    <div className="flex space-x-4 items-center">
-                      <XMarkIcon
-                        className="h-6 w-6 text-gray-500 cursor-pointer hover:text-gray-700"
-                        onClick={handleEditToggle}
-                      />
-                      <CheckIcon
-                        className="h-6 w-6 text-green-500 cursor-pointer hover:text-green-700"
-                        // onClick={handleConfirmModalProduct}
-                      />
-                    </div>
-                  ) : (
-                    <div className="flex space-x-4 items-center">
-                      <PencilIcon
-                        className="h-6 w-6 text-gray-500 cursor-pointer hover:text-gray-700"
-                        onClick={handleEditToggle}
-                      />
-                    </div>
-                  )}
                 </div>
                 <div>
                   <ButtonDark
                     buttonSpan="Block"
-                    setOnClick={handleOpenBlockClientConfirmation}
+                    setOnClick={props.handleOpenBlockClientConfirmation}
                   />
                 </div>
               </div>
@@ -180,27 +139,15 @@ function Row(props) {
                   <span className="personalInformationSpan">
                     Commercial register number
                   </span>
-                  {isEditing ? (
-                    <div className="inputForm flex items-center">
-                      <input
-                        type="text"
-                        name="registerNumber"
-                        // value={}
-                        // onChange={}
-                        className="inputField"
-                      />
-                    </div>
-                  ) : (
-                    <h3 className="personalInformationDetails">
-                      {selectedRow?.r_commerce}
-                    </h3>
-                  )}
+                  <h3 className="personalInformationDetails">
+                    {selectedRow?.r_commerce}
+                  </h3>
                 </div>
               </div>
               <div className="flex justify-end space-x-8 mt-[20px]">
                 <button
                   className="text-gray-500 cursor-pointer hover:text-gray-700"
-                  onClick={handleClosePersonalInfoModal}
+                  onClick={props.handleClosePersonalInfoModal}
                 >
                   Cancel
                 </button>
@@ -208,8 +155,8 @@ function Row(props) {
             </div>
           </Modal>
           <ConfirmDialog
-            open={openBlockClientConfirmation}
-            onClose={handleCloseBlockClientConfirmation}
+            open={props.openBlockClientConfirmation}
+            onClose={props.handleCloseBlockClientConfirmation}
             onConfirm={props.handleConfirmBlockClient}
             dialogTitle={"Confirm block client"}
             dialogContentText={`Are you sure you want to block ${selectedRow?.firstName} ${selectedRow?.lastName} ?`}
@@ -238,6 +185,24 @@ export default function VerifiedShopsTable({
   const [selectedRow, setSelectedRow] = useState(null);
   const handleSelectRow = (row) => {
     setSelectedRow(row);
+  };
+
+  const [openShowPersonalInfo, setOpenShowPersonalInfo] = useState(false);
+  const handleOpenPersonalInfoModal = () => {
+    setOpenShowPersonalInfo(true);
+  };
+  const handleClosePersonalInfoModal = () => {
+    setOpenShowPersonalInfo(false);
+    setSelectedRow(null);
+  };
+
+  const [openBlockClientConfirmation, setOpenBlockClientConfirmation] =
+    useState(false);
+  const handleOpenBlockClientConfirmation = () => {
+    setOpenBlockClientConfirmation(true);
+  };
+  const handleCloseBlockClientConfirmation = () => {
+    setOpenBlockClientConfirmation(false);
   };
 
   useEffect(() => {
@@ -344,9 +309,20 @@ export default function VerifiedShopsTable({
               <Row
                 key={row._id}
                 row={row}
+
                 handleSelectRow={handleSelectRow}
+
                 submitionLoading={submitionLoading}
                 handleConfirmBlockClient={handleConfirmBlockClient}
+
+                openShowPersonalInfo={openShowPersonalInfo}
+                handleOpenPersonalInfoModal={handleOpenPersonalInfoModal}
+                handleClosePersonalInfoModal={handleClosePersonalInfoModal}
+
+                openBlockClientConfirmation={openBlockClientConfirmation}
+                handleOpenBlockClientConfirmation={handleOpenBlockClientConfirmation}
+                handleCloseBlockClientConfirmation={handleCloseBlockClientConfirmation}
+
               />
             ))
           ) : (
