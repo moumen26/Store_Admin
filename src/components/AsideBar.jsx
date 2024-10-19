@@ -27,16 +27,20 @@ export default function Asidebar() {
   };
 
   const [isShopsOpen, setisShopsOpen] = useState(false);
+  const [isStoresOpen, setisStoresOpen] = useState(false);
 
-  const handleOrdersClick = () => {
+  const handleShopsClick = () => {
     setisShopsOpen((prevState) => !prevState);
+  };
+
+  const handleStoresClick = () => {
+    setisStoresOpen((prevState) => !prevState);
   };
 
   const handleClickOutside = (event) => {
     if (!event.target.closest(".sidebar")) {
-      setIsProductsOpen(false);
       setisShopsOpen(false);
-      setIsAchatsOpen(false);
+      setisStoresOpen(false);
     }
   };
 
@@ -73,30 +77,6 @@ export default function Asidebar() {
           </NavLink>
         </li>
         <li>
-          <NavLink to="/Customers" className=" flex items-center">
-            <div
-              className={`flex items-center itemAsideBar ${
-                location.pathname === "/Customers" ? "asideItemActive" : ""
-              }`}
-            >
-              <BuildingStorefrontIcon className="iconAsideBar" />
-              <span className="ml-3">Stores</span>
-            </div>
-          </NavLink>
-        </li>
-        <li>
-          <NavLink to="/InactiveStore" className=" flex items-center">
-            <div
-              className={`flex items-center itemAsideBar AuthenticationItemAsideBar  ${
-                location.pathname === "/InactiveStore" ? "asideItemActive" : ""
-              }`}
-            >
-              <UserGroupIcon className="iconAsideBar" />
-              <span className="ml-3">Inactive Stores</span>
-            </div>
-          </NavLink>
-        </li>
-        <li>
           <NavLink to="/Authentication" className=" flex items-center">
             <div
               className={`flex items-center itemAsideBar AuthenticationItemAsideBar  ${
@@ -113,7 +93,53 @@ export default function Asidebar() {
             <div className="flex items-center cursor-pointer">
               <div
                 className={`flex items-center justify-between itemAsideBar`}
-                onClick={handleOrdersClick}
+                onClick={handleStoresClick}
+              >
+                <div className="flex">
+                  <BuildingStorefrontIcon className="iconAsideBar" />
+                  <span className="ml-3">Stores</span>
+                </div>
+                <ChevronDownIcon
+                  className={`iconPages ${isStoresOpen ? "rotate-180" : ""}`}
+                />
+              </div>
+            </div>
+            {isStoresOpen && (
+              <div className="flex-col space-y-[8px]">
+                <NavLink to="/Customers" className=" flex items-center">
+                  <div
+                    className={`flex items-center itemAsideBar AuthenticationItemAsideBar  ${
+                      location.pathname === "/Customers"
+                        ? "asideItemActive"
+                        : ""
+                    }`}
+                  >
+                    <Square2StackIcon className="iconAsideBar opacity-0" />
+                    <span className="ml-3">Active Stores</span>
+                  </div>
+                </NavLink>
+                <NavLink to="/InactiveStore" className="flex items-center">
+                  <div
+                    className={`flex items-center itemAsideBar ${
+                      location.pathname === "/InactiveStore"
+                        ? "asideItemActive"
+                        : ""
+                    }`}
+                  >
+                    <Square2StackIcon className="iconAsideBar opacity-0" />
+                    <span className="ml-3">Inactive Stores</span>
+                  </div>
+                </NavLink>
+              </div>
+            )}
+          </li>
+        </div>
+        <div className="flex-col space-y-[8px] sidebar">
+          <li className="flex-col space-y-[8px]">
+            <div className="flex items-center cursor-pointer">
+              <div
+                className={`flex items-center justify-between itemAsideBar`}
+                onClick={handleShopsClick}
               >
                 <div className="flex">
                   <UsersIcon className="iconAsideBar" />
