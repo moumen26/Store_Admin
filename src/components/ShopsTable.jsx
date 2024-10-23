@@ -15,7 +15,7 @@ import { CircularProgress } from "@mui/material";
 import { useAuthContext } from "../hooks/useAuthContext";
 import axios from "axios";
 import Modal from "react-modal";
-import ButtonDark from "./ButtonDark";
+import ButtonAdd from "./ButtonAdd";
 import { TokenDecoder } from "../util/DecodeToken";
 import ConfirmDialog from "./ConfirmDialog";
 
@@ -27,16 +27,16 @@ Modal.setAppElement("#root");
 function Row(props) {
   const { row } = props;
 
-  const handleUpdatedRChange = (e) =>{
+  const handleUpdatedRChange = (e) => {
     props.setUpdatedRC(e.target.value);
-  }
+  };
 
   const [selectedRow, setSelectedRow] = useState(null);
   const handleSelectRow = (row) => {
     setSelectedRow(row);
     props.handleSelectRow(row);
   };
-  
+
   return (
     <TableRow sx={{ "& > *": { borderBottom: "unset" } }} className="tableRow">
       <TableCell className="tableCell">
@@ -91,13 +91,17 @@ function Row(props) {
           >
             <div className="customerClass pb-0">
               <div className="w-[100%] flex justify-between items-center">
-                <div className="flex justify-between items-center">
+                <div className="flex space-x-4 items-center">
                   <h2 className="customerClassTitle">Personal Information</h2>
                   {props.isEditing ? (
                     <div className="flex space-x-4 items-center">
                       <XMarkIcon
                         className="h-6 w-6 text-gray-500 cursor-pointer hover:text-gray-700"
                         onClick={props.handleCloseEditToggle}
+                      />
+                      <CheckIcon
+                        className="h-6 w-6 text-green-500 cursor-pointer hover:text-green-700"
+                        onClick={props.handleOpenVerifieClientConfirmation}
                       />
                     </div>
                   ) : (
@@ -109,15 +113,16 @@ function Row(props) {
                     </div>
                   )}
                 </div>
-                <div>
-                  <ButtonDark
-                    buttonSpan="Verifie"
-                    setOnClick={props.handleOpenVerifieClientConfirmation}
-                  />
-                  <ButtonDark
-                    buttonSpan="Block"
-                    setOnClick={props.handleOpenBlockClientConfirmation}
-                  />
+                <div className="flex space-x-4">
+                  {props.isEditing ? (
+                    <></>
+                  ) : (
+                    <ButtonAdd
+                      showIcon={false}
+                      buttonSpan="Block"
+                      setOnClick={props.handleOpenBlockClientConfirmation}
+                    />
+                  )}
                 </div>
               </div>
               <div className="personalInformation mt-[16px]">
@@ -345,7 +350,7 @@ export default function ShopsTable({
           `/Client/admin/verify/${decodedToken.id}`,
         {
           client: selectedRow._id,
-          RC: updatedRC
+          RC: updatedRC,
         },
         {
           headers: {
@@ -423,32 +428,32 @@ export default function ShopsTable({
               <Row
                 key={row._id}
                 row={row}
-
                 handleSelectRow={handleSelectRow}
-
                 submitionLoading={submitionLoading}
                 handleConfirmBlockClient={handleConfirmBlockClient}
                 handleConfirmVerifieClient={handleConfirmVerifieClient}
-                
                 setUpdatedRC={setUpdatedRC}
                 updatedRC={updatedRC}
-
                 isEditing={isEditing}
                 handleCloseEditToggle={handleCloseEditToggle}
                 handleOpenEditToggle={handleOpenEditToggle}
-
                 openShowPersonalInfo={openShowPersonalInfo}
                 handleOpenPersonalInfoModal={handleOpenPersonalInfoModal}
                 handleClosePersonalInfoModal={handleClosePersonalInfoModal}
-
                 openBlockClientConfirmation={openBlockClientConfirmation}
-                handleOpenBlockClientConfirmation={handleOpenBlockClientConfirmation}
-                handleCloseBlockClientConfirmation={handleCloseBlockClientConfirmation}
-
+                handleOpenBlockClientConfirmation={
+                  handleOpenBlockClientConfirmation
+                }
+                handleCloseBlockClientConfirmation={
+                  handleCloseBlockClientConfirmation
+                }
                 openVerifieClientConfirmation={openVerifieClientConfirmation}
-                handleOpenVerifieClientConfirmation={handleOpenVerifieClientConfirmation}
-                handleCloseVerifieClientConfirmation={handleCloseVerifieClientConfirmation}
-
+                handleOpenVerifieClientConfirmation={
+                  handleOpenVerifieClientConfirmation
+                }
+                handleCloseVerifieClientConfirmation={
+                  handleCloseVerifieClientConfirmation
+                }
               />
             ))
           ) : (
