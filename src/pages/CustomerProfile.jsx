@@ -81,7 +81,43 @@ export default function CustomerProfile() {
     refetchOnWindowFocus: true, // Optional: refetching on window focus
   });
 
-  if (StoreDataLoading) {
+  // Define a function that fetches the subscriptions data
+  const fetchSubscriptionsData = async () => {
+    const response = await fetch(
+      `${import.meta.env.VITE_APP_URL_BASE}/SubscriptionStore/${id}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user?.token}`,
+        },
+      }
+    );
+
+    if (!response.ok) {
+      // Handle the error state
+      const errorData = await response.json();
+      if (errorData.error.statusCode == 404) return {};
+      else throw new Error("Error receiving subscriptions data");
+    }
+    // Return the data
+    return await response.json();
+  };
+
+  //Use the useQuery hook to fetch the Store data
+  const {
+    data: SubscriptionsData,
+    error: SubscriptionsDataError,
+    isLoading: SubscriptionsDataLoading,
+    refetch: refetchSubscriptionsData,
+  } = useQuery({
+    queryKey: ["SubscriptionsData", user?.token, location.key, id],
+    queryFn: fetchSubscriptionsData,
+    enabled: !!user?.token, // Ensure the query runs only if the user is authenticated
+    refetchOnWindowFocus: true, // Optional: refetching on window focus
+  });
+
+  if (StoreDataLoading || SubscriptionsDataLoading) {
     return (
       <div className="pagesContainer h-[100vh]">
         <Header />
@@ -261,14 +297,9 @@ export default function CustomerProfile() {
           />
           <CustomerStatsCard
             customerStatsCardTitle="Total Amount"
-            customerStatsCardDetails={StoreData?.subscriptions.reduce(
+            customerStatsCardDetails={SubscriptionsData?.reduce(
               (total, subscription) => {
-                const startDate = moment(subscription.startDate);
-                const expiryDate = moment(subscription.expiryDate);
-
-                const months = expiryDate.diff(startDate, "months", true);
-
-                return total + subscription.amount * months;
+                return total + subscription.amount;
               },
               0
             )}
@@ -280,8 +311,9 @@ export default function CustomerProfile() {
         <CustomerProfileAbonnementTable
           searchQuery={searchQuery}
           setFilteredData={setFilteredData}
-          data={StoreData?.subscriptions}
-          loading={StoreDataLoading}
+          data={SubscriptionsData}
+          loading={SubscriptionsDataLoading}
+          handleRefetchDataChange={refetchSubscriptionsData}
         />
       </div>
     </div>

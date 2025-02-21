@@ -109,14 +109,18 @@ function AddSubscriptionDialog({
               </div>
               <div className="dialogAddCustomerItem items-center">
                 <span>Expiry Months:</span>
-                <div className="inputForm">
-                  <input
-                    type="text"
+                <div className="selectStoreWilayaCommune w-[500px]">
+                  <select
                     name="expiryMonths"
                     value={expiryMonths}
                     onChange={handelExpiryMonthsChange}
-                    min={0}
-                  />
+                  >
+                    <option value="" >-- Select Duration --</option>
+                    <option value="1">Month</option>
+                    <option value="3">Trimester</option>
+                    <option value="6">Semester</option>
+                    <option value="12">Year</option>
+                  </select>
                 </div>
               </div>
             </div>

@@ -93,14 +93,6 @@ function Row(props) {
     return () => clearInterval(interval);
   }, [row.startDate, row.expiryDate]);
 
-  const calcTotalAmount = () => {
-    const startDate = moment(row.startDate);
-    const expiryDate = moment(row.expiryDate);
-
-    const months = expiryDate.diff(startDate, 'months', true);
-
-    return row.amount * months;
-  }
 
   return (
     <React.Fragment>
@@ -128,7 +120,7 @@ function Row(props) {
 
         <TableCell className="tableCell">
           <span className="trTableSpan">
-            {calcTotalAmount()} DA
+            {row?.amount} DA
           </span>
         </TableCell>
         
@@ -147,7 +139,8 @@ export default function CustomerProfileAbonnementTable({
   searchQuery,
   setFilteredData,
   data,
-  loading
+  loading,
+  handleRefetchDataChange
 }) {
   return (
     <>
@@ -183,11 +176,11 @@ export default function CustomerProfileAbonnementTable({
                   <CircularProgress color="inherit" />
                 </TableCell>
               </TableRow>
-            ) : data.length > 0 ? (
-              data.map((row) => <Row key={row._id} row={row} />)
+            ) : data?.length > 0 ? (
+              data?.map((row) => <Row key={row._id} row={row} />)
             ) : (
               <TableRow>
-                <TableCell colSpan={4} align="center">
+                <TableCell colSpan={5} align="center">
                   <span className="thTableSpan">No abonnement found</span>
                 </TableCell>
               </TableRow>
