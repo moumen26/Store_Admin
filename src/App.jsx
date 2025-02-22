@@ -17,6 +17,7 @@ import BlockedShops from "./pages/BlockedShops";
 import VerifiedShops from "./pages/VerifiedShops";
 import InactiveStore from "./pages/InactiveStore";
 import Publicité from "./pages/Publicité";
+import RequestStore from "./pages/RequestStore";
 
 function App() {
   const { user } = useAuthContext();
@@ -46,6 +47,10 @@ function App() {
           <Route
             path="/Customers"
             element={user ? <Customers /> : <SignIn />}
+          />
+          <Route
+            path="/Customer/Requests"
+            element={user ? <RequestStore /> : <SignIn />}
           />
           <Route path="/Shops" element={user ? <Shops /> : <SignIn />} />
           <Route

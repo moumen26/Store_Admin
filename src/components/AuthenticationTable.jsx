@@ -18,6 +18,7 @@ import { Add } from "@mui/icons-material";
 import axios from "axios";
 import Modal from "react-modal";
 import { useQuery } from "@tanstack/react-query";
+import { TokenDecoder } from "../util/DecodeToken";
 
 // Set the app element for accessibility
 Modal.setAppElement("#root");
@@ -26,6 +27,7 @@ function Row(props) {
   const { row, handleConfirmAlert, handleRefetchDataChange } = props;
   const navigate = useNavigate();
   const { user } = useAuthContext();
+  const decodedToken = TokenDecoder();
 
   const [open, setOpen] = useState(false);
   const handleInactiveClick = () => {
@@ -89,7 +91,7 @@ function Row(props) {
     try {
       setSubmitionLoading(true);
       const response = await axios.post(
-        import.meta.env.VITE_APP_URL_BASE + `/SubscriptionStore/create`,
+        import.meta.env.VITE_APP_URL_BASE + `/SubscriptionStore/create/admin/${decodedToken?.id}`,
         {
           Store: row._id,
           Subscription: subscriptionID,

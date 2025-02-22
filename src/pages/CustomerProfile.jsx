@@ -8,7 +8,7 @@ import CustomerProfileAbonnementTable from "../components/CustomerProfileAbonnem
 import { useQuery } from "@tanstack/react-query";
 import { useAuthContext } from "../hooks/useAuthContext";
 import { CircularProgress } from "@mui/material";
-import moment from "moment";
+import { TokenDecoder } from "../util/DecodeToken";
 import ButtonEye from "../components/ButtonEye";
 import Modal from "react-modal";
 import PubSwiperStoreProfile from "../components/PubSwiperStoreProfile";
@@ -19,6 +19,7 @@ Modal.setAppElement("#root");
 export default function CustomerProfile() {
   const { user } = useAuthContext();
   const { id } = useParams();
+  const decodedToken = TokenDecoder();
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -84,7 +85,7 @@ export default function CustomerProfile() {
   // Define a function that fetches the subscriptions data
   const fetchSubscriptionsData = async () => {
     const response = await fetch(
-      `${import.meta.env.VITE_APP_URL_BASE}/SubscriptionStore/${id}`,
+      `${import.meta.env.VITE_APP_URL_BASE}/SubscriptionStore/bystore/${decodedToken?.id}/${id}`,
       {
         method: "GET",
         headers: {
@@ -293,16 +294,16 @@ export default function CustomerProfile() {
         <div className="flex space-x-4">
           <CustomerStatsCard
             customerStatsCardTitle="Total Abonnements"
-            customerStatsCardDetails={StoreData?.subscriptions.length}
+            customerStatsCardDetails={SubscriptionsData?.length || 0}
           />
           <CustomerStatsCard
             customerStatsCardTitle="Total Amount"
-            customerStatsCardDetails={SubscriptionsData?.reduce(
+            customerStatsCardDetails={SubscriptionsData?.length > 0 ? SubscriptionsData?.reduce(
               (total, subscription) => {
                 return total + subscription.amount;
               },
               0
-            )}
+            ) : 0}
           />
         </div>
       </div>

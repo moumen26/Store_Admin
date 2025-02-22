@@ -11,9 +11,11 @@ import { EyeIcon } from "@heroicons/react/24/outline";
 import { useNavigate } from "react-router-dom";
 import { Alert, CircularProgress, Snackbar } from "@mui/material";
 import { useAuthContext } from "../hooks/useAuthContext";
-import AddSubscriptionDialog from "./AddSubscriptionDialog";
+import ConfirmDialog from "./ConfirmDialog";
+
 import axios from "axios";
 import { TokenDecoder } from "../util/DecodeToken";
+import { formatDate } from "../util/useFullFunctions";
 
 function Row(props) {
   const { row, handleConfirmAlert, handleRefetchDataChange } = props;
@@ -22,10 +24,10 @@ function Row(props) {
   const decodedToken = TokenDecoder();
 
   const handleViewClick = () => {
-    navigate(`/CustomerProfile/${row._id}`);
+    navigate(`/CustomerProfile/${row?.store?._id}`);
   };
   const [open, setOpen] = useState(false);
-  const handleInactiveClick = () => {
+  const handleOpenDialog = () => {
     setOpen(true);
   };
 
@@ -34,16 +36,12 @@ function Row(props) {
   };
 
   const [submitionLoading, setSubmitionLoading] = useState(false);
-  const handleConfirm = async (subscriptionID, expiryMonths) => {
+  const handleValidateRequest = async () => {
     try {
       setSubmitionLoading(true);
-      const response = await axios.post(
-        import.meta.env.VITE_APP_URL_BASE + `/SubscriptionStore/create/admin/${decodedToken?.id}`,
-        {
-          Store: row._id,
-          Subscription: subscriptionID,
-          expiryMonths: expiryMonths,
-        },
+      const response = await axios.patch(
+        import.meta.env.VITE_APP_URL_BASE + `/SubscriptionStore/validate/${decodedToken?.id}/${row._id}`,
+        {},
         {
           headers: {
             "Content-Type": "application/json",
@@ -65,10 +63,10 @@ function Row(props) {
         setSubmitionLoading(false);
       } else if (error.request) {
         // Request was made but no response was received
-        console.error("Error creating subscription: No response received");
+        console.error("Error validating subscription: No response received");
       } else {
         // Something happened in setting up the request that triggered an Error
-        console.error("Error creating subscription", error);
+        console.error("Error validating subscription", error);
       }
     }
   };
@@ -76,27 +74,33 @@ function Row(props) {
   return (
     <TableRow sx={{ "& > *": { borderBottom: "unset" } }} className="tableRow">
       <TableCell className="tableCell">
-        <span className="trTableSpan">{row._id}</span>
+        <span className="trTableSpan">{row?.store?.storeName}</span>
       </TableCell>
       <TableCell className="tableCell">
         <span className="trTableSpan">
-          <span className="mr-1 trTableSpan">{row.firstName}</span>
-          <span className="trTableSpan">{row.lastName}</span>
+          <span className="mr-1 trTableSpan">{row?.store?.firstName}</span>
+          <span className="trTableSpan">{row?.store?.lastName}</span>
         </span>
       </TableCell>
       <TableCell className="tableCell">
-        <span className="trTableSpan">{row.phoneNumber}</span>
+        <span className="trTableSpan">{row?.store?.phoneNumber}</span>
       </TableCell>
       <TableCell className="tableCell">
-        <span className="trTableSpan">{row.wilaya}</span>
-      </TableCell>
-      <TableCell align="right" className="tableCell">
-        <span className="trTableSpan">{row.commune}</span>
+        <span className="trTableSpan">{row?.subscription?.name}</span>
       </TableCell>
       <TableCell className="tableCell">
-        <div className="activeClass" onClick={handleInactiveClick}>
+        <span className="trTableSpan">{row?.amount} DA</span>
+      </TableCell>
+      <TableCell className="tableCell">
+        <span className="trTableSpan">{formatDate(row?.startDate)}</span>
+      </TableCell>
+      <TableCell className="tableCell">
+        <span className="trTableSpan">{formatDate(row?.expiryDate)}</span>
+      </TableCell>
+      <TableCell className="tableCell">
+        <div className="activeClass" onClick={handleOpenDialog}>
           <div className="cercleActive"></div>
-          <span className="inactiveSpan trTableSpan">Suspended</span>
+          <span className="inactiveSpan trTableSpan">Activate</span>
         </div>
       </TableCell>
       <TableCell align="right" className="tableCell">
@@ -107,12 +111,12 @@ function Row(props) {
           />
         </div>
       </TableCell>
-      <AddSubscriptionDialog
+      <ConfirmDialog
         open={open}
         onClose={handleClose}
-        onConfirm={handleConfirm}
-        dialogTitle="Add new subscription"
-        dialogContentText="Are you sure you want to add a new subscription?"
+        onConfirm={handleValidateRequest}
+        dialogTitle="Activate Subscription"
+        dialogContentText="Are you sure you want to activate this subscription?"
         isloading={submitionLoading}
       />
     </TableRow>
@@ -123,7 +127,7 @@ Row.propTypes = {
   row: PropTypes.object.isRequired,
 };
 
-export default function InactiveStores({ 
+export default function RequestStoreTable({ 
   searchQuery,
   setFilteredData,
   data,
@@ -136,12 +140,13 @@ export default function InactiveStores({
     setFilteredRows(
       data?.filter(
         (row) =>
-          row?.firstName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          row?.lastName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          row?.customerId?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          row?.phoneNumber?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          row?.wilaya?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          row?.commune?.toLowerCase().includes(searchQuery.toLowerCase())
+          row?.store?.firstName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          row?.store?.lastName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          row?.store?._id?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          row?.store?.phoneNumber?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          row?.store?.storeName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          row?.store?.startDate?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          row?.subscription?.name?.toLowerCase().includes(searchQuery.toLowerCase())
       )
     );
     setFilteredData(filteredRows);
@@ -168,19 +173,25 @@ export default function InactiveStores({
           <TableHead>
             <TableRow>
               <TableCell className="tableCell">
-                <span className="thTableSpan">Store_ID</span>
+                <span className="thTableSpan">Store name</span>
               </TableCell>
               <TableCell className="tableCell">
-                <span className="thTableSpan">Name</span>
+                <span className="thTableSpan">Fullname</span>
               </TableCell>
               <TableCell className="tableCell">
-                <span className="thTableSpan">Phone Number</span>
+                <span className="thTableSpan">Phone number</span>
               </TableCell>
               <TableCell className="tableCell">
-                <span className="thTableSpan">Wilaya</span>
+                <span className="thTableSpan">Subscription</span>
               </TableCell>
-              <TableCell align="right" className="tableCell">
-                <span className="thTableSpan">Commune</span>
+              <TableCell className="tableCell">
+                <span className="thTableSpan">Amount</span>
+              </TableCell>
+              <TableCell className="tableCell">
+                <span className="thTableSpan">Start date</span>
+              </TableCell>
+              <TableCell className="tableCell">
+                <span className="thTableSpan">Expiry date</span>
               </TableCell>
               <TableCell className="tableCell">
                 <span className="thTableSpan">Status</span>
@@ -207,7 +218,7 @@ export default function InactiveStores({
           ) : (
             <TableRow>
               <TableCell colSpan={7} align="center">
-                <span className="thTableSpan">No store found</span>
+                <span className="thTableSpan">No requests found</span>
               </TableCell>
             </TableRow>
           )}

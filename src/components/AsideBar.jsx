@@ -106,6 +106,18 @@ export default function Asidebar() {
             </div>
             {isStoresOpen && (
               <div className="flex-col space-y-[8px]">
+                <NavLink to="/Customer/Requests" className=" flex items-center">
+                  <div
+                    className={`flex items-center itemAsideBar AuthenticationItemAsideBar  ${
+                      location.pathname === "/Customer/Requests"
+                        ? "asideItemActive"
+                        : ""
+                    }`}
+                  >
+                    <Square2StackIcon className="iconAsideBar opacity-0" />
+                    <span className="ml-3">Store requests</span>
+                  </div>
+                </NavLink>
                 <NavLink to="/Customers" className=" flex items-center">
                   <div
                     className={`flex items-center itemAsideBar AuthenticationItemAsideBar  ${
@@ -115,7 +127,7 @@ export default function Asidebar() {
                     }`}
                   >
                     <Square2StackIcon className="iconAsideBar opacity-0" />
-                    <span className="ml-3">Active Stores</span>
+                    <span className="ml-3">Active stores</span>
                   </div>
                 </NavLink>
                 <NavLink to="/InactiveStore" className="flex items-center">
@@ -127,7 +139,7 @@ export default function Asidebar() {
                     }`}
                   >
                     <Square2StackIcon className="iconAsideBar opacity-0" />
-                    <span className="ml-3">Inactive Stores</span>
+                    <span className="ml-3">Inactive stores</span>
                   </div>
                 </NavLink>
               </div>
