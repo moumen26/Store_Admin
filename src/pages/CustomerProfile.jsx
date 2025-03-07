@@ -176,7 +176,7 @@ export default function CustomerProfile() {
           }}
         >
           <div className="customerClass pb-0">
-            <h2 className="customerClassTitle">Voir Publicité</h2>
+            <h2 className="dialogTitle">Voir Publicité</h2>
             <div className="flex-col space-y-4">
               <PubSwiperStoreProfile 
                 user={user}
@@ -194,7 +194,7 @@ export default function CustomerProfile() {
           </div>
         </Modal>
       </div>
-      <div className="customerClass">
+      <div className="customerClass paddingClass">
         <h2 className="customerClassTitle">Personal Information</h2>
         <div className="personalInformation">
           {StoreData?.firstName && (
@@ -289,7 +289,7 @@ export default function CustomerProfile() {
         </div>
       </div>
 
-      <div className="customerClass">
+      <div className="customerClass paddingClass">
         <h2 className="customerClassTitle">Stats</h2>
         <div className="flex space-x-4">
           <CustomerStatsCard
@@ -307,7 +307,7 @@ export default function CustomerProfile() {
           />
         </div>
       </div>
-      <div className="customerClass customerOrdersClass">
+      <div className="customerClass customerOrdersClass paddingClass justify-start">
         <h2 className="customerClassTitle">Abonnements</h2>
         <CustomerProfileAbonnementTable
           searchQuery={searchQuery}

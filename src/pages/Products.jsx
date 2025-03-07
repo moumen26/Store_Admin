@@ -90,19 +90,23 @@ export default function Products() {
     setIsAddBrandModalOpen(false);
   };
 
-  const [AddNewCategoryConfirmationDialog, setAddNewCategoryConfirmationDialog] = useState(false);
+  const [
+    AddNewCategoryConfirmationDialog,
+    setAddNewCategoryConfirmationDialog,
+  ] = useState(false);
   const handleOpenAddNewCategoryConfirmationDialog = () => {
     setAddNewCategoryConfirmationDialog(true);
-  }
-  const [AddNewBrandConfirmationDialog, setAddNewBrandConfirmationDialog] = useState(false);
+  };
+  const [AddNewBrandConfirmationDialog, setAddNewBrandConfirmationDialog] =
+    useState(false);
   const handleOpenAddNewBrandConfirmationDialog = () => {
     setAddNewBrandConfirmationDialog(true);
-  }
+  };
 
-  const handleCloseConfirmationDialog = () =>{
+  const handleCloseConfirmationDialog = () => {
     setAddNewCategoryConfirmationDialog(false);
     setAddNewBrandConfirmationDialog(false);
-  }
+  };
   const [image, setImage] = useState(null);
   const fileInputRef = useRef(null);
 
@@ -286,7 +290,7 @@ export default function Products() {
     }
   };
 
-  const [CategoryName, setCategoryName] = useState('');
+  const [CategoryName, setCategoryName] = useState("");
   const handleConfirmAddNewCategory = async () => {
     try {
       setSubmitionLoading(true);
@@ -309,7 +313,7 @@ export default function Products() {
         CategoryRefetch();
         setSubmitionLoading(false);
         handleCloseConfirmationDialog();
-        setCategoryName('');
+        setCategoryName("");
       } else {
         setAlertType(true);
         setSnackbarMessage(response.data.message);
@@ -331,8 +335,8 @@ export default function Products() {
       }
     }
   };
-  const [BrandName, setBrandName] = useState('');
-  const [BrandCode, setBrandCode] = useState('');
+  const [BrandName, setBrandName] = useState("");
+  const [BrandCode, setBrandCode] = useState("");
   const handleConfirmAddNewBrand = async () => {
     try {
       setSubmitionLoading(true);
@@ -340,7 +344,7 @@ export default function Products() {
         import.meta.env.VITE_APP_URL_BASE + `/Brand/create`,
         {
           Name: BrandName,
-          Image: 'asdasdsa.jpeg',
+          Image: "asdasdsa.jpeg",
           Code: BrandCode,
         },
         {
@@ -357,7 +361,7 @@ export default function Products() {
         BrandRefetch();
         setSubmitionLoading(false);
         handleCloseConfirmationDialog();
-        setBrandName('');
+        setBrandName("");
       } else {
         setAlertType(true);
         setSnackbarMessage(response.data.message);
@@ -388,15 +392,15 @@ export default function Products() {
         <div className="flex space-x-4">
           <ButtonAdd
             buttonSpan="Add New Category"
-            onClick={handleOpenAddCategoryModal}
+            setOnClick={handleOpenAddCategoryModal}
           />
           <ButtonAdd
             buttonSpan="Add New Brand"
-            onClick={handleOpenAddBrandModal}
+            setOnClick={handleOpenAddBrandModal}
           />
           <ButtonAdd
             buttonSpan="Add New Product"
-            onClick={handleOpenAddProductModal}
+            setOnClick={handleOpenAddProductModal}
           />
         </div>
       </div>
@@ -452,20 +456,11 @@ export default function Products() {
         isOpen={isAddProductModalOpen}
         onRequestClose={handleCloseAddProductModal}
         contentLabel="Add New Product"
+        className="addNewModal"
         style={{
           overlay: {
             backgroundColor: "rgba(0, 0, 0, 0.5)",
             zIndex: 1000,
-          },
-          content: {
-            border: "none",
-            borderRadius: "8px",
-            padding: "20px",
-            maxWidth: "40%",
-            margin: "auto",
-            height: "fit-content",
-            zIndex: 1001,
-            overflowY: "auto",
           },
         }}
       >
@@ -601,25 +596,16 @@ export default function Products() {
         isOpen={isAddBrandModalOpen}
         onRequestClose={handleCloseAddBrandModal}
         contentLabel="Add New Brand"
+        className="addNewModal"
         style={{
           overlay: {
             backgroundColor: "rgba(0, 0, 0, 0.5)",
             zIndex: 1000,
           },
-          content: {
-            border: "none",
-            borderRadius: "8px",
-            padding: "20px",
-            maxWidth: "40%",
-            margin: "auto",
-            height: "fit-content",
-            zIndex: 1001,
-            overflowY: "auto",
-          },
         }}
       >
         {!submitionLoading || BrandLoading || CategoryLoading ? (
-          <div className="customerClass pb-0">
+          <div className="customerClass p-0">
             <h2 className="dialogTitle">Add New Brand to Stock</h2>
             <div className="mt-[16px]">
               <form>
@@ -630,7 +616,7 @@ export default function Products() {
                       <input
                         type="text"
                         name="BrandCode"
-                        onChange={(e)=>setBrandCode(e.target.value)}
+                        onChange={(e) => setBrandCode(e.target.value)}
                       />
                     </div>
                   </div>
@@ -640,7 +626,7 @@ export default function Products() {
                       <input
                         type="text"
                         name="BrandName"
-                        onChange={(e)=>setBrandName(e.target.value)}
+                        onChange={(e) => setBrandName(e.target.value)}
                       />
                     </div>
                   </div>
@@ -674,55 +660,42 @@ export default function Products() {
         isOpen={isAddCategoryModalOpen}
         onRequestClose={handleCloseAddCategoryModal}
         contentLabel="Add New Category"
+        className="addNewModal"
         style={{
           overlay: {
             backgroundColor: "rgba(0, 0, 0, 0.5)",
             zIndex: 1000,
           },
-          content: {
-            border: "none",
-            borderRadius: "8px",
-            padding: "20px",
-            maxWidth: "40%",
-            margin: "auto",
-            height: "fit-content",
-            zIndex: 1001,
-            overflowY: "auto",
-          },
         }}
       >
         {!submitionLoading || BrandLoading || CategoryLoading ? (
-          <div className="customerClass pb-0">
+          <div className="customerClass p-0">
             <h2 className="dialogTitle">Add New Category to Stock</h2>
-            <div className="mt-[16px]">
-              <form>
-                <div className="flex-col space-y-8">
-                  <div className="dialogAddCustomerItem items-center">
-                    <span>Category :</span>
-                    <div className="inputForm">
-                      <input
-                        type="text"
-                        name="CategoryName"
-                        onChange={(e)=>setCategoryName(e.target.value)}
-                      />
-                    </div>
-                  </div>
-                </div>
-                <div className="flex justify-end space-x-8 mt-[20px]">
-                  <button
-                    className="text-gray-500 cursor-pointer hover:text-gray-700"
-                    onClick={handleCloseAddCategoryModal}
-                  >
-                    Cancel
-                  </button>
+            <div className="flex-col items-center w-full space-y-8 mt-[16px] p-0">
+              <div className="dialogAddCustomerItem items-center">
+                <span>Category :</span>
+                <div className="inputForm">
                   <input
-                    type="button"
-                    value={"Save"}
-                    className="text-blue-500 cursor-pointer hover:text-blue-700"
-                    onClick={handleOpenAddNewCategoryConfirmationDialog}
+                    type="text"
+                    name="CategoryName"
+                    onChange={(e) => setCategoryName(e.target.value)}
                   />
                 </div>
-              </form>
+              </div>
+            </div>
+            <div className="flex justify-end space-x-8 mt-[20px]">
+              <button
+                className="text-gray-500 cursor-pointer hover:text-gray-700"
+                onClick={handleCloseAddCategoryModal}
+              >
+                Cancel
+              </button>
+              <input
+                type="button"
+                value={"Save"}
+                className="text-blue-500 cursor-pointer hover:text-blue-700"
+                onClick={handleOpenAddNewCategoryConfirmationDialog}
+              />
             </div>
           </div>
         ) : (

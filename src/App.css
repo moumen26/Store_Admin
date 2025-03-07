@@ -129,35 +129,6 @@
   padding: 0 16px;
 }
 
-.ProductModal .inputForm {
-  padding: 0;
-  width: 300px;
-  height: 30px;
-}
-
-.PersonalInfoModal .inputForm {
-  padding: 0;
-  width: 250px;
-  height: 30px;
-}
-
-.ProductModal .thTableSpan {
-  width: 140px;
-}
-
-.ProductModal .inputForm select {
-  width: 100%;
-  height: 100%;
-  outline: none;
-  padding: 0 16px;
-  border-radius: 5px;
-}
-
-.ProductModal .inputForm select,
-.ProductModal .inputForm input {
-  font-size: 14px;
-}
-
 .selectOptionWilaya {
   width: 400px;
   height: 50px;
@@ -178,7 +149,7 @@
 }
 
 .selectStoreWilayaCommune {
-  width: 280px;
+  width: 300px;
   height: 50px;
   border-radius: 5px;
   border: solid 1px var(--neutralColor);
@@ -263,9 +234,9 @@
   color: var(--darkColor);
 }
 
-aside {
+.aside {
   position: fixed;
-  width: 13%;
+  width: 17%;
   height: 100vh;
   display: flex;
   flex-direction: column;
@@ -273,8 +244,9 @@ aside {
   padding: 8% 1% 1% 1%;
 }
 
-aside ul {
+.aside ul {
   height: 100%;
+  padding-right: 0;
   position: relative;
   overflow-y: scroll;
 }
@@ -282,7 +254,7 @@ aside ul {
 .itemAsideBar,
 .settingItem {
   width: 100%;
-  height: 40px;
+  min-height: 40px;
   padding-left: 8px;
   padding-right: 8px;
 }
@@ -299,7 +271,6 @@ aside ul {
 .asideItemActive,
 .settingItemToggle {
   width: 100%;
-  height: 40px;
   background-color: var(--neutralColor);
   border-radius: 5px;
 }
@@ -343,24 +314,22 @@ aside ul {
 
 .pagesContainer {
   overflow: hidden;
-  width: calc(100% - 13%);
+  width: calc(100% - 17%);
   min-height: 100vh;
   background-color: var(--lightColor);
   height: fit-content;
   position: absolute;
-  left: 13%;
+  left: 17%;
   top: 0;
   padding: 24px;
   display: flex;
   flex-direction: column;
-  gap: 32px;
-}
-
-.pubContainer {
-  gap: 20px;
+  gap: 15px;
 }
 
 .settingsContainer {
+  width: 100%;
+  left: 0;
   height: 100vh;
 }
 
@@ -497,8 +466,13 @@ aside ul {
   justify-content: space-between;
 }
 
-.customerOrdersClass {
-  max-height: 500px;
+.customerClass{
+  padding-bottom: 10px;
+  padding-top: 10px;
+}
+
+.paddingClass{
+  padding: 20px 25px;
 }
 
 .dashboardTopSellingProduct {
@@ -511,19 +485,18 @@ aside ul {
 
 .pageTable {
   width: 100%;
-  height: 78vh;
+  height: calc(100vh - 13vh - 32px - 48px);
   justify-content: flex-start;
   gap: 16px;
 }
 
-.ordersTable {
-  max-height: 78vh;
-  min-height: 55vh;
-  height: fit-content;
+.pageContainerCards .pageTable{
+  /* min-height: calc(60vh - 32px - 47px); */
+  height: calc(100vh - 32px);
 }
 
 .pageTableContainer {
-  height: 90%;
+  overflow: hidden;
 }
 
 .dashboardLatestOrders {
@@ -627,58 +600,48 @@ aside ul {
   display: flex;
   flex-direction: column;
   gap: 24px;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
+  /* scrollbar-width: none;
+  -ms-overflow-style: none; */
+}
+
+.dashboardProductClass{
+  overflow-y: scroll;
+}
+
+
+.productImgClass{
+  width: 80px;
+  height: 80px;
 }
 
 .productImg {
-  width: 80px;
-  height: 80px;
+  height: 100%;
+  width: 80%;
   object-fit: contain;
 }
 
-/* Hide scrollbar for WebKit browsers */
-.dashboardProductClass::-webkit-scrollbar,
-.tablePages::-webkit-scrollbar,
-.productsContainer::-webkit-scrollbar,
-.scrollProductHistorique::-webkit-scrollbar {
-  width: 0;
+:root {
+  --sb-track-color: #c9e4ee;
+  --sb-thumb-color: #26667e;
+  --sb-size: 6px;
+  --sb-border-radius: 4px;
+}
+
+::-webkit-scrollbar{
+  width: var(--sb-size);
+  height: var(--sb-size);
+}
+
+::-webkit-scrollbar-thumb{
+  background: var(--sb-thumb-color);
+  border-radius: var(--sb-border-radius);
+}
+::-webkit-scrollbar-button{
+  display: none;
+}
+
+::-webkit-scrollbar-track {
   background: transparent;
-  /* Make scrollbar transparent */
-}
-
-/* Show scrollbar on hover */
-.dashboardProductClass:hover,
-.tablePages:hover,
-.productsContainer:hover,
-.scrollProductHistorique:hover {
-  scrollbar-width: thin;
-  scrollbar-color: #888 #f1f1f1;
-  /* Set scrollbar colors for Firefox */
-}
-
-/* Show scrollbar for WebKit browsers on hover */
-.dashboardProductClass:hover::-webkit-scrollbar,
-.tablePages:hover::-webkit-scrollbar,
-.productsContainer:hover::-webkit-scrollbar,
-.scrollProductHistorique:hover::-webkit-scrollbar {
-  width: 10px;
-}
-
-.dashboardProductClass:hover::-webkit-scrollbar-thumb,
-.tablePages:hover::-webkit-scrollbar-thumb,
-.scrollProductHistorique:hover::-webkit-scrollbar-thumb,
-.productsContainer:hover::-webkit-scrollbar-thumb {
-  background-color: #888;
-  border-radius: 10px;
-}
-
-.dashboardProductClass:hover::-webkit-scrollbar-track,
-.tablePages:hover::-webkit-scrollbar-track,
-.scrollProductHistorique:hover::-webkit-scrollbar-track,
-.productsContainer:hover::-webkit-scrollbar-track {
-  background-color: #f1f1f1;
-  border-radius: 10px;
 }
 
 .signIn,
@@ -794,7 +757,7 @@ aside ul {
 
 .productCard {
   width: 200px;
-  height: 280px;
+  height: 290px;
   border-radius: 20px;
   border: 1px solid var(--neutralColor);
   cursor: pointer;
@@ -810,9 +773,9 @@ aside ul {
 
 .productImage {
   width: 100%;
-  height: 70%;
+  height: 65%;
   display: flex;
-  align-items: end;
+  align-items: center;
   justify-content: center;
 }
 
@@ -873,17 +836,13 @@ aside ul {
   width: 100%;
   height: fit-content;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: 16px;
 }
 
 .settingPersonalInformation {
   width: 85%;
   grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
-}
-
-.settingPersonalInformation .inputItem:last-child .inputForm {
-  width: 937px;
 }
 
 .customerPrimaryAddress {
@@ -1036,6 +995,7 @@ aside ul {
   width: 100%;
   display: flex;
   justify-content: space-between;
+  align-items: center;
 }
 
 .dialogAddCustomerItem .inputForm {
@@ -1191,12 +1151,14 @@ aside ul {
 }
 
 .scrollProductHistorique {
-  height: 335px;
+  max-height: 335px;
+  height: fit-content;
   overflow-y: scroll;
 }
 
 .addProductModalHeader {
   display: flex;
+  justify-content: space-between;
   gap: 32px;
 }
 
@@ -1247,11 +1209,7 @@ aside ul {
 
 .pubSwiper {
   width: 100%;
-  height: 220px;
-}
-
-.swiperSlide {
-  cursor: pointer;
+  height: 300px;
 }
 
 .swiperSlide img {
@@ -1260,15 +1218,15 @@ aside ul {
   right: 0;
   width: 100%;
   height: 100%;
-  object-fit: fill;
+  object-fit: contain;
   z-index: 0;
 }
 
 .trashIcon {
   z-index: 1;
   position: absolute;
-  top: 16px;
-  right: 16px;
+  top: 24px;
+  right: 24px;
   cursor: pointer;
   opacity: 0;
 }
@@ -1278,25 +1236,480 @@ aside ul {
   transition: all 0.5s ease-in-out;
 }
 
-.hoverPub {
-  position: absolute;
-  top: 200%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background-color: white;
-  color: white;
-  padding: 10px;
-  border-radius: 10px;
-  z-index: 99;
-  opacity: 0.5;
-  width: 100%;
-  height: 100%;
+.stockClass .dialogAddCustomerItem {
+  width: 210px;
+}
+
+.stockClass .dialogAddCustomerItem .inputForm {
+  width: 100px;
+}
+
+.Header {
   display: flex;
-  justify-content: center;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 80px;
+}
+
+.HeaderContainer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Toggle Icon */
+.toggleIcon {
+  position: fixed;
+  overflow: scroll;
+  top: 1rem;
+  left: 1rem;
+  z-index: 20;
+  background-color: #f0f0f0;
+  border-radius: 50%;
+  padding: 0.5rem;
+  z-index: 10;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Sidebar styles */
+.asideMedia {
+  position: fixed;
+  top: 0;
+  left: -100%;
+  height: 100vh;
+  width: 65vw;
+  background-color: var(--whiteColor);
+  padding: 2rem 1rem;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: transform 0.3s ease;
+  z-index: 9999;
+}
+
+.asidemediaActive {
+  left: 0;
+}
+
+/* Sidebar Item */
+.topAsideBar {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.asidebarMedia ul {
+  overflow: scroll;
+  height: 100%;
+}
+
+.itemAsideBar {
+  display: flex;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  color: #4a5568;
+  font-weight: 500;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.itemAsideBar:hover {
+  background-color: #edf2f7;
+  color: #2d3748;
+}
+
+.iconAsideBar {
+  width: 20px;
+  height: 20px;
+  color: #a0aec0;
+}
+
+/* Active state for sidebar item */
+.asideItemActive {
+  background-color: #e2e8f0;
+  color: #2b6cb0;
+  left: 0;
+}
+
+.asideItemActive .iconAsideBar {
+  color: #2b6cb0;
+}
+
+.asidebarMedia {
+  top: 0;
+  padding-top: 5rem;
+  left: 0;
+  z-index: 99999;
+  width: 100%;
+}
+
+/* Text next to the icon in sidebar */
+.ml-3 {
+  margin-left: 0.75rem;
+}
+
+/* For the settings button */
+.itemAsideBar:last-child {
+  margin-top: auto;
+}
+
+.asideMedia {
+  display: none;
+}
+
+.signUpContainerLeft {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  width: 40%;
+}
+
+.signUpContainerRight {
+  width: 60%;
+}
+
+.pagesContainerTop {
+  width: 100%;
+  height: fit-content;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+
+.titlePageButton {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 16px;
+}
+
+.DateRangeSelector {
+  gap: 16px;
+}
+
+.span-input {
+  display: flex;
+  gap: 20px;
   align-items: center;
 }
 
-.swiperSlide:hover .hoverPub {
+.productPicture {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.uploadClass {
+  width: 404px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.WilayaCommuneClass {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+
+.productModal {
+  border: none;
+  border-radius: 8px;
+  /* padding: 20px; */
+  width: 30%;
+  margin: auto;
+  z-index: 1001;
+  background-color: var(--whiteColor);
+  position: absolute;
   top: 50%;
-  transition: all 1s ease;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  height: fit-content;
+}
+
+.justifyEnd{
+  display: flex;
+  flex-direction: column;
+  align-items: end;
+}
+
+.addNewModal {
+  border: none;
+  border-radius: 8px;
+  padding: 20px;
+  width: 50%;
+  margin: auto;
+  z-index: 1001;
+  background-color: var(--whiteColor);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  max-height: 90%;
+  overflow-y: scroll;
+  height: fit-content;
+}
+
+.PaymentHistory{
+  width: 80%;
+}
+
+.addNewCustomerModal {
+  width: fit-content;
+}
+
+.addNewStockModal {
+  width: 95%;
+}
+
+.wilayaCommune {
+  gap: 32px;
+}
+
+.customerOrdersClass {
+  height: calc(100vh - 32px);
+  /* max-height: 500px; */
+}
+
+
+/* Mobile and tablet */
+@media screen and (max-width: 1023px) {
+  .asideMedia {
+    display: flex;
+  }
+  .signIn {
+    width: 100%;
+    height: 100%;
+    /* background-color: red; */
+  }
+
+  .signInContainerRightContainer {
+    width: 100vw;
+  }
+
+  .inputItem,
+  .buttonDark,
+  .buttonFacebook,
+  .orClass {
+    width: 80%;
+  }
+
+  .inputForm {
+    width: 100%;
+  }
+
+  .signInContainer {
+    padding: 0;
+  }
+
+  .logInForm {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .logInForm form {
+    width: 100%;
+    align-items: center;
+  }
+
+  .aside {
+    display: none;
+  }
+
+  .barsIcon {
+    display: flex;
+    z-index: 9999;
+  }
+
+  .pagesContainer {
+    overflow: hidden;
+    width: 100%;
+    left: 0;
+  }
+
+  .addProductModalHeader {
+    display: flex;
+    flex-direction: column;
+    align-items: end;
+  }
+  .DateRangeSelector {
+    flex-direction: column;
+    gap: 16px;
+    align-items: flex-end;
+  }
+
+  .titlePageButton {
+    display: flex;
+    gap: 16px;
+    margin-top: 16px;
+    align-items: start;
+    justify-content: start;
+    flex-direction: column;
+  }
+
+  .dateRangeSelector,
+  .buttonTop {
+    width: inherit;
+  }
+
+  .buttonTop {
+    display: flex;
+    justify-content: end;
+  }
+
+  .pagesContainerTop {
+    min-height: 18vh;
+    height: fit-content;
+  }
+
+  .settingsContainer .pageTable {
+    flex-direction: column;
+  }
+
+  .settingsLeft {
+    flex-direction: row;
+    width: 100%;
+  }
+
+  .settingsBar {
+    flex-direction: row;
+  }
+
+  .settingItem {
+    width: 40%;
+  }
+
+  .productModal {
+    width: 85%;
+  }
+
+  .addNewModal {
+    width: 85%;
+    height: 90%;
+    overflow-y: scroll;
+  }
+
+  .dialogAddCustomerItem .inputForm,
+  .dialogAddCustomerItem .selectStoreWilayaCommune {
+    width: 100%;
+  }
+
+  .dialogAddCustomerItem,
+  .WilayaCommuneClass {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .wilayaCommune {
+    gap: 32px;
+  }
+
+  .uploadClass,
+  .WilayaCommuneClass .selectStoreWilayaCommune,
+  .WilayaCommuneClass .selectStoreWilayaCommune select {
+    width: 100%;
+  }
+
+  .WilayaCommuneClass {
+    width: 100%;
+  }
+}
+
+/*Tablet */
+
+@media screen and (min-width: 768px) and (max-width: 1023px) {
+  .productsContainer {
+    /* row-gap: 0px; */
+    column-gap: 0px;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  }
+
+  .searchInput {
+    width: 400px;
+  }
+}
+
+/* Mobile*/
+
+@media screen and (max-width: 767px) {
+  .inputItem span,
+  .buttonTextLight,
+  .headerText,
+  a,
+  .buttonTextDark,
+  .pageTable span {
+    font-size: 14px;
+  }
+
+  .pagesTitle {
+    font-size: 20px;
+  }
+
+  .buttonFacebook img {
+    width: 26px;
+    height: 26px;
+  }
+
+  .titleText {
+    font-size: 2rem;
+  }
+
+  .signUpContainerLeft {
+    display: none;
+  }
+
+  .signUpContainerRight {
+    width: 100%;
+    border: 0;
+    padding-top: 3rem;
+  }
+
+  .selectStoreWilayaCommune select {
+    font-size: 14px;
+  }
+
+  .pagesContainerTop {
+    min-height: 18vh;
+    height: fit-content;
+  }
+
+  .pageTable {
+    height: calc(100vh - 18vh - 16px - 48px);
+  }
+
+  .span-input {
+    width: 100%;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .selectStoreWilayaCommune {
+    width: 100%;
+  }
+
+  .addProductModalHeader {
+    gap: 12px;
+  }
+
+  .pagesContainer {
+    gap: 16px;
+  }
+
+  .pageTableContainer {
+    margin-top: 8px;
+  }
+
+  .productsContainer {
+    place-items: center;
+  }
+
+  .productPicture {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 }

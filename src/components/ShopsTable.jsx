@@ -72,20 +72,11 @@ function Row(props) {
             isOpen={props.openShowPersonalInfo}
             onRequestClose={props.handleClosePersonalInfoModal}
             contentLabel="Show Personal Information"
+            className="addNewModal"
             style={{
               overlay: {
                 backgroundColor: "rgba(0, 0, 0, 0.5)",
                 zIndex: 1000,
-              },
-              content: {
-                border: "none",
-                borderRadius: "8px",
-                padding: "20px",
-                maxWidth: "80%",
-                margin: "auto",
-                height: "fit-content",
-                zIndex: 1001,
-                overflowY: "auto",
               },
             }}
           >
@@ -105,12 +96,10 @@ function Row(props) {
                       />
                     </div>
                   ) : (
-                    <div className="flex space-x-4 items-center">
-                      <PencilIcon
-                        className="h-6 w-6 text-gray-500 cursor-pointer hover:text-gray-700"
-                        onClick={props.handleOpenEditToggle}
-                      />
-                    </div>
+                    <PencilIcon
+                      className="h-6 w-6 text-gray-500 cursor-pointer hover:text-gray-700"
+                      onClick={props.handleOpenEditToggle}
+                    />
                   )}
                 </div>
                 <div className="flex space-x-4">

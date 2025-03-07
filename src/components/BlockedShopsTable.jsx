@@ -20,6 +20,7 @@ import { TokenDecoder } from "../util/DecodeToken";
 import ConfirmDialog from "./ConfirmDialog";
 
 import { CheckIcon, PencilIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import ButtonAdd from "./ButtonAdd";
 
 // Set the app element for accessibility
 Modal.setAppElement("#root");
@@ -27,9 +28,9 @@ Modal.setAppElement("#root");
 function Row(props) {
   const { row } = props;
 
-  const handleUpdatedRChange = (e) =>{
+  const handleUpdatedRChange = (e) => {
     props.setUpdatedRC(e.target.value);
-  }
+  };
 
   const [selectedRow, setSelectedRow] = useState(null);
   const handleSelectRow = (row) => {
@@ -72,55 +73,44 @@ function Row(props) {
             isOpen={props.openShowPersonalInfo}
             onRequestClose={props.handleClosePersonalInfoModal}
             contentLabel="Show Personal Information"
+            className="addNewModal"
             style={{
               overlay: {
                 backgroundColor: "rgba(0, 0, 0, 0.5)",
                 zIndex: 1000,
               },
-              content: {
-                border: "none",
-                borderRadius: "8px",
-                padding: "20px",
-                maxWidth: "80%",
-                margin: "auto",
-                height: "fit-content",
-                zIndex: 1001,
-                overflowY: "auto",
-              },
             }}
           >
             <div className="customerClass pb-0">
               <div className="w-[100%] flex justify-between items-center">
-                <div className="flex justify-between items-center">
+                <div className="flex space-x-4 items-center">
                   <h2 className="customerClassTitle">Personal Information</h2>
-                  {!selectedRow?.isRCVerified &&
+                  {!selectedRow?.isRCVerified && (
                     <>
                       {props.isEditing ? (
-                        <div className="flex space-x-4 items-center">
-                          <XMarkIcon
-                            className="h-6 w-6 text-gray-500 cursor-pointer hover:text-gray-700"
-                            onClick={props.handleCloseEditToggle}
-                          />
-                        </div>
+                        <XMarkIcon
+                          className="h-6 w-6 text-gray-500 cursor-pointer hover:text-gray-700"
+                          onClick={props.handleCloseEditToggle}
+                        />
                       ) : (
-                        <div className="flex space-x-4 items-center">
-                          <PencilIcon
-                            className="h-6 w-6 text-gray-500 cursor-pointer hover:text-gray-700"
-                            onClick={props.handleOpenEditToggle}
-                          />
-                        </div>
+                        <PencilIcon
+                          className="h-6 w-6 text-gray-500 cursor-pointer hover:text-gray-700"
+                          onClick={props.handleOpenEditToggle}
+                        />
                       )}
                     </>
-                  }
+                  )}
                 </div>
-                <div>
+                <div className="flex items-center space-x-2">
                   {!selectedRow?.isRCVerified && (
-                    <ButtonDark
+                    <ButtonAdd
+                      showIcon={false}
                       buttonSpan="Verifie"
                       setOnClick={props.handleOpenVerifieClientConfirmation}
                     />
                   )}
-                  <ButtonDark
+                  <ButtonAdd
+                    showIcon={false}
                     buttonSpan="Unblock"
                     setOnClick={props.handleOpenUnBlockClientConfirmation}
                   />
@@ -247,7 +237,7 @@ export default function BlockedShopsTable({
   const handleOpenEditToggle = () => {
     setIsEditing(true);
   };
-  
+
   const [openShowPersonalInfo, setOpenShowPersonalInfo] = useState(false);
   const handleOpenPersonalInfoModal = () => {
     setOpenShowPersonalInfo(true);
@@ -276,7 +266,6 @@ export default function BlockedShopsTable({
   const handleCloseVerifieClientConfirmation = () => {
     setOpenVerifieClientConfirmation(false);
   };
-
 
   useEffect(() => {
     setFilteredRows(
@@ -352,7 +341,7 @@ export default function BlockedShopsTable({
           `/Client/admin/verify/${decodedToken.id}`,
         {
           client: selectedRow._id,
-          RC: updatedRC
+          RC: updatedRC,
         },
         {
           headers: {
@@ -430,32 +419,32 @@ export default function BlockedShopsTable({
               <Row
                 key={row._id}
                 row={row}
-
                 handleSelectRow={handleSelectRow}
-
                 submitionLoading={submitionLoading}
                 handleConfirmUnBlockClient={handleConfirmUnBlockClient}
                 handleConfirmVerifieClient={handleConfirmVerifieClient}
-
                 setUpdatedRC={setUpdatedRC}
                 updatedRC={updatedRC}
-
                 isEditing={isEditing}
                 handleCloseEditToggle={handleCloseEditToggle}
                 handleOpenEditToggle={handleOpenEditToggle}
-
                 openShowPersonalInfo={openShowPersonalInfo}
                 handleOpenPersonalInfoModal={handleOpenPersonalInfoModal}
                 handleClosePersonalInfoModal={handleClosePersonalInfoModal}
-
                 openUnBlockClientConfirmation={openUnBlockClientConfirmation}
-                handleOpenUnBlockClientConfirmation={handleOpenUnBlockClientConfirmation}
-                handleCloseUnBlockClientConfirmation={handleCloseUnBlockClientConfirmation}
-
+                handleOpenUnBlockClientConfirmation={
+                  handleOpenUnBlockClientConfirmation
+                }
+                handleCloseUnBlockClientConfirmation={
+                  handleCloseUnBlockClientConfirmation
+                }
                 openVerifieClientConfirmation={openVerifieClientConfirmation}
-                handleOpenVerifieClientConfirmation={handleOpenVerifieClientConfirmation}
-                handleCloseVerifieClientConfirmation={handleCloseVerifieClientConfirmation}
-
+                handleOpenVerifieClientConfirmation={
+                  handleOpenVerifieClientConfirmation
+                }
+                handleCloseVerifieClientConfirmation={
+                  handleCloseVerifieClientConfirmation
+                }
               />
             ))
           ) : (

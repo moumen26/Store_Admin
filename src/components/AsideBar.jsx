@@ -50,7 +50,7 @@ export default function Asidebar() {
   }, []);
 
   return (
-    <aside>
+    <aside className="aside">
       <ul className="topAsideBar flex-col space-y-[8px]">
         <li>
           <NavLink to="/" className="flex items-center">

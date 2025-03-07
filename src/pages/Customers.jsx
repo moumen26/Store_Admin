@@ -78,7 +78,7 @@ export default function Customers() {
         <h2 className="pagesTitle">Stores</h2>
         <ButtonAdd
           buttonSpan="Add New Store"
-          onClick={handleOpenAddCustomerModal}
+          setOnClick={handleOpenAddCustomerModal}
         />
       </div>
       <div className="pageTable">

@@ -204,7 +204,7 @@ export default function Publicité() {
         <h2 className="pagesTitle">Publicité</h2>
         <ButtonAdd
           buttonSpan="Add a Publicité"
-          onClick={handleOpenModalAddPub}
+          setOnClick={handleOpenModalAddPub}
         />
       </div>
 

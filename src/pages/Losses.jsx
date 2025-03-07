@@ -231,7 +231,7 @@ export default function Losses() {
             <ButtonExportExel data={filteredData} filename="Losses" />
             <ButtonAdd
               buttonSpan="Add a Loss"
-              onClick={handleOpenModalAddLoss}
+              setOnClick={handleOpenModalAddLoss}
             />
             <Modal
               isOpen={openModelAddLoss}

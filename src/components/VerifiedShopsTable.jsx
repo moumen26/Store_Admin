@@ -20,6 +20,7 @@ import { TokenDecoder } from "../util/DecodeToken";
 import ConfirmDialog from "./ConfirmDialog";
 
 import { CheckIcon, PencilIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import ButtonAdd from "./ButtonAdd";
 
 // Set the app element for accessibility
 Modal.setAppElement("#root");
@@ -32,7 +33,6 @@ function Row(props) {
     setSelectedRow(row);
     props.handleSelectRow(row);
   };
-
 
   return (
     <TableRow sx={{ "& > *": { borderBottom: "unset" } }} className="tableRow">
@@ -69,20 +69,11 @@ function Row(props) {
             isOpen={props.openShowPersonalInfo}
             onRequestClose={props.handleClosePersonalInfoModal}
             contentLabel="Show Personal Information"
+            className="addNewModal"
             style={{
               overlay: {
                 backgroundColor: "rgba(0, 0, 0, 0.5)",
                 zIndex: 1000,
-              },
-              content: {
-                border: "none",
-                borderRadius: "8px",
-                padding: "20px",
-                maxWidth: "80%",
-                margin: "auto",
-                height: "fit-content",
-                zIndex: 1001,
-                overflowY: "auto",
               },
             }}
           >
@@ -92,7 +83,8 @@ function Row(props) {
                   <h2 className="customerClassTitle">Personal Information</h2>
                 </div>
                 <div>
-                  <ButtonDark
+                  <ButtonAdd
+                    showIcon={false}
                     buttonSpan="Block"
                     setOnClick={props.handleOpenBlockClientConfirmation}
                   />
@@ -309,20 +301,19 @@ export default function VerifiedShopsTable({
               <Row
                 key={row._id}
                 row={row}
-
                 handleSelectRow={handleSelectRow}
-
                 submitionLoading={submitionLoading}
                 handleConfirmBlockClient={handleConfirmBlockClient}
-
                 openShowPersonalInfo={openShowPersonalInfo}
                 handleOpenPersonalInfoModal={handleOpenPersonalInfoModal}
                 handleClosePersonalInfoModal={handleClosePersonalInfoModal}
-
                 openBlockClientConfirmation={openBlockClientConfirmation}
-                handleOpenBlockClientConfirmation={handleOpenBlockClientConfirmation}
-                handleCloseBlockClientConfirmation={handleCloseBlockClientConfirmation}
-
+                handleOpenBlockClientConfirmation={
+                  handleOpenBlockClientConfirmation
+                }
+                handleCloseBlockClientConfirmation={
+                  handleCloseBlockClientConfirmation
+                }
               />
             ))
           ) : (
