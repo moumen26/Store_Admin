@@ -25,8 +25,8 @@ export default function DashboardCalendar({ onDateChange }) {
 
   return (
     <div className="dateRangeSelector">
-      <div className="flex space-x-10">
-        <div className="flex items-center space-x-4">
+      <div className="flex DateRangeSelector">
+        <div className="flex items-center space-x-4 dateRangeSelectorContainer">
           <label htmlFor="startDate">Start Date :</label>
           <Calendar
             id="startDate"
@@ -39,7 +39,7 @@ export default function DashboardCalendar({ onDateChange }) {
             maxDate={today} // Prevent selecting future dates
           />
         </div>
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center space-x-4 dateRangeSelectorContainer">
           <label htmlFor="endDate">End Date :</label>
           <Calendar
             id="endDate"
