@@ -127,7 +127,7 @@ function Row(props) {
   );
 }
 
-export default function DashboardLatestSubscription({
+export default function DashboardSoonToExpireSubscription({
   searchQuery,
   setFilteredData,
   data,
@@ -137,7 +137,7 @@ export default function DashboardLatestSubscription({
   return (
     <div className="dashboardLatestOrders justify-start space-y-2">
       <div className="w-full flex items-center justify-between">
-        <h3 className="dashboardTitleItem">Latest Subscription</h3>
+        <h3 className="dashboardTitleItem">Soon To Expire Subscription</h3>
       </div>
       <TableContainer
         className="tablePages"

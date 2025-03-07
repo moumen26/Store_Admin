@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Header from "../components/Header";
 import DashboardCard from "../components/DashboardCard";
-import DashboardLatestSubscription from "../components/DashboardLatestSubscription";
+import DashboardSoonToExpireSubscription from "../components/DashboardSoonToExpireSubscription";
 import DashboadStoreStatistic from "../components/DashboadStoreStatistic";
 import DashboardNewCostumers from "../components/DashboardNewCostumers";
 import DashboardChart from "../components/DashboardChart";
@@ -56,7 +56,7 @@ export default function Dashboard() {
         <DashboardChart />
         <DashboardNewCostumers />
       </div>
-      <DashboardLatestSubscription />
+      <DashboardSoonToExpireSubscription />
       <div className="w-full flex justify-between space-x-6">
         <DashboadStoreStatistic />
       </div>
