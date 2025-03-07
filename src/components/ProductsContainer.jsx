@@ -33,7 +33,7 @@ export default function ProductsContainer({
   const [DeleteProduct, setDeleteProduct] = useState(false);
   const [ConfirmModalProduct, setConfirmModalProduct] = useState(false);
   const [isImageRemoved, setIsImageRemoved] = useState(false);
-  const [uploadedImage, setUploadedImage] = useState(null); 
+  const [uploadedImage, setUploadedImage] = useState(null);
   const [Name, setName] = useState("");
   const [Size, setSize] = useState("");
   const [Category, setCategory] = useState("");
@@ -59,8 +59,8 @@ export default function ProductsContainer({
   const handleSelectProduct = (product) => {
     setSelectedProduct(product);
     setIsModalOpen(true);
-    setIsImageRemoved(false); 
-    setUploadedImage(null); 
+    setIsImageRemoved(false);
+    setUploadedImage(null);
     onSelectProduct(product);
   };
 
@@ -93,8 +93,8 @@ export default function ProductsContainer({
   };
 
   const handleImageRemove = () => {
-    setIsImageRemoved(true); 
-    setUploadedImage(null); 
+    setIsImageRemoved(true);
+    setUploadedImage(null);
   };
 
   const handleImageUpload = (event) => {
@@ -175,7 +175,7 @@ export default function ProductsContainer({
       formData.append("Size", Size);
       formData.append("Brand", Brand);
       formData.append("BoxItems", BoxItems);
-      
+
       const response = await axios.patch(
         `${import.meta.env.VITE_APP_URL_BASE}/Product/${selectedProduct._id}`,
         formData,
@@ -367,11 +367,15 @@ export default function ProductsContainer({
 
             <div className="flex-col space-y-3">
               <div className="flex space-x-3">
-                <span className="thTableSpan">Product Code</span>
+                <span className="thTableSpan w-fit">Product Code :</span>
                 <span className="trTableSpan">{selectedProduct.code}</span>
               </div>
               <div className="flex space-x-3 items-center">
-                <span className="thTableSpan">Name</span>
+                <span
+                  className={`thTableSpan ${isEditing ? "w-[150px]" : "w-fit"}`}
+                >
+                  Name :
+                </span>
                 {isEditing ? (
                   <div className="inputForm flex items-center">
                     <input
@@ -383,14 +387,21 @@ export default function ProductsContainer({
                     />
                   </div>
                 ) : (
-                  <span className="trTableSpan">
+                  <span className="trTableSpan w-fit">
                     {selectedProduct.name} {selectedProduct.size}
                   </span>
                 )}
               </div>
+
               {isEditing ? (
                 <div className="flex space-x-3 items-center">
-                  <span className="thTableSpan">Size</span>
+                  <span
+                    className={`thTableSpan ${
+                      isEditing ? "w-[150px]" : "w-fit"
+                    }`}
+                  >
+                    Size :
+                  </span>
                   <div className="inputForm flex items-center">
                     <input
                       type="text"
@@ -404,31 +415,39 @@ export default function ProductsContainer({
               ) : (
                 <></>
               )}
-                <div className="flex space-x-3 items-center">
-                  <span className="thTableSpan">Category</span>
-                  {isEditing ? (
-                    <div className="inputForm flex items-center">
-                      <select
-                        name="category"
-                        onChange={handleCategoryInputChange}
-                        className="inputField"
-                      >
-                        <option value="">-- Select Product Category --</option>
-                        {CategoryData?.map((category) => (
-                          <option key={category._id} value={category._id}>
-                            {category.name}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  ) : (
-                    <span className="trTableSpan">
-                        {selectedProduct.category.name}
-                    </span>
-                  )}
-                </div>
               <div className="flex space-x-3 items-center">
-                <span className="thTableSpan">Brand</span>
+                <span
+                  className={`thTableSpan ${isEditing ? "w-[150px]" : "w-fit"}`}
+                >
+                  Category :
+                </span>
+                {isEditing ? (
+                  <div className="inputForm flex items-center">
+                    <select
+                      name="category"
+                      onChange={handleCategoryInputChange}
+                      className="inputField"
+                    >
+                      <option value="">-- Select Product Category --</option>
+                      {CategoryData?.map((category) => (
+                        <option key={category._id} value={category._id}>
+                          {category.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                ) : (
+                  <span className="trTableSpan">
+                    {selectedProduct.category.name}
+                  </span>
+                )}
+              </div>
+              <div className="flex space-x-3 items-center">
+                <span
+                  className={`thTableSpan ${isEditing ? "w-[150px]" : "w-fit"}`}
+                >
+                  Brand :
+                </span>
                 {isEditing ? (
                   <div className="inputForm flex items-center">
                     <select
@@ -451,7 +470,11 @@ export default function ProductsContainer({
                 )}
               </div>
               <div className="flex space-x-3 items-center">
-                <span className="thTableSpan">Box Items</span>
+                <span
+                  className={`thTableSpan ${isEditing ? "w-[150px]" : "w-fit"}`}
+                >
+                  Box Items :
+                </span>
                 {isEditing ? (
                   <div className="inputForm flex items-center">
                     <input
