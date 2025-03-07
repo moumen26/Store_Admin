@@ -40,7 +40,8 @@ function Row(props) {
     try {
       setSubmitionLoading(true);
       const response = await axios.patch(
-        import.meta.env.VITE_APP_URL_BASE + `/SubscriptionStore/validate/${decodedToken?.id}/${row._id}`,
+        import.meta.env.VITE_APP_URL_BASE +
+          `/SubscriptionStore/validate/${decodedToken?.id}/${row._id}`,
         {},
         {
           headers: {
@@ -127,7 +128,7 @@ Row.propTypes = {
   row: PropTypes.object.isRequired,
 };
 
-export default function RequestStoreTable({ 
+export default function RequestStoreTable({
   searchQuery,
   setFilteredData,
   data,
@@ -140,13 +141,25 @@ export default function RequestStoreTable({
     setFilteredRows(
       data?.filter(
         (row) =>
-          row?.store?.firstName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          row?.store?.lastName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          row?.store?.firstName
+            ?.toLowerCase()
+            .includes(searchQuery.toLowerCase()) ||
+          row?.store?.lastName
+            ?.toLowerCase()
+            .includes(searchQuery.toLowerCase()) ||
           row?.store?._id?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          row?.store?.phoneNumber?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          row?.store?.storeName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          row?.store?.startDate?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          row?.subscription?.name?.toLowerCase().includes(searchQuery.toLowerCase())
+          row?.store?.phoneNumber
+            ?.toLowerCase()
+            .includes(searchQuery.toLowerCase()) ||
+          row?.store?.storeName
+            ?.toLowerCase()
+            .includes(searchQuery.toLowerCase()) ||
+          row?.store?.startDate
+            ?.toLowerCase()
+            .includes(searchQuery.toLowerCase()) ||
+          row?.subscription?.name
+            ?.toLowerCase()
+            .includes(searchQuery.toLowerCase())
       )
     );
     setFilteredData(filteredRows);
@@ -176,7 +189,7 @@ export default function RequestStoreTable({
                 <span className="thTableSpan">Store name</span>
               </TableCell>
               <TableCell className="tableCell">
-                <span className="thTableSpan">Fullname</span>
+                <span className="thTableSpan">Full name</span>
               </TableCell>
               <TableCell className="tableCell">
                 <span className="thTableSpan">Phone number</span>
@@ -202,26 +215,28 @@ export default function RequestStoreTable({
             </TableRow>
           </TableHead>
           <TableBody>
-          {isLoading ? (
-            <TableRow>
-              <TableCell colSpan={7} align="center">
-                <CircularProgress />
-              </TableCell>
-            </TableRow>
-          ) : filteredRows?.length > 0 ? (
-            filteredRows.map((row) => <Row 
-              key={row._id}
-              row={row}
-              handleConfirmAlert={handleConfirmAlert}
-              handleRefetchDataChange={handleRefetchDataChange}
-            />)
-          ) : (
-            <TableRow>
-              <TableCell colSpan={7} align="center">
-                <span className="thTableSpan">No requests found</span>
-              </TableCell>
-            </TableRow>
-          )}
+            {isLoading ? (
+              <TableRow>
+                <TableCell colSpan={9} align="center">
+                  <CircularProgress color="inherit" />
+                </TableCell>
+              </TableRow>
+            ) : filteredRows?.length > 0 ? (
+              filteredRows.map((row) => (
+                <Row
+                  key={row._id}
+                  row={row}
+                  handleConfirmAlert={handleConfirmAlert}
+                  handleRefetchDataChange={handleRefetchDataChange}
+                />
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={9} align="center">
+                  <span className="thTableSpan">No requests found</span>
+                </TableCell>
+              </TableRow>
+            )}
           </TableBody>
         </Table>
         <Snackbar
@@ -236,7 +251,7 @@ export default function RequestStoreTable({
           >
             {snackbarMessage}
           </Alert>
-      </Snackbar>
+        </Snackbar>
       </TableContainer>
     </>
   );

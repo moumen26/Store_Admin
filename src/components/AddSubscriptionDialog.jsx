@@ -115,7 +115,7 @@ function AddSubscriptionDialog({
                     value={expiryMonths}
                     onChange={handelExpiryMonthsChange}
                   >
-                    <option value="" >-- Select Duration --</option>
+                    <option value="">-- Select Duration --</option>
                     <option value="1">Month</option>
                     <option value="3">Trimester</option>
                     <option value="6">Semester</option>
@@ -148,7 +148,7 @@ function AddSubscriptionDialog({
           <h2 className="customerClassTitle">{dialogTitle}</h2>
           <span className="trTableSpan">{dialogContentText}</span>
           <div className="flex justify-end space-x-8 pr-8 items-start h-[60px] mt-2">
-            <CircularProgress />
+            <CircularProgress color="inherit" />
           </div>
         </>
       )}

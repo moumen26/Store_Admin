@@ -111,7 +111,7 @@ export default function CustomersTable({
           {isLoading ? (
             <TableRow>
               <TableCell colSpan={6} align="center">
-                <CircularProgress />
+                <CircularProgress color="inherit" />
               </TableCell>
             </TableRow>
           ) : filteredRows?.length > 0 ? (

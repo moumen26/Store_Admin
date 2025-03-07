@@ -293,7 +293,7 @@ export default function VerifiedShopsTable({
           {loading ? (
             <TableRow>
               <TableCell colSpan={8} align="center">
-                <CircularProgress />
+                <CircularProgress color="inherit" />
               </TableCell>
             </TableRow>
           ) : filteredRows?.length > 0 ? (

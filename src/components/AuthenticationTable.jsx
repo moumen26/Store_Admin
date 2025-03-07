@@ -47,8 +47,7 @@ function Row(props) {
     setOpenShowPersonalInfo(false);
   };
 
-
-    //---------------------------------API calls---------------------------------\\
+  //---------------------------------API calls---------------------------------\\
 
   // Define a function that fetches the store data
   const fetchStoreData = async () => {
@@ -85,13 +84,14 @@ function Row(props) {
     enabled: !!user?.token, // Ensure the query runs only if the user is authenticated
     refetchOnWindowFocus: true, // Optional: refetching on window focus
   });
-  
+
   const [submitionLoading, setSubmitionLoading] = useState(false);
   const handleConfirm = async (subscriptionID, expiryMonths) => {
     try {
       setSubmitionLoading(true);
       const response = await axios.post(
-        import.meta.env.VITE_APP_URL_BASE + `/SubscriptionStore/create/admin/${decodedToken?.id}`,
+        import.meta.env.VITE_APP_URL_BASE +
+          `/SubscriptionStore/create/admin/${decodedToken?.id}`,
         {
           Store: row._id,
           Subscription: subscriptionID,
@@ -125,7 +125,6 @@ function Row(props) {
       }
     }
   };
-
 
   return (
     <TableRow sx={{ "& > *": { borderBottom: "unset" } }} className="tableRow">
@@ -198,88 +197,109 @@ function Row(props) {
       >
         <div className="customerClass pb-0">
           <h2 className="customerClassTitle">Personal Information</h2>
-          {!StoreDataLoading ?
+          {!StoreDataLoading ? (
             <div className="personalInformation">
               {StoreData?.firstName && (
                 <div className="flex-col">
                   <span className="personalInformationSpan">First Name</span>
-                  <h3 className="personalInformationDetails">{StoreData.firstName}</h3>
+                  <h3 className="personalInformationDetails">
+                    {StoreData.firstName}
+                  </h3>
                 </div>
               )}
-              
+
               {StoreData?.lastName && (
                 <div className="flex-col">
                   <span className="personalInformationSpan">Last Name</span>
-                  <h3 className="personalInformationDetails">{StoreData.lastName}</h3>
+                  <h3 className="personalInformationDetails">
+                    {StoreData.lastName}
+                  </h3>
                 </div>
               )}
-              
+
               {StoreData?.phoneNumber && (
                 <div className="flex-col">
                   <span className="personalInformationSpan">Number Phone</span>
-                  <h3 className="personalInformationDetails">{StoreData.phoneNumber}</h3>
+                  <h3 className="personalInformationDetails">
+                    {StoreData.phoneNumber}
+                  </h3>
                 </div>
               )}
-              
+
               {StoreData?.email && (
                 <div className="flex-col">
                   <span className="personalInformationSpan">Email Address</span>
-                  <h3 className="personalInformationDetails">{StoreData.email}</h3>
+                  <h3 className="personalInformationDetails">
+                    {StoreData.email}
+                  </h3>
                 </div>
               )}
-              
+
               {StoreData?.r_commerce && (
                 <div className="flex-col">
-                  <span className="personalInformationSpan">Commercial register number</span>
-                  <h3 className="personalInformationDetails">{StoreData.r_commerce}</h3>
+                  <span className="personalInformationSpan">
+                    Commercial register number
+                  </span>
+                  <h3 className="personalInformationDetails">
+                    {StoreData.r_commerce}
+                  </h3>
                 </div>
               )}
-              
+
               {StoreData?.wilaya && (
                 <div className="flex-col">
                   <span className="personalInformationSpan">Wilaya</span>
-                  <h3 className="personalInformationDetails">{StoreData.wilaya}</h3>
+                  <h3 className="personalInformationDetails">
+                    {StoreData.wilaya}
+                  </h3>
                 </div>
               )}
-              
+
               {StoreData?.commune && (
                 <div className="flex-col">
                   <span className="personalInformationSpan">Commune</span>
-                  <h3 className="personalInformationDetails">{StoreData.commune}</h3>
+                  <h3 className="personalInformationDetails">
+                    {StoreData.commune}
+                  </h3>
                 </div>
               )}
-              
+
               {StoreData?.storeAddress && (
-                <div 
-                  className="flex-col" 
-                  style={{ cursor: 'pointer' }} 
+                <div
+                  className="flex-col"
+                  style={{ cursor: "pointer" }}
                   onClick={() => Redirect(StoreData.storeLocation)}
                 >
                   <span className="personalInformationSpan">Address</span>
-                  <h3 className="personalInformationDetails">{StoreData.storeAddress}</h3>
+                  <h3 className="personalInformationDetails">
+                    {StoreData.storeAddress}
+                  </h3>
                 </div>
               )}
-              
+
               {StoreData?.storeName && (
                 <div className="flex-col">
                   <span className="personalInformationSpan">Store name</span>
-                  <h3 className="personalInformationDetails">{StoreData.storeName}</h3>
+                  <h3 className="personalInformationDetails">
+                    {StoreData.storeName}
+                  </h3>
                 </div>
               )}
-              
+
               {StoreData?.status && (
                 <div className="flex-col">
                   <span className="personalInformationSpan">Status</span>
-                  <h3 className="personalInformationDetails">{StoreData.status}</h3>
+                  <h3 className="personalInformationDetails">
+                    {StoreData.status}
+                  </h3>
                 </div>
               )}
-              
             </div>
-            :
+          ) : (
             <div className="w-full h-full flex items-center justify-center">
               <CircularProgress color="inherit" />
             </div>
-          }
+          )}
           <div className="flex justify-end space-x-8 mt-[20px]">
             <button
               className="text-gray-500 cursor-pointer hover:text-gray-700"
@@ -372,7 +392,7 @@ export default function CustomerTable({
           {isLoading ? (
             <TableRow>
               <TableCell colSpan={8} align="center">
-                <CircularProgress />
+                <CircularProgress color="inherit" />
               </TableCell>
             </TableRow>
           ) : filteredRows?.length > 0 ? (

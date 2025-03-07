@@ -167,7 +167,7 @@ export default function DashboardLatestSubscription({
           <TableBody>
             {loading ? (
               <TableRow>
-                <TableCell colSpan={4} align="center">
+                <TableCell colSpan={5} align="center">
                   <CircularProgress color="inherit" />
                 </TableCell>
               </TableRow>

@@ -194,7 +194,7 @@ export default function InactiveStores({
           {isLoading ? (
             <TableRow>
               <TableCell colSpan={7} align="center">
-                <CircularProgress />
+                <CircularProgress color="inherit" />
               </TableCell>
             </TableRow>
           ) : filteredRows?.length > 0 ? (

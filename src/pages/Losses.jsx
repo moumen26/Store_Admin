@@ -25,11 +25,11 @@ export default function Losses() {
   const [price, setPrice] = useState("");
   const handleChangePrice = (e) => {
     setPrice(e.target.value);
-  }
+  };
   const [reason, setReason] = useState("");
   const handleChangeReason = (e) => {
     setReason(e.target.value);
-  }
+  };
 
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredData, setFilteredData] = useState([]);
@@ -65,7 +65,6 @@ export default function Losses() {
   const handleCloseModalAddLoss = () => {
     setOpenModelAddLoss(false);
   };
-
 
   //---------------------------------API calls---------------------------------\\
 
@@ -114,7 +113,9 @@ export default function Losses() {
   //fetch statistics
   const fetchLossesstatistics = async () => {
     const response = await fetch(
-      `${import.meta.env.VITE_APP_URL_BASE}/Losses/admin/statistics/${decodedToken.id}`,
+      `${import.meta.env.VITE_APP_URL_BASE}/Losses/admin/statistics/${
+        decodedToken.id
+      }`,
       {
         method: "GET",
         headers: {
@@ -151,21 +152,23 @@ export default function Losses() {
   const refetchData = () => {
     refetchLossesData();
     refetchLossesstatistics();
-  }
+  };
 
   const handleSubmitCreateLoss = async () => {
     try {
       setSubmitionLoading(true);
-      const response = await axios.post(import.meta.env.VITE_APP_URL_BASE+`/Losses/admin/create/${decodedToken.id}`, 
+      const response = await axios.post(
+        import.meta.env.VITE_APP_URL_BASE +
+          `/Losses/admin/create/${decodedToken.id}`,
         {
-          price: price, 
+          price: price,
           reason: reason,
         },
         {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${user?.token}`,
-            }
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${user?.token}`,
+          },
         }
       );
       if (response.status === 200) {
@@ -182,20 +185,20 @@ export default function Losses() {
         setSubmitionLoading(false);
       }
     } catch (error) {
-        if (error.response) {
-          setAlertType(true);
-          setSnackbarMessage(error.response.data.message);
-          setSnackbarOpen(true);
-          setSubmitionLoading(false);
-        } else if (error.request) {
-          // Request was made but no response was received
-          console.error("Error creating new loss: No response received");
-        } else {
-          // Something happened in setting up the request that triggered an Error
-          console.error("Error creating new loss");
-        }
+      if (error.response) {
+        setAlertType(true);
+        setSnackbarMessage(error.response.data.message);
+        setSnackbarOpen(true);
+        setSubmitionLoading(false);
+      } else if (error.request) {
+        // Request was made but no response was received
+        console.error("Error creating new loss: No response received");
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        console.error("Error creating new loss");
+      }
     }
-  }
+  };
 
   return (
     <div className="pagesContainer">
@@ -209,14 +212,18 @@ export default function Losses() {
         />
       </div>
       <div className="flex items-center space-x-6">
-        <OrderCard 
-          orderCardTitle="Total Losses" 
-          orderCardDetails={Lossesstatistics?.count ? Lossesstatistics?.count : 0} 
+        <OrderCard
+          orderCardTitle="Total Losses"
+          orderCardDetails={
+            Lossesstatistics?.count ? Lossesstatistics?.count : 0
+          }
           loading={LossesstatisticsLoading}
         />
-        <OrderCard 
-          orderCardTitle="Total price" 
-          orderCardDetails={`${Lossesstatistics?.total ? Lossesstatistics?.total : (0).toFixed(2)} DA`} 
+        <OrderCard
+          orderCardTitle="Total price"
+          orderCardDetails={`${
+            Lossesstatistics?.total ? Lossesstatistics?.total : (0).toFixed(2)
+          } DA`}
           loading={LossesstatisticsLoading}
         />
       </div>
@@ -280,7 +287,7 @@ export default function Losses() {
                 </div>
 
                 <div className="flex justify-end space-x-8 items-start mt-[20px]">
-                  {!submitionLoading ?
+                  {!submitionLoading ? (
                     <>
                       <button
                         className="text-gray-500 cursor-pointer hover:text-gray-700"
@@ -295,11 +302,11 @@ export default function Losses() {
                         Save
                       </button>
                     </>
-                    :
+                  ) : (
                     <div className="flex justify-end space-x-8 pr-8 items-start h-[60px] mt-2">
-                      <CircularProgress />
+                      <CircularProgress color="inherit" />
                     </div>
-                  }
+                  )}
                 </div>
               </div>
             </Modal>
@@ -323,7 +330,7 @@ export default function Losses() {
       >
         <Alert
           onClose={() => setSnackbarOpen(false)}
-          severity= {alertType ? "error" : "success"}
+          severity={alertType ? "error" : "success"}
           sx={{ width: "100%" }}
         >
           {snackbarMessage}
