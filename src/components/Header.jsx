@@ -32,9 +32,9 @@ export default function Header() {
   };
 
   //fetch data
-  const fetchNotificationsByStore = async () => {
+  const fetchNotificationsByAdmin = async () => {
     const response = await fetch(
-      `${import.meta.env.VITE_APP_URL_BASE}/Notification/store/new/${
+      `${import.meta.env.VITE_APP_URL_BASE}/Notification/admin/nonRead/${
         decodedToken.id
       }`,
       {
@@ -51,7 +51,7 @@ export default function Header() {
       if (errorData.error.statusCode === 404) {
         return []; // Return an empty array if no data is found
       } else {
-        throw new Error("Error receiving notifications data for this store");
+        throw new Error("Error receiving notifications data for this Admin");
       }
     }
 
@@ -59,13 +59,13 @@ export default function Header() {
   };
   // useQuery hook to fetch data
   const {
-    data: NotificationsByStore,
-    error: NotificationsByStoreError,
-    isLoading: NotificationsByStoreLoading,
-    refetch: refetchNotificationsByStore,
+    data: NotificationsByAdmin,
+    error: NotificationsByAdminError,
+    isLoading: NotificationsByAdminLoading,
+    refetch: refetchNotificationsByAdmin,
   } = useQuery({
-    queryKey: ["NotificationsByStore", user?.token, location.key],
-    queryFn: fetchNotificationsByStore,
+    queryKey: ["NotificationsByAdmin", user?.token, location.key],
+    queryFn: fetchNotificationsByAdmin,
     enabled: !!user?.token, // Ensure the query runs only if the user is authenticated
     refetchOnWindowFocus: true, // enable refetch on window focus (optional)
     staleTime: 1000 * 60, // Data is fresh for 1 minutes
@@ -97,7 +97,7 @@ export default function Header() {
         setSnackbarMessage(response.data.message);
         setSnackbarOpen(true);
         setSubmitionLoading(false);
-        refetchNotificationsByStore();
+        refetchNotificationsByAdmin();
       } else {
         setAlertType(true);
         setSnackbarMessage(response.data.message);
@@ -142,7 +142,7 @@ export default function Header() {
   };
 
   // Group notifications by formatted date
-  const groupedNotifications = NotificationsByStore?.reduce((acc, notif) => {
+  const groupedNotifications = NotificationsByAdmin?.reduce((acc, notif) => {
     const formattedDate = formatDate(notif.createdAt);
     if (!acc[formattedDate]) {
       acc[formattedDate] = [];
@@ -159,9 +159,9 @@ export default function Header() {
         onClick={() => setShowNotifications(!showNotifications)}
       >
         <BellAlertIcon className="w-6 h-6 text-gray-600" />
-        {NotificationsByStore?.length > 0 && (
+        {NotificationsByAdmin?.length > 0 && (
           <span className="absolute top-[-4px] right-[-3px] bg-red-500 text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full">
-            {NotificationsByStore.length}
+            {NotificationsByAdmin.length}
           </span>
         )}
       </div>
@@ -184,7 +184,7 @@ export default function Header() {
         </div>
 
         <div className="max-h-[400px] overflow-y-auto space-y-2 p-4 pt-0">
-          {!NotificationsByStoreLoading ? (
+          {!NotificationsByAdminLoading ? (
             Object.entries(groupedNotifications || {}).map(
               ([dateLabel, notifications]) => (
                 <div key={dateLabel}>
@@ -253,7 +253,7 @@ export default function Header() {
             <div className="w-[48px] h-[48px] rounded-full bg-slate-500"></div>
             <div className="flex flex-col">
               <p className="text-gray-800 font-medium text-[14px]">
-                {user?.infos?.storeName}
+                {user?.infos?.firstName} {user?.infos?.lastName}
               </p>
               <span className="text-gray-500 text-sm">
                 {user?.infos?.phoneNumber}

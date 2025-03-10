@@ -7,27 +7,30 @@ import "primeicons/primeicons.css"; // Import PrimeIcons
 export default function DashboardCalendar({ onDateChange }) {
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
-
-  const today = new Date(); // Get today's date
+  const today = new Date();
 
   const handleStartDateChange = (date) => {
-    setStartDate(date);
-    if (endDate && date > endDate) {
-      setEndDate(null); // Clear end date if it is before the new start date
+    if (date !== startDate) {
+      setStartDate(date);
+      if (endDate && date > endDate) {
+        setEndDate(null); // Reset end date if it's before the new start date
+      }
+      onDateChange(date, endDate);
     }
-    onDateChange(date, endDate);
   };
 
   const handleEndDateChange = (date) => {
-    setEndDate(date);
-    onDateChange(startDate, date);
+    if (date !== endDate) {
+      setEndDate(date);
+      onDateChange(startDate, date);
+    }
   };
 
   return (
     <div className="dateRangeSelector">
       <div className="flex DateRangeSelector">
-        <div className="flex items-center space-x-4 dateRangeSelectorContainer">
-          <label htmlFor="startDate">Start Date :</label>
+      <div className="flex items-center space-x-4 dateRangeSelectorContainer">
+          <label htmlFor="startDate">Date de début :</label>
           <Calendar
             id="startDate"
             value={startDate}
@@ -35,12 +38,11 @@ export default function DashboardCalendar({ onDateChange }) {
             showIcon
             dateFormat="dd-mm-yy"
             className="calendar"
-            style={{ outline: "none" }}
-            maxDate={today} // Prevent selecting future dates
+            maxDate={today}
           />
         </div>
         <div className="flex items-center space-x-4 dateRangeSelectorContainer">
-          <label htmlFor="endDate">End Date :</label>
+          <label htmlFor="endDate">Date de fin :</label>
           <Calendar
             id="endDate"
             value={endDate}
@@ -48,11 +50,23 @@ export default function DashboardCalendar({ onDateChange }) {
             showIcon
             dateFormat="dd-mm-yy"
             className="calendar"
-            disabled={!startDate} // Disable end date calendar if start date is not selected
-            minDate={startDate} // Set minimum selectable date for end date calendar
-            maxDate={today} // Prevent selecting future dates
+            disabled={!startDate}
+            minDate={startDate}
+            maxDate={today}
           />
         </div>
+        <button
+          className="relative text-gray-700 font-semibold transition-all duration-300 
+             after:content-[''] after:absolute after:left-0 after:bottom-[10px] after:w-0 after:h-[1px] after:bg-gray-700 after:transition-all after:duration-300 
+             hover:after:w-full"
+          onClick={() => {
+            setStartDate(null);
+            setEndDate(null);
+            onDateChange(null, null);
+          }}
+        >
+          Clear
+        </button>
       </div>
     </div>
   );

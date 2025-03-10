@@ -1,5 +1,6 @@
 import { EllipsisVerticalIcon } from "@heroicons/react/16/solid";
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 const colorArray = [
   "var(--mainColor)",
@@ -22,6 +23,8 @@ function getInitials(name) {
 export default function DashboardNewCostumerItem({ CostumerName, CostumerId }) {
   const backgroundColor = getRandomColor();
   const initials = getInitials(CostumerName);
+  const navigate = useNavigate();
+
   return (
     <div className="flex items-center justify-between pl-[20px] pr-[20px]">
       <div className="flex items-center space-x-3">
@@ -33,10 +36,14 @@ export default function DashboardNewCostumerItem({ CostumerName, CostumerId }) {
         </div>
         <div className="flex-col space-y-1">
           <h3 clcassName="dashboardText">{CostumerName}</h3>
-          <p className="dashboardSpan">Customer ID #{CostumerId}</p>
+          <p className="dashboardSpan">Store ID #{CostumerId}</p>
         </div>
       </div>
-      <EllipsisVerticalIcon className="iconAsideBar" />
+      <EllipsisVerticalIcon className="iconAsideBar" 
+        onClick={() =>
+          navigate(`/CustomerProfile/${CostumerId}`)
+        }
+      />
     </div>
   );
 }

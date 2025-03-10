@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
-import { Box } from "@mui/material";
+import { Box, CircularProgress } from "@mui/material";
 import Collapse from "@mui/material/Collapse";
 import IconButton from "@mui/material/IconButton";
 import Table from "@mui/material/Table";
@@ -134,6 +134,7 @@ export default function DashboardSoonToExpireSubscription({
   loading,
   handleRefetchDataChange,
 }) {
+  
   return (
     <div className="dashboardLatestOrders justify-start space-y-2">
       <div className="w-full flex items-center justify-between">
