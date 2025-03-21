@@ -345,7 +345,6 @@ export default function Products() {
         {
           Name: BrandName,
           Image: "asdasdsa.jpeg",
-          Code: BrandCode,
         },
         {
           headers: {
@@ -610,16 +609,6 @@ export default function Products() {
             <div className="mt-[16px]">
               <form>
                 <div className="flex-col space-y-8">
-                  <div className="dialogAddCustomerItem items-center">
-                    <span>Code :</span>
-                    <div className="inputForm">
-                      <input
-                        type="text"
-                        name="BrandCode"
-                        onChange={(e) => setBrandCode(e.target.value)}
-                      />
-                    </div>
-                  </div>
                   <div className="dialogAddCustomerItem items-center">
                     <span>Brand :</span>
                     <div className="inputForm">
