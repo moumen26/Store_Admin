@@ -135,7 +135,7 @@ function Row(props) {
         </span>
       </TableCell>
       <TableCell className="tableCell">
-        <span className="trTableSpan">{row.email}</span>
+        <span className="trTableSpan">{row.phoneNumber}</span>
       </TableCell>
       <TableCell className="tableCell">
         <span className="trTableSpan">{row.wilaya}</span>
@@ -221,7 +221,7 @@ function Row(props) {
                 <div className="flex-col">
                   <span className="personalInformationSpan">Number Phone</span>
                   <h3 className="personalInformationDetails">
-                    {StoreData.phoneNumber}
+                    {StoreData?.phoneNumber}
                   </h3>
                 </div>
               )}
