@@ -200,9 +200,9 @@ export default function Header() {
                         <div
                           className={`notifTypeIcon w-1 h-14 rounded-full flex items-center justify-center
                           ${
-                            notif.type === "subscription_expiry"
+                            notif.type === "subscription_request"
                               ? "bg-red-200"
-                              : notif.type === "store_access_request"
+                              : notif.type === "new_store_creation"
                               ? "bg-blue-200"
                               : "bg-yellow-200"
                           }
