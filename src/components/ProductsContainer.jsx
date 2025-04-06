@@ -274,11 +274,15 @@ export default function ProductsContainer({
               maxWidth: "30%",
               margin: "auto",
               zIndex: 1001,
-              height: "fit-content",
+              // height: "fit-content",
             },
           }}
         >
-          <div className="w-[100%] h-fit flex-col space-y-[20px] ProductModal">
+          <div
+            className={`w-[100%] flex-col space-y-[20px] h-fit ${
+              isEditing ? "h-[100%] pb-4" : "h-fit"
+            }`}
+          >
             <div className="flex justify-between">
               <h2 className="customerClassTitle">Product Details</h2>
               {isEditing ? (

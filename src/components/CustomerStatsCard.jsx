@@ -38,9 +38,7 @@ export default function CustomerStatsCard({
         <h3 className="dashboardCardTitle flex items-center h-[50px]">
           {customerStatsCardTitle}
         </h3>
-        <div className="bg-white w-[50px] h-[50px] rounded-lg flex items-center justify-center">
-          {iconComponent}
-        </div>
+        {iconComponent}
       </div>
       <span className="dashboardCardAmount">
         {customerStatsCardDetails}

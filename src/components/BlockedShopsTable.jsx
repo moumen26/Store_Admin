@@ -68,142 +68,140 @@ function Row(props) {
       </TableCell>
 
       {selectedRow && (
-        <>
-          <Modal
-            isOpen={props.openShowPersonalInfo}
-            onRequestClose={props.handleClosePersonalInfoModal}
-            contentLabel="Show Personal Information"
-            className="addNewModal"
-            style={{
-              overlay: {
-                backgroundColor: "rgba(0, 0, 0, 0.5)",
-                zIndex: 1000,
-              },
-            }}
-          >
-            <div className="customerClass pb-0">
-              <div className="w-[100%] flex justify-between items-center">
-                <div className="flex space-x-4 items-center">
-                  <h2 className="customerClassTitle">Personal Information</h2>
-                  {!selectedRow?.isRCVerified && (
-                    <>
-                      {props.isEditing ? (
-                        <XMarkIcon
-                          className="h-6 w-6 text-gray-500 cursor-pointer hover:text-gray-700"
-                          onClick={props.handleCloseEditToggle}
-                        />
-                      ) : (
-                        <PencilIcon
-                          className="h-6 w-6 text-gray-500 cursor-pointer hover:text-gray-700"
-                          onClick={props.handleOpenEditToggle}
-                        />
-                      )}
-                    </>
-                  )}
-                </div>
-                <div className="flex items-center space-x-2">
-                  {!selectedRow?.isRCVerified && (
-                    <ButtonAdd
-                      showIcon={false}
-                      buttonSpan="Verifie"
-                      setOnClick={props.handleOpenVerifieClientConfirmation}
-                    />
-                  )}
+        <Modal
+          isOpen={props.openShowPersonalInfo}
+          onRequestClose={props.handleClosePersonalInfoModal}
+          contentLabel="Show Personal Information"
+          className="addNewModal"
+          style={{
+            overlay: {
+              backgroundColor: "rgba(0, 0, 0, 0.5)",
+              zIndex: 1000,
+            },
+          }}
+        >
+          <div className="customerClass pb-0">
+            <div className="w-[100%] flex justify-between items-center">
+              <div className="flex space-x-4 items-center">
+                <h2 className="customerClassTitle">Personal Information</h2>
+                {!selectedRow?.isRCVerified && (
+                  <>
+                    {props.isEditing ? (
+                      <XMarkIcon
+                        className="h-6 w-6 text-gray-500 cursor-pointer hover:text-gray-700"
+                        onClick={props.handleCloseEditToggle}
+                      />
+                    ) : (
+                      <PencilIcon
+                        className="h-6 w-6 text-gray-500 cursor-pointer hover:text-gray-700"
+                        onClick={props.handleOpenEditToggle}
+                      />
+                    )}
+                  </>
+                )}
+              </div>
+              <div className="flex items-center space-x-2">
+                {!selectedRow?.isRCVerified && (
                   <ButtonAdd
                     showIcon={false}
-                    buttonSpan="Unblock"
-                    setOnClick={props.handleOpenUnBlockClientConfirmation}
+                    buttonSpan="Verifie"
+                    setOnClick={props.handleOpenVerifieClientConfirmation}
                   />
-                </div>
-              </div>
-              <div className="personalInformation mt-[16px]">
-                <div className="flex-col">
-                  <span className="personalInformationSpan">First Name</span>
-                  <h3 className="personalInformationDetails">
-                    {selectedRow?.firstName}
-                  </h3>
-                </div>
-                <div className="flex-col">
-                  <span className="personalInformationSpan">Last Name</span>
-                  <h3 className="personalInformationDetails">
-                    {selectedRow?.lastName}
-                  </h3>
-                </div>
-                <div className="flex-col">
-                  <span className="personalInformationSpan">Number Phone</span>
-                  <h3 className="personalInformationDetails">
-                    {selectedRow?.phoneNumber}
-                  </h3>
-                </div>
-                <div className="flex-col">
-                  <span className="personalInformationSpan">Email Address</span>
-                  <h3 className="personalInformationDetails">
-                    {selectedRow?.email}
-                  </h3>
-                </div>
-                <div className="flex-col">
-                  <span className="personalInformationSpan">Wilaya</span>
-                  <h3 className="personalInformationDetails">
-                    {selectedRow?.wilaya}
-                  </h3>
-                </div>
-                <div className="flex-col">
-                  <span className="personalInformationSpan">Commune</span>
-                  <h3 className="personalInformationDetails">
-                    {selectedRow?.commune}
-                  </h3>
-                </div>
-                <div className="flex-col PersonalInfoModal">
-                  <span className="personalInformationSpan">
-                    Commercial register number
-                  </span>
-                  {props.isEditing ? (
-                    <div className="inputForm flex items-center">
-                      <input
-                        type="text"
-                        name="registerNumber"
-                        value={props.updatedRC}
-                        onChange={handleUpdatedRChange}
-                        className="inputField"
-                      />
-                    </div>
-                  ) : (
-                    <h3 className="personalInformationDetails">
-                      {selectedRow?.r_commerce}
-                    </h3>
-                  )}
-                </div>
-              </div>
-              <div className="flex justify-end space-x-8 mt-[20px]">
-                <button
-                  className="text-gray-500 cursor-pointer hover:text-gray-700"
-                  onClick={props.handleClosePersonalInfoModal}
-                >
-                  Cancel
-                </button>
+                )}
+                <ButtonAdd
+                  showIcon={false}
+                  buttonSpan="Unblock"
+                  setOnClick={props.handleOpenUnBlockClientConfirmation}
+                />
               </div>
             </div>
-          </Modal>
-
-          <ConfirmDialog
-            open={props.openUnBlockClientConfirmation}
-            onClose={props.handleCloseUnBlockClientConfirmation}
-            onConfirm={props.handleConfirmUnBlockClient}
-            dialogTitle={"Confirm unblock client"}
-            dialogContentText={`Are you sure you want to unblock ${selectedRow?.firstName} ${selectedRow?.lastName} ?`}
-            isloading={props.submitionLoading}
-          />
-
-          <ConfirmDialog
-            open={props.openVerifieClientConfirmation}
-            onClose={props.handleCloseVerifieClientConfirmation}
-            onConfirm={props.handleConfirmVerifieClient}
-            dialogTitle={"Confirm verifie client"}
-            dialogContentText={`Are you sure you want to verifie ${selectedRow?.firstName} ${selectedRow?.lastName} ?`}
-            isloading={props.submitionLoading}
-          />
-        </>
+            <div className="personalInformation mt-[16px]">
+              <div className="flex-col">
+                <span className="personalInformationSpan">First Name</span>
+                <h3 className="personalInformationDetails">
+                  {selectedRow?.firstName}
+                </h3>
+              </div>
+              <div className="flex-col">
+                <span className="personalInformationSpan">Last Name</span>
+                <h3 className="personalInformationDetails">
+                  {selectedRow?.lastName}
+                </h3>
+              </div>
+              <div className="flex-col">
+                <span className="personalInformationSpan">Number Phone</span>
+                <h3 className="personalInformationDetails">
+                  {selectedRow?.phoneNumber}
+                </h3>
+              </div>
+              <div className="flex-col">
+                <span className="personalInformationSpan">Email Address</span>
+                <h3 className="personalInformationDetails">
+                  {selectedRow?.email}
+                </h3>
+              </div>
+              <div className="flex-col">
+                <span className="personalInformationSpan">Wilaya</span>
+                <h3 className="personalInformationDetails">
+                  {selectedRow?.wilaya}
+                </h3>
+              </div>
+              <div className="flex-col">
+                <span className="personalInformationSpan">Commune</span>
+                <h3 className="personalInformationDetails">
+                  {selectedRow?.commune}
+                </h3>
+              </div>
+              <div className="flex-col PersonalInfoModal">
+                <span className="personalInformationSpan">
+                  Commercial register number
+                </span>
+                {props.isEditing ? (
+                  <div className="inputForm flex items-center">
+                    <input
+                      type="text"
+                      name="registerNumber"
+                      value={props.updatedRC}
+                      onChange={handleUpdatedRChange}
+                      className="inputField"
+                    />
+                  </div>
+                ) : (
+                  <h3 className="personalInformationDetails">
+                    {selectedRow?.r_commerce}
+                  </h3>
+                )}
+              </div>
+            </div>
+            <div className="flex justify-end space-x-8 mt-[20px]">
+              <button
+                className="text-gray-500 cursor-pointer hover:text-gray-700"
+                onClick={props.handleClosePersonalInfoModal}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </Modal>
       )}
+
+      <ConfirmDialog
+        open={props.openUnBlockClientConfirmation}
+        onClose={props.handleCloseUnBlockClientConfirmation}
+        onConfirm={props.handleConfirmUnBlockClient}
+        dialogTitle={"Confirm unblock client"}
+        dialogContentText={`Are you sure you want to unblock ${selectedRow?.firstName} ${selectedRow?.lastName} ?`}
+        isloading={props.submitionLoading}
+      />
+
+      <ConfirmDialog
+        open={props.openVerifieClientConfirmation}
+        onClose={props.handleCloseVerifieClientConfirmation}
+        onConfirm={props.handleConfirmVerifieClient}
+        dialogTitle={"Confirm verifie client"}
+        dialogContentText={`Are you sure you want to verifie ${selectedRow?.firstName} ${selectedRow?.lastName} ?`}
+        isloading={props.submitionLoading}
+      />
     </TableRow>
   );
 }
@@ -225,6 +223,7 @@ export default function BlockedShopsTable({
   const [selectedRow, setSelectedRow] = useState(null);
   const handleSelectRow = (row) => {
     setSelectedRow(row);
+    console.log("row", row);
   };
 
   const [updatedRC, setUpdatedRC] = useState(null);
@@ -243,10 +242,10 @@ export default function BlockedShopsTable({
     setOpenShowPersonalInfo(true);
   };
   const handleClosePersonalInfoModal = () => {
-    setOpenShowPersonalInfo(false);
     setSelectedRow(null);
     setUpdatedRC(null);
     setIsEditing(false);
+    setOpenShowPersonalInfo(false);
   };
 
   const [openUnBlockClientConfirmation, setOpenUnBlockClientConfirmation] =

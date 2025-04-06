@@ -12,6 +12,8 @@ import axios from "axios";
 import { Alert, Snackbar } from "@mui/material";
 import { useLocation } from "react-router-dom";
 import ConfirmDialog from "../components/ConfirmDialog";
+import ButtonLight from "../components/ButtonLight";
+import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
 
 // Set the app element for accessibility
 Modal.setAppElement("#root");
@@ -22,6 +24,8 @@ export default function Products() {
   const [searchQuery, setSearchQuery] = useState("");
   const [isAddProductModalOpen, setIsAddProductModalOpen] = useState(false);
   const [isAddCategoryModalOpen, setIsAddCategoryModalOpen] = useState(false);
+  const [isdisplayCategoryOpen, setIsdisplayCategoryOpen] = useState(false);
+  const [isdisplayBrandOpen, setIsdisplayBrandOpen] = useState(false);
   const [isAddBrandModalOpen, setIsAddBrandModalOpen] = useState(false);
   const [submitionLoading, setSubmitionLoading] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
@@ -74,6 +78,22 @@ export default function Products() {
     setIsAddProductModalOpen(false);
   };
 
+  const handleOpendisplayCategory = () => {
+    setIsdisplayCategoryOpen(true);
+  };
+
+  const handleClosedisplayCategory = () => {
+    setIsdisplayCategoryOpen(false);
+  };
+
+  const handleOpendisplayBrand = () => {
+    setIsdisplayBrandOpen(true);
+  };
+
+  const handleClosedisplayBrand = () => {
+    setIsdisplayBrandOpen(false);
+  };
+
   const handleOpenAddCategoryModal = () => {
     setIsAddCategoryModalOpen(true);
   };
@@ -88,6 +108,34 @@ export default function Products() {
 
   const handleCloseAddBrandModal = () => {
     setIsAddBrandModalOpen(false);
+  };
+
+  const [editingBrandId, setEditingBrandId] = useState(null);
+  const [editedBrandName, setEditedBrandName] = useState("");
+  const [editedBrandImage, setEditedBrandImage] = useState(null);
+  const [editingCategoryId, setEditingCategoryId] = useState(null);
+  const [editedCategoryName, setEditedCategoryName] = useState("");
+
+  const handleStartEditBrand = (brand) => {
+    setEditingBrandId(brand.id);
+    setEditedBrandName(brand.name);
+  };
+
+  const handleCancelEdit = () => {
+    setEditingBrandId(null);
+    setEditedBrandName("");
+    setEditedBrandImage(null);
+  };
+
+  // Functions
+  const handleStartEditCategory = (category) => {
+    setEditingCategoryId(category.id);
+    setEditedCategoryName(category.name);
+  };
+
+  const handleCancelEditCategory = () => {
+    setEditingCategoryId(null);
+    setEditedCategoryName("");
   };
 
   const [
@@ -389,13 +437,13 @@ export default function Products() {
       <div className="w-full flex items-center justify-between">
         <h2 className="pagesTitle">Products Grid</h2>
         <div className="flex space-x-4">
-          <ButtonAdd
-            buttonSpan="Add New Category"
-            setOnClick={handleOpenAddCategoryModal}
+          <ButtonLight
+            buttonSpan="Categorys"
+            setOnClick={handleOpendisplayCategory}
           />
-          <ButtonAdd
-            buttonSpan="Add New Brand"
-            setOnClick={handleOpenAddBrandModal}
+          <ButtonLight
+            buttonSpan="Brands"
+            setOnClick={handleOpendisplayBrand}
           />
           <ButtonAdd
             buttonSpan="Add New Product"
@@ -590,12 +638,241 @@ export default function Products() {
         )}
       </Modal>
 
+      {/* New Modal for displaying Category */}
+      <Modal
+        isOpen={isdisplayCategoryOpen}
+        onRequestClose={handleClosedisplayCategory}
+        contentLabel="Category List"
+        className="addNewModal"
+        style={{
+          overlay: {
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+            zIndex: 1000,
+          },
+        }}
+      >
+        {/* {!CategoryLoading ? ( */}
+        <div className="customerClass p-0">
+          <div className="flex justify-between items-center">
+            <h2 className="dialogTitle">All Categories</h2>
+            <ButtonAdd
+              buttonSpan="Add New Category"
+              setOnClick={handleOpenAddCategoryModal}
+            />
+          </div>
+
+          <div className="category-list-container mt-[16px]">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b">
+                  <th className="text-left p-2">Category Name</th>
+                  <th className="text-right p-2">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {/* {categories.map((category) => ( */}
+                <tr
+                  // key={category.id}
+                  className="border-b hover:bg-gray-50"
+                >
+                  <td className="p-2">
+                    {/* {editingCategoryId === category.id ? ( */}
+                    <input
+                      type="text"
+                      value={editedCategoryName}
+                      // onChange={(e) =>
+                      //   setEditedCategoryName(e.target.value)
+                      // }
+                      className="border p-1 rounded w-full"
+                      autoFocus
+                    />
+                    {/* ) : (
+                          category.name
+                        )} */}
+                  </td>
+                  <td className="p-2 flex justify-end space-x-2">
+                    {/* {editingCategoryId === category.id ? ( */}
+                    <>
+                      <button
+                        // onClick={() => handleSaveCategory(category.id)}
+                        className="text-green-500 hover:text-green-700 p-1"
+                      >
+                        Save{" "}
+                      </button>
+                      <button
+                        // onClick={handleCancelEditCategory}
+                        className="text-red-500 hover:text-red-700 p-1"
+                      >
+                        Cancel{" "}
+                      </button>
+                    </>
+                    {/* ) : ( */}
+                    <>
+                      <button
+                        // onClick={() => handleStartEditCategory(category)}
+                        className="text-gray-500 hover:text-gray-700 p-1"
+                      >
+                        <PencilIcon className="w-5 h-5" />
+                      </button>
+                      <button
+                        // onClick={() => handleDeleteCategory(category.id)}
+                        className="text-red-500 hover:text-red-700 p-1"
+                      >
+                        <TrashIcon className="w-5 h-5" />
+                      </button>
+                    </>
+                    {/* )} */}
+                  </td>
+                </tr>
+                {/* ))} */}
+              </tbody>
+            </table>
+          </div>
+
+          <div className="flex justify-end space-x-8 mt-[20px]">
+            <button
+              className="text-gray-500 cursor-pointer hover:text-gray-700"
+              onClick={handleClosedisplayCategory}
+            >
+              Close
+            </button>
+          </div>
+        </div>
+        {/* ) : (
+          <div className="w-full h-full flex items-center justify-center">
+            <CircularProgress color="inherit" />
+          </div>
+        )} */}
+      </Modal>
+
+      <Modal
+        isOpen={isdisplayBrandOpen}
+        onRequestClose={handleClosedisplayBrand}
+        contentLabel="Brand List"
+        className="addNewModal"
+        style={{
+          overlay: {
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+            zIndex: 1000,
+          },
+        }}
+      >
+        {/* {!BrandLoading ? ( */}
+        <div className="customerClass p-0">
+          <h2 className="dialogTitle">All Brands</h2>
+
+          <div className="brand-list-container mt-[16px]">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b">
+                  <th className="text-left p-2">Logo</th>
+                  <th className="text-left p-2">Brand Name</th>
+                  <th className="text-right p-2">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {/* {brands.map((brand) => ( */}
+                <tr
+                  // key={brand.id}
+                  className="border-b hover:bg-gray-50"
+                >
+                  <td className="p-2">
+                    {/* {editingBrandId === brand.id ? ( */}
+                    <div className="flex items-center">
+                      <input
+                        type="file"
+                        accept="image/*"
+                        // onChange={(e) => handleImageChange(e, brand.id)}
+                        className="text-sm"
+                      />
+                    </div>
+                    {/* ) : brand.image ? ( */}
+                    <img
+                      // src={brand.image}
+                      // alt={brand.name}
+                      className="w-10 h-10 object-contain"
+                    />
+                    {/* ) : (
+                          <div className="w-10 h-10 bg-gray-200 flex items-center justify-center">
+                            <span className="text-xs text-gray-500">
+                              No Image
+                            </span>
+                          </div>
+                        )} */}
+                  </td>
+                  <td className="p-2">
+                    {/* {editingBrandId === brand.id ? ( */}
+                    <input
+                      type="text"
+                      value={editedBrandName}
+                      // onChange={(e) => setEditedBrandName(e.target.value)}
+                      className="border p-1 rounded w-full outline-none pl-2"
+                    />
+                    {/* ) : (
+                          brand.name
+                        )} */}
+                  </td>
+                  <td className="p-2 flex justify-end space-x-2">
+                    {/* {editingBrandId === brand.id ? ( */}
+                    <>
+                      <button
+                        // onClick={handleSaveBrand}
+                        className="text-green-500 hover:text-green-700 p-1"
+                      >
+                        Save
+                      </button>
+                      <button
+                        // onClick={handleCancelEdit}
+                        className="text-gray-500 hover:text-gray-700 p-1"
+                      >
+                        Cancel
+                      </button>
+                    </>
+                    {/* ) : ( */}
+                    <>
+                      <button
+                        // onClick={() => handleStartEditBrand(brand)}
+                        className="text-gray-500 hover:text-gray-700 p-1"
+                      >
+                        <PencilIcon className="w-5 h-5" />
+                      </button>
+                      <button
+                        // onClick={() => handleDeleteBrand(brand.id)}
+                        className="text-red-500 hover:text-red-700 p-1"
+                      >
+                        <TrashIcon className="w-5 h-5" />
+                      </button>
+                    </>
+                    {/* )} */}
+                  </td>
+                </tr>
+                {/* ))} */}
+              </tbody>
+            </table>
+          </div>
+
+          <div className="flex justify-end space-x-8 mt-[20px]">
+            <button
+              className="text-gray-500 cursor-pointer hover:text-gray-700"
+              onClick={handleClosedisplayBrand}
+            >
+              Close
+            </button>
+          </div>
+        </div>
+        {/* ) : (
+          <div className="w-full h-full flex items-center justify-center">
+            <CircularProgress color="inherit" />
+          </div>
+        )} */}
+      </Modal>
+
       {/* New Modal for Adding Brand */}
       <Modal
         isOpen={isAddBrandModalOpen}
         onRequestClose={handleCloseAddBrandModal}
         contentLabel="Add New Brand"
-        className="addNewModal"
+        className="addNewModal modalZindex"
         style={{
           overlay: {
             backgroundColor: "rgba(0, 0, 0, 0.5)",
@@ -608,7 +885,7 @@ export default function Products() {
             <h2 className="dialogTitle">Add New Brand to Stock</h2>
             <div className="mt-[16px]">
               <form>
-                <div className="flex-col space-y-8">
+                <div className="flex-col space-y-4">
                   <div className="dialogAddCustomerItem items-center">
                     <span>Brand :</span>
                     <div className="inputForm">
@@ -617,6 +894,40 @@ export default function Products() {
                         name="BrandName"
                         onChange={(e) => setBrandName(e.target.value)}
                       />
+                    </div>
+                  </div>
+                  <div className="dialogAddCustomerItem items-center">
+                    <span>Product Picture :</span>
+                    <div className="flex items-center space-x-4">
+                      <div
+                        className="w-[80px] h-[80px] bg-slate-200 rounded-full cursor-pointer flex items-center justify-center relative overflow-hidden"
+                        onClick={handleClick}
+                      >
+                        {image ? (
+                          <img
+                            src={URL.createObjectURL(image)}
+                            alt="Preview"
+                            className="w-full h-full object-cover rounded-full"
+                          />
+                        ) : (
+                          <PhotoIcon className="w-6 h-6 text-slate-400" />
+                        )}
+                      </div>
+                      <div className="h-[80px] w-[404px] flex items-center justify-center uploadClass">
+                        <input
+                          type="file"
+                          accept="image/*"
+                          ref={fileInputRef}
+                          style={{ display: "none" }}
+                          // onChange={handleImageChange}
+                        />
+                        <p onClick={handleClick} className="uploadSpan">
+                          <span className="text-blue-600">
+                            Click to upload{" "}
+                          </span>
+                          or drag and drop SVG, PNG, JPG
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -649,7 +960,7 @@ export default function Products() {
         isOpen={isAddCategoryModalOpen}
         onRequestClose={handleCloseAddCategoryModal}
         contentLabel="Add New Category"
-        className="addNewModal"
+        className="addNewModal modalZindex"
         style={{
           overlay: {
             backgroundColor: "rgba(0, 0, 0, 0.5)",

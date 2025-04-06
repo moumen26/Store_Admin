@@ -2,11 +2,13 @@ import {
   BuildingStorefrontIcon,
   CalendarDateRangeIcon,
   ShoppingBagIcon,
+  ShoppingCartIcon,
   Square2StackIcon,
   UserGroupIcon,
   UserIcon,
   UsersIcon,
 } from "@heroicons/react/16/solid";
+import { Category } from "@mui/icons-material";
 import React from "react";
 
 export default function DashboadStoreStatistic({
@@ -43,7 +45,7 @@ export default function DashboadStoreStatistic({
             <p className="dashboardSpan">{StatsData?.totalProducts}</p>
           </div>
           <div className="flex items-center justify-center">
-            <Square2StackIcon className="iconAsideBar" />
+            <ShoppingCartIcon className="iconAsideBar" />
           </div>
         </div>
         <div className="flex items-center justify-between pl-[20px] pr-[20px]">
@@ -52,7 +54,7 @@ export default function DashboadStoreStatistic({
             <p className="dashboardSpan">{StatsData?.totalBrands}</p>
           </div>
           <div className="flex items-center justify-center">
-            <CalendarDateRangeIcon className="iconAsideBar" />
+            <ShoppingBagIcon className="iconAsideBar" />
           </div>
         </div>
         <div className="flex items-center justify-between pl-[20px] pr-[20px]">
@@ -61,7 +63,7 @@ export default function DashboadStoreStatistic({
             <p className="dashboardSpan">{StatsData?.totalCategories}</p>
           </div>
           <div className="flex items-center justify-center">
-            <CalendarDateRangeIcon className="iconAsideBar" />
+            <Category className="iconAsideBar" />
           </div>
         </div>
       </div>
