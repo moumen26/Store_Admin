@@ -117,7 +117,7 @@ export default function Products() {
   const [editedCategoryName, setEditedCategoryName] = useState("");
 
   const handleStartEditBrand = (brand) => {
-    setEditingBrandId(brand.id);
+    setEditingBrandId(brand._id);
     setEditedBrandName(brand.name);
   };
 
@@ -127,9 +127,8 @@ export default function Products() {
     setEditedBrandImage(null);
   };
 
-  // Functions
   const handleStartEditCategory = (category) => {
-    setEditingCategoryId(category.id);
+    setEditingCategoryId(category._id);
     setEditedCategoryName(category.name);
   };
 
@@ -138,23 +137,49 @@ export default function Products() {
     setEditedCategoryName("");
   };
 
-  const [
-    AddNewCategoryConfirmationDialog,
-    setAddNewCategoryConfirmationDialog,
-  ] = useState(false);
+  // Category delete confirmation states
+  const [deleteCategoryDialogOpen, setDeleteCategoryDialogOpen] = useState(false);
+  const [categoryToDelete, setCategoryToDelete] = useState(null);
+  
+  // Brand delete confirmation states
+  const [deleteBrandDialogOpen, setDeleteBrandDialogOpen] = useState(false);
+  const [brandToDelete, setBrandToDelete] = useState(null);
+
+  const [AddNewCategoryConfirmationDialog, setAddNewCategoryConfirmationDialog] = useState(false);
   const handleOpenAddNewCategoryConfirmationDialog = () => {
+    if (!CategoryName.trim()) {
+      setAlertType(true);
+      setSnackbarMessage("Le nom de la catégorie est requis");
+      setSnackbarOpen(true);
+      return;
+    }
     setAddNewCategoryConfirmationDialog(true);
   };
-  const [AddNewBrandConfirmationDialog, setAddNewBrandConfirmationDialog] =
-    useState(false);
+  
+  const [AddNewBrandConfirmationDialog, setAddNewBrandConfirmationDialog] = useState(false);
   const handleOpenAddNewBrandConfirmationDialog = () => {
+    if (!BrandName.trim()) {
+      setAlertType(true);
+      setSnackbarMessage("Le nom de la marque est requis");
+      setSnackbarOpen(true);
+      return;
+    }
+    if (!image) {
+      setAlertType(true);
+      setSnackbarMessage("L'image de la marque est requise");
+      setSnackbarOpen(true);
+      return;
+    }
     setAddNewBrandConfirmationDialog(true);
   };
 
   const handleCloseConfirmationDialog = () => {
     setAddNewCategoryConfirmationDialog(false);
     setAddNewBrandConfirmationDialog(false);
+    setDeleteCategoryDialogOpen(false);
+    setDeleteBrandDialogOpen(false);
   };
+  
   const [image, setImage] = useState(null);
   const fileInputRef = useRef(null);
 
@@ -166,6 +191,13 @@ export default function Products() {
     const file = e.target.files[0];
     if (file && file.type.startsWith("image/")) {
       setImage(file);
+    }
+  };
+  
+  const handleBrandImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file && file.type.startsWith("image/")) {
+      setEditedBrandImage(file);
     }
   };
 
@@ -286,6 +318,18 @@ export default function Products() {
     setProductCategory("");
     setImage(null);
   };
+  
+  // Clear brand form
+  const clearBrandForm = () => {
+    setBrandName("");
+    setImage(null);
+  };
+  
+  // Clear category form
+  const clearCategoryForm = () => {
+    setCategoryName("");
+  };
+  
   //save product API
   const handleSavePRODUCT = async () => {
     try {
@@ -362,6 +406,7 @@ export default function Products() {
         setSubmitionLoading(false);
         handleCloseConfirmationDialog();
         setCategoryName("");
+        handleCloseAddCategoryModal();
       } else {
         setAlertType(true);
         setSnackbarMessage(response.data.message);
@@ -383,24 +428,28 @@ export default function Products() {
       }
     }
   };
+  
   const [BrandName, setBrandName] = useState("");
-  const [BrandCode, setBrandCode] = useState("");
   const handleConfirmAddNewBrand = async () => {
     try {
       setSubmitionLoading(true);
+      
+      // Create FormData to send image
+      const formData = new FormData();
+      formData.append("file", image);
+      formData.append("Name", BrandName);
+      
       const response = await axios.post(
         import.meta.env.VITE_APP_URL_BASE + `/Brand/create`,
-        {
-          Name: BrandName,
-          Image: "asdasdsa.jpeg",
-        },
+        formData,
         {
           headers: {
-            "Content-Type": "application/json",
+            "Content-Type": "multipart/form-data",
             Authorization: `Bearer ${user?.token}`,
           },
         }
       );
+      
       if (response.status === 200) {
         setAlertType(false);
         setSnackbarMessage(response.data.message);
@@ -408,7 +457,8 @@ export default function Products() {
         BrandRefetch();
         setSubmitionLoading(false);
         handleCloseConfirmationDialog();
-        setBrandName("");
+        clearBrandForm();
+        handleCloseAddBrandModal();
       } else {
         setAlertType(true);
         setSnackbarMessage(response.data.message);
@@ -428,6 +478,194 @@ export default function Products() {
         // Something happened in setting up the request that triggered an Error
         console.error("Error creating brand");
       }
+    }
+  };
+  
+  // Handle saving edited category
+  const handleSaveCategory = async () => {
+    if (!editedCategoryName.trim()) {
+      setAlertType(true);
+      setSnackbarMessage("Le nom de la catégorie est requis");
+      setSnackbarOpen(true);
+      return;
+    }
+    
+    try {
+      setSubmitionLoading(true);
+      const response = await axios.patch(
+        import.meta.env.VITE_APP_URL_BASE + `/Category/${editingCategoryId}`,
+        {
+          Name: editedCategoryName,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${user?.token}`,
+          },
+        }
+      );
+      
+      if (response.status === 200) {
+        setAlertType(false);
+        setSnackbarMessage(response.data.message);
+        setSnackbarOpen(true);
+        CategoryRefetch();
+        setEditingCategoryId(null);
+        setEditedCategoryName("");
+      } else {
+        setAlertType(true);
+        setSnackbarMessage(response.data.message);
+        setSnackbarOpen(true);
+      }
+    } catch (error) {
+      if (error.response) {
+        setAlertType(true);
+        setSnackbarMessage(error.response.data.message);
+        setSnackbarOpen(true);
+      } else {
+        console.error("Error updating category", error);
+      }
+    } finally {
+      setSubmitionLoading(false);
+    }
+  };
+  
+  // Handle saving edited brand
+  const handleSaveBrand = async () => {
+    if (!editedBrandName.trim() && !editedBrandImage) {
+      setAlertType(true);
+      setSnackbarMessage("Au moins un champ doit être fourni");
+      setSnackbarOpen(true);
+      return;
+    }
+    
+    try {
+      setSubmitionLoading(true);
+      
+      const formData = new FormData();
+      if (editedBrandName) formData.append("Name", editedBrandName);
+      if (editedBrandImage) formData.append("file", editedBrandImage);
+      
+      const response = await axios.patch(
+        import.meta.env.VITE_APP_URL_BASE + `/Brand/${editingBrandId}`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${user?.token}`,
+          },
+        }
+      );
+      
+      if (response.status === 200) {
+        setAlertType(false);
+        setSnackbarMessage(response.data.message);
+        setSnackbarOpen(true);
+        BrandRefetch();
+        setEditingBrandId(null);
+        setEditedBrandName("");
+        setEditedBrandImage(null);
+      } else {
+        setAlertType(true);
+        setSnackbarMessage(response.data.message);
+        setSnackbarOpen(true);
+      }
+    } catch (error) {
+      if (error.response) {
+        setAlertType(true);
+        setSnackbarMessage(error.response.data.message);
+        setSnackbarOpen(true);
+      } else {
+        console.error("Error updating brand", error);
+      }
+    } finally {
+      setSubmitionLoading(false);
+    }
+  };
+  
+  // Handle deleting a category
+  const handleDeleteCategory = (categoryId) => {
+    setCategoryToDelete(categoryId);
+    setDeleteCategoryDialogOpen(true);
+  };
+  
+  const confirmDeleteCategory = async () => {
+    try {
+      setSubmitionLoading(true);
+      const response = await axios.delete(
+        import.meta.env.VITE_APP_URL_BASE + `/Category/${categoryToDelete}`,
+        {
+          headers: {
+            Authorization: `Bearer ${user?.token}`,
+          },
+        }
+      );
+      
+      if (response.status === 200) {
+        setAlertType(false);
+        setSnackbarMessage(response.data.message);
+        setSnackbarOpen(true);
+        CategoryRefetch();
+      } else {
+        setAlertType(true);
+        setSnackbarMessage(response.data.message);
+        setSnackbarOpen(true);
+      }
+    } catch (error) {
+      if (error.response) {
+        setAlertType(true);
+        setSnackbarMessage(error.response.data.message);
+        setSnackbarOpen(true);
+      } else {
+        console.error("Error deleting category", error);
+      }
+    } finally {
+      setSubmitionLoading(false);
+      setDeleteCategoryDialogOpen(false);
+      setCategoryToDelete(null);
+    }
+  };
+  
+  // Handle deleting a brand
+  const handleDeleteBrand = (brandId) => {
+    setBrandToDelete(brandId);
+    setDeleteBrandDialogOpen(true);
+  };
+  
+  const confirmDeleteBrand = async () => {
+    try {
+      setSubmitionLoading(true);
+      const response = await axios.delete(
+        import.meta.env.VITE_APP_URL_BASE + `/Brand/${brandToDelete}`,
+        {
+          headers: {
+            Authorization: `Bearer ${user?.token}`,
+          },
+        }
+      );
+      
+      if (response.status === 200) {
+        setAlertType(false);
+        setSnackbarMessage(response.data.message);
+        setSnackbarOpen(true);
+        BrandRefetch();
+      } else {
+        setAlertType(true);
+        setSnackbarMessage(response.data.message);
+        setSnackbarOpen(true);
+      }
+    } catch (error) {
+      if (error.response) {
+        setAlertType(true);
+        setSnackbarMessage(error.response.data.message);
+        setSnackbarOpen(true);
+      } else {
+        console.error("Error deleting brand", error);
+      }
+    } finally {
+      setSubmitionLoading(false);
+      setDeleteBrandDialogOpen(false);
+      setBrandToDelete(null);
     }
   };
 
@@ -638,7 +876,7 @@ export default function Products() {
         )}
       </Modal>
 
-      {/* New Modal for displaying Category */}
+      {/* Modal for displaying Category */}
       <Modal
         isOpen={isdisplayCategoryOpen}
         onRequestClose={handleClosedisplayCategory}
@@ -651,98 +889,100 @@ export default function Products() {
           },
         }}
       >
-        {/* {!CategoryLoading ? ( */}
-        <div className="customerClass p-0">
-          <div className="flex justify-between items-center">
-            <h2 className="dialogTitle">All Categories</h2>
-            <ButtonAdd
-              buttonSpan="Add New Category"
-              setOnClick={handleOpenAddCategoryModal}
-            />
-          </div>
+        {!CategoryLoading ? (
+          <div className="customerClass p-0">
+            <div className="flex justify-between items-center">
+              <h2 className="dialogTitle">All Categories</h2>
+              <ButtonAdd
+                buttonSpan="Add New Category"
+                setOnClick={handleOpenAddCategoryModal}
+              />
+            </div>
 
-          <div className="category-list-container mt-[16px]">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b">
-                  <th className="text-left p-2">Category Name</th>
-                  <th className="text-right p-2">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {/* {categories.map((category) => ( */}
-                <tr
-                  // key={category.id}
-                  className="border-b hover:bg-gray-50"
-                >
-                  <td className="p-2">
-                    {/* {editingCategoryId === category.id ? ( */}
-                    <input
-                      type="text"
-                      value={editedCategoryName}
-                      // onChange={(e) =>
-                      //   setEditedCategoryName(e.target.value)
-                      // }
-                      className="border p-1 rounded w-full"
-                      autoFocus
-                    />
-                    {/* ) : (
+            <div className="category-list-container mt-[16px]">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b">
+                    <th className="text-left p-2">Category Name</th>
+                    <th className="text-right p-2">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {CategoryData && CategoryData.map((category) => (
+                    <tr
+                      key={category._id}
+                      className="border-b hover:bg-gray-50"
+                    >
+                      <td className="p-2">
+                        {editingCategoryId === category._id ? (
+                          <input
+                            type="text"
+                            value={editedCategoryName}
+                            onChange={(e) =>
+                              setEditedCategoryName(e.target.value)
+                            }
+                            className="border p-1 rounded w-full"
+                            autoFocus
+                          />
+                        ) : (
                           category.name
-                        )} */}
-                  </td>
-                  <td className="p-2 flex justify-end space-x-2">
-                    {/* {editingCategoryId === category.id ? ( */}
-                    <>
-                      <button
-                        // onClick={() => handleSaveCategory(category.id)}
-                        className="text-green-500 hover:text-green-700 p-1"
-                      >
-                        Save{" "}
-                      </button>
-                      <button
-                        // onClick={handleCancelEditCategory}
-                        className="text-red-500 hover:text-red-700 p-1"
-                      >
-                        Cancel{" "}
-                      </button>
-                    </>
-                    {/* ) : ( */}
-                    <>
-                      <button
-                        // onClick={() => handleStartEditCategory(category)}
-                        className="text-gray-500 hover:text-gray-700 p-1"
-                      >
-                        <PencilIcon className="w-5 h-5" />
-                      </button>
-                      <button
-                        // onClick={() => handleDeleteCategory(category.id)}
-                        className="text-red-500 hover:text-red-700 p-1"
-                      >
-                        <TrashIcon className="w-5 h-5" />
-                      </button>
-                    </>
-                    {/* )} */}
-                  </td>
-                </tr>
-                {/* ))} */}
-              </tbody>
-            </table>
-          </div>
+                        )}
+                      </td>
+                      <td className="p-2 flex justify-end space-x-2">
+                        {editingCategoryId === category._id ? (
+                          <>
+                            <button
+                              onClick={handleSaveCategory}
+                              className="text-green-500 hover:text-green-700 p-1"
+                              disabled={submitionLoading}
+                            >
+                              Save{" "}
+                            </button>
+                            <button
+                              onClick={handleCancelEditCategory}
+                              className="text-red-500 hover:text-red-700 p-1"
+                              disabled={submitionLoading}
+                            >
+                              Cancel{" "}
+                            </button>
+                          </>
+                        ) : (
+                          <>
+                            <button
+                              onClick={() => handleStartEditCategory(category)}
+                              className="text-gray-500 hover:text-gray-700 p-1"
+                            >
+                              <PencilIcon className="w-5 h-5" />
+                            </button>
+                            <button
+                              onClick={() => handleDeleteCategory(category._id)}
+                              className="text-red-500 hover:text-red-700 p-1"
+                            >
+                              <TrashIcon className="w-5 h-5" />
+                            </button>
+                          </>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
 
-          <div className="flex justify-end space-x-8 mt-[20px]">
-            <button
-              className="text-gray-500 cursor-pointer hover:text-gray-700"
-              onClick={handleClosedisplayCategory}
-            >
-              Close
-            </button>
+            <div className="flex justify-end space-x-8 mt-[20px]">
+              <button
+                className="text-gray-500 cursor-pointer hover:text-gray-700"
+                onClick={handleClosedisplayCategory}
+              >
+                Close
+              </button>
+            </div>
           </div>
-        </div>
-        {/* ) : (
+        ) : (
           <div className="w-full h-full flex items-center justify-center">
             <CircularProgress color="inherit" />
           </div>
-        )} */}
+        )}
       </Modal>
 
       <Modal
@@ -757,10 +997,15 @@ export default function Products() {
           },
         }}
       >
-        {/* {!BrandLoading ? ( */}
-        <div className="customerClass p-0">
-          <h2 className="dialogTitle">All Brands</h2>
-
+        {!BrandLoading ? (
+          <div className="customerClass p-0">
+          <div className="flex justify-between items-center">
+            <h2 className="dialogTitle">All Brands</h2>
+            <ButtonAdd
+              buttonSpan="Add New Brand"
+              setOnClick={handleOpenAddBrandModal}
+            />
+          </div>
           <div className="brand-list-container mt-[16px]">
             <table className="w-full">
               <thead>
@@ -771,82 +1016,87 @@ export default function Products() {
                 </tr>
               </thead>
               <tbody>
-                {/* {brands.map((brand) => ( */}
-                <tr
-                  // key={brand.id}
-                  className="border-b hover:bg-gray-50"
-                >
-                  <td className="p-2">
-                    {/* {editingBrandId === brand.id ? ( */}
-                    <div className="flex items-center">
-                      <input
-                        type="file"
-                        accept="image/*"
-                        // onChange={(e) => handleImageChange(e, brand.id)}
-                        className="text-sm"
-                      />
-                    </div>
-                    {/* ) : brand.image ? ( */}
-                    <img
-                      // src={brand.image}
-                      // alt={brand.name}
-                      className="w-10 h-10 object-contain"
-                    />
-                    {/* ) : (
-                          <div className="w-10 h-10 bg-gray-200 flex items-center justify-center">
-                            <span className="text-xs text-gray-500">
-                              No Image
-                            </span>
-                          </div>
-                        )} */}
-                  </td>
-                  <td className="p-2">
-                    {/* {editingBrandId === brand.id ? ( */}
-                    <input
-                      type="text"
-                      value={editedBrandName}
-                      // onChange={(e) => setEditedBrandName(e.target.value)}
-                      className="border p-1 rounded w-full outline-none pl-2"
-                    />
-                    {/* ) : (
-                          brand.name
-                        )} */}
-                  </td>
-                  <td className="p-2 flex justify-end space-x-2">
-                    {/* {editingBrandId === brand.id ? ( */}
-                    <>
-                      <button
-                        // onClick={handleSaveBrand}
-                        className="text-green-500 hover:text-green-700 p-1"
-                      >
-                        Save
-                      </button>
-                      <button
-                        // onClick={handleCancelEdit}
-                        className="text-gray-500 hover:text-gray-700 p-1"
-                      >
-                        Cancel
-                      </button>
-                    </>
-                    {/* ) : ( */}
-                    <>
-                      <button
-                        // onClick={() => handleStartEditBrand(brand)}
-                        className="text-gray-500 hover:text-gray-700 p-1"
-                      >
-                        <PencilIcon className="w-5 h-5" />
-                      </button>
-                      <button
-                        // onClick={() => handleDeleteBrand(brand.id)}
-                        className="text-red-500 hover:text-red-700 p-1"
-                      >
-                        <TrashIcon className="w-5 h-5" />
-                      </button>
-                    </>
-                    {/* )} */}
-                  </td>
-                </tr>
-                {/* ))} */}
+                {BrandData && BrandData.map((brand) => (
+                  <tr
+                    key={brand._id}
+                    className="border-b hover:bg-gray-50"
+                  >
+                    <td className="p-2">
+                      {editingBrandId === brand._id ? (
+                        <div className="flex items-center">
+                          <input
+                            type="file"
+                            accept="image/*"
+                            onChange={handleBrandImageChange}
+                            className="text-sm"
+                          />
+                        </div>
+                      ) : brand.image ? (
+                        <img
+                          src={`${import.meta.env.VITE_APP_URL_BASE.replace(
+                            "/api",
+                            ""
+                          )}/files/${brand.image}`}
+                          alt={brand.name}
+                          className="w-10 h-10 object-contain"
+                        />
+                      ) : (
+                        <div className="w-10 h-10 bg-gray-200 flex items-center justify-center">
+                          <span className="text-xs text-gray-500">
+                            No Image
+                          </span>
+                        </div>
+                      )}
+                    </td>
+                    <td className="p-2">
+                      {editingBrandId === brand._id ? (
+                        <input
+                          type="text"
+                          value={editedBrandName}
+                          onChange={(e) => setEditedBrandName(e.target.value)}
+                          className="border p-1 rounded w-full outline-none pl-2"
+                        />
+                      ) : (
+                        brand.name
+                      )}
+                    </td>
+                    <td className="p-2 flex justify-end space-x-2">
+                      {editingBrandId === brand._id ? (
+                        <>
+                          <button
+                            onClick={handleSaveBrand}
+                            className="text-green-500 hover:text-green-700 p-1"
+                            disabled={submitionLoading}
+                          >
+                            Save
+                          </button>
+                          <button
+                            onClick={handleCancelEdit}
+                            className="text-gray-500 hover:text-gray-700 p-1"
+                            disabled={submitionLoading}
+                          >
+                            Cancel
+                          </button>
+                        </>
+                      ) : (
+                        <>
+                          <button
+                            onClick={() => handleStartEditBrand(brand)}
+                            className="text-gray-500 hover:text-gray-700 p-1"
+                          >
+                            <PencilIcon className="w-5 h-5" />
+                          </button>
+                          <button
+                            onClick={() => handleDeleteBrand(brand._id)}
+                            className="text-red-500 hover:text-red-700 p-1"
+                          >
+                            <TrashIcon className="w-5 h-5" />
+                          </button>
+                        </>
+                      )}
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>
@@ -859,15 +1109,14 @@ export default function Products() {
               Close
             </button>
           </div>
-        </div>
-        {/* ) : (
+          </div>
+        ) : (
           <div className="w-full h-full flex items-center justify-center">
             <CircularProgress color="inherit" />
           </div>
-        )} */}
+        )}
       </Modal>
 
-      {/* New Modal for Adding Brand */}
       <Modal
         isOpen={isAddBrandModalOpen}
         onRequestClose={handleCloseAddBrandModal}
@@ -880,7 +1129,7 @@ export default function Products() {
           },
         }}
       >
-        {!submitionLoading || BrandLoading || CategoryLoading ? (
+        {!submitionLoading ? (
           <div className="customerClass p-0">
             <h2 className="dialogTitle">Add New Brand to Stock</h2>
             <div className="mt-[16px]">
@@ -892,12 +1141,13 @@ export default function Products() {
                       <input
                         type="text"
                         name="BrandName"
+                        value={BrandName}
                         onChange={(e) => setBrandName(e.target.value)}
                       />
                     </div>
                   </div>
                   <div className="dialogAddCustomerItem items-center">
-                    <span>Product Picture :</span>
+                    <span>Brand Logo :</span>
                     <div className="flex items-center space-x-4">
                       <div
                         className="w-[80px] h-[80px] bg-slate-200 rounded-full cursor-pointer flex items-center justify-center relative overflow-hidden"
@@ -919,7 +1169,7 @@ export default function Products() {
                           accept="image/*"
                           ref={fileInputRef}
                           style={{ display: "none" }}
-                          // onChange={handleImageChange}
+                          onChange={handleImageChange}
                         />
                         <p onClick={handleClick} className="uploadSpan">
                           <span className="text-blue-600">
@@ -955,7 +1205,7 @@ export default function Products() {
         )}
       </Modal>
 
-      {/* New Modal for Adding Category */}
+      {/* Modal for Adding Category */}
       <Modal
         isOpen={isAddCategoryModalOpen}
         onRequestClose={handleCloseAddCategoryModal}
@@ -968,7 +1218,7 @@ export default function Products() {
           },
         }}
       >
-        {!submitionLoading || BrandLoading || CategoryLoading ? (
+        {!submitionLoading ? (
           <div className="customerClass p-0">
             <h2 className="dialogTitle">Add New Category to Stock</h2>
             <div className="flex-col items-center w-full space-y-8 mt-[16px] p-0">
@@ -978,6 +1228,7 @@ export default function Products() {
                   <input
                     type="text"
                     name="CategoryName"
+                    value={CategoryName}
                     onChange={(e) => setCategoryName(e.target.value)}
                   />
                 </div>
@@ -1005,12 +1256,13 @@ export default function Products() {
         )}
       </Modal>
 
+      {/* Confirmation Dialogs */}
       <ConfirmDialog
         open={AddNewCategoryConfirmationDialog}
         onClose={handleCloseConfirmationDialog}
         onConfirm={handleConfirmAddNewCategory}
         dialogTitle={"Confirm category creation"}
-        dialogContentText={`Are you sure you want to create new category ?`}
+        dialogContentText={`Are you sure you want to create the category "${CategoryName}"?`}
         isloading={submitionLoading}
       />
 
@@ -1019,11 +1271,28 @@ export default function Products() {
         onClose={handleCloseConfirmationDialog}
         onConfirm={handleConfirmAddNewBrand}
         dialogTitle={"Confirm brand creation"}
-        dialogContentText={`Are you sure you want to create new brand ?`}
+        dialogContentText={`Are you sure you want to create the brand "${BrandName}"?`}
+        isloading={submitionLoading}
+      />
+      
+      <ConfirmDialog
+        open={deleteCategoryDialogOpen}
+        onClose={handleCloseConfirmationDialog}
+        onConfirm={confirmDeleteCategory}
+        dialogTitle={"Confirm Category Deletion"}
+        dialogContentText={`Are you sure you want to delete this category? This action cannot be undone.`}
+        isloading={submitionLoading}
+      />
+      
+      <ConfirmDialog
+        open={deleteBrandDialogOpen}
+        onClose={handleCloseConfirmationDialog}
+        onConfirm={confirmDeleteBrand}
+        dialogTitle={"Confirm Brand Deletion"}
+        dialogContentText={`Are you sure you want to delete this brand? This action cannot be undone.`}
         isloading={submitionLoading}
       />
 
-      {/* Snackbar */}
       <Snackbar
         open={snackbarOpen}
         autoHideDuration={6000}
