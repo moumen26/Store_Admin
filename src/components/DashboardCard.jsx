@@ -39,7 +39,7 @@ export default function DashboardCard({
             </div>
           </div>
           <div>
-            <h2 className="dashboardCardAmount">{dashboardCardAmount} {dashboardCardTitle != "Total orders" ? 'DA' : ''}</h2>
+            <h2 className="dashboardCardAmount">{dashboardCardAmount} {dashboardCardTitle != "Total des abonnements" ? 'DA' : ''}</h2>
           </div>
         </>
         :
