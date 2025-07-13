@@ -1033,10 +1033,7 @@ export default function Products() {
                         </div>
                       ) : brand.image ? (
                         <img
-                          src={`${import.meta.env.VITE_APP_URL_BASE.replace(
-                            "/api",
-                            ""
-                          )}/files/${brand.image}`}
+                          src={`${import.meta.env.VITE_APP_FILES_URL}/${brand.image}`}
                           alt={brand.name}
                           className="w-10 h-10 object-contain"
                         />

@@ -90,10 +90,7 @@ export default function PubSwiperAdmin({data, loading, PublicAdminPublicityRefet
                 onClick={() => handleOpenDeletePub(pub._id)}
               />
               <img 
-                src={`${import.meta.env.VITE_APP_URL_BASE.replace(
-                  "/api",
-                  ""
-                )}/files/${pub.image}`} 
+                src={`${import.meta.env.VITE_APP_FILES_URL}/${pub.image}`} 
                 alt={pub.image}
               />
             </SwiperSlide>
