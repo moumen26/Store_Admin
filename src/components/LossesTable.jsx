@@ -142,7 +142,7 @@ export default function LossesTable({ searchQuery, setFilteredData, data, loadin
                   <CircularProgress color="inherit" />
                 </TableCell>
               </TableRow>
-            ) : data.length > 0 ? (
+            ) : data?.length > 0 ? (
               data.map((row) => <Row key={row._id} row={row} handleDeleteClick={handleCloseDeleteLossClick}/>)
             ) : (
               <TableRow>

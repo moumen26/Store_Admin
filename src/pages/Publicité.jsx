@@ -176,26 +176,26 @@ export default function Publicité() {
   };
 
 
-  if (PublicAdminPublicityLoading || PublicStorePublicityLoading) {
-    return (
-      <div className="pagesContainer h-[100vh]">
-        <Header />
-        <div className="w-full h-full flex items-center justify-center">
-          <CircularProgress color="inherit" />
-        </div>
-      </div>
-    );
-  }
-  if (PublicAdminPublicityError || PublicStorePublicityError) {
-    return (
-      <div className="pagesContainer">
-        <Header />
-        <div className="customerClass">
-          <h2 className="customerClassTitle">no data is available</h2>
-        </div>
-      </div>
-    );
-  }
+  // if (PublicAdminPublicityLoading || PublicStorePublicityLoading) {
+  //   return (
+  //     <div className="pagesContainer h-[100vh]">
+  //       <Header />
+  //       <div className="w-full h-full flex items-center justify-center">
+  //         <CircularProgress color="inherit" />
+  //       </div>
+  //     </div>
+  //   );
+  // }
+  // if (PublicAdminPublicityError || PublicStorePublicityError) {
+  //   return (
+  //     <div className="pagesContainer">
+  //       <Header />
+  //       <div className="customerClass">
+  //         <h2 className="customerClassTitle">no data is available</h2>
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="pagesContainer pubContainer">
